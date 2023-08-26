@@ -1,0 +1,25 @@
+<div class="container-fluid d-flex justify-content-center flex-column align-items-center vh-100">
+    <div class="d-flex justify-content-center flex-column align-items-center w-50">
+        <form action="#" class="w-100" #loginForm="ngForm">
+            <div class="form-floating mb-3">
+                <input class="form-control" type="text" name="identifiant" id="identifiant"
+                    placeholder="Votre identifiant" [(ngModel)]="identifiant_saisi">
+                <label for="identifiant">Votre identifiant</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" type="password" name="password" id="password"
+                    placeholder="votre mot de passe" [(ngModel)]="password_saisi">
+                <label for="password">Votre mot de passe</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" (click)="connectIsValid()">Connexion</button>
+        </form>
+        <!-- 
+    <div *ngIf="isConnect == true" class="bg-dark bg-opacity-50 position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center flex-column align-items-center z-3">
+        <p class="h2 text-white">Connesion réussie !</p>
+    </div> -->
+    </div>
+</div>
+
+
+<!-- *ngIf="isConnect == true" -->
