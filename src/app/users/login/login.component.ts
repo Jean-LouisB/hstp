@@ -50,18 +50,14 @@ export class LoginComponent implements OnInit {
           this.cookieService.set('whoswho',response.data.user['id'])
           this.router.navigate(['/accueil']);
         } else {
-          console.log("connexion échouée");
           this.loginForm.reset();
           this.errorMsg = 'Mot de passe erroné.' 
         }
       }).catch((err) => {
         //console.log("Une erreur s'est produite ici: " + err.response.data);
         if(err.response.data == "Utilisateur introuvable"){
-          console.log("Identifiant inconnu");
           this.errorMsg = 'Identifiant non reconnu.' 
         }
-        
-        
       })
   }
 }
