@@ -27,20 +27,34 @@ export class UserListComponent implements OnInit{
     }
     this.apiBDD.getAllUsers()
       .then(response => {
-        this.userList = response.data;
+        const list = response.data;
+        list.sort((a, b)=>a.nom.localeCompare(b.nom))
+        this.userList = list;
       })
       .catch(error => {
         console.log("Une erreur s'est produite : "+error);
       })
-      console.log(this.filtreAbsent +' - '+this.titreBtnFiltre);
   }
   handelOnFilter(){
    
     this.filtreAbsent = !this.filtreAbsent
     this.titreBtnFiltre = this.filtreAbsent === true ? "Voir les absents" : "Masquer les absents"
-    console.log(this.filtreAbsent +' - '+this.titreBtnFiltre);
-    
-   
+
   }
+
+
+  fetchUsers() {
+    this.apiBDD.getAllUsers().then(
+      (data) => {
+        const list = data.data;
+        list.sort((a, b)=>a.nom.localeCompare(b.nom))
+        this.userList = list;
+      },
+      (error) => {
+        console.error('Erreur lors de la récupération des utilisateurs :', error);
+      }
+    );
+  }
+  
 
 }
