@@ -1,5 +1,6 @@
 <div class="container-fluid d-flex justify-content-center flex-column align-items-center vh-100">
     <div class="d-flex justify-content-center flex-column align-items-center w-50">
+        <p class="text-center text-danger fs-6 lh-sm" *ngIf="{errorMsg}">{{ errorMsg }}</p>
         <form action="#" class="w-100" #loginForm="ngForm">
             <div class="form-floating mb-3">
                 <input class="form-control" type="text" name="identifiant" id="identifiant"

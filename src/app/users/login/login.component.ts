@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
   id_User = "";
   identifiant_saisi: string = "";
   password_saisi: string = "";
+  errorMsg = null;
 
 
   constructor(
@@ -42,8 +43,6 @@ export class LoginComponent implements OnInit {
 
     this.apiBDD.getPassForConnect(this.identifiant_saisi)
       .then(response => {
-        console.log(response.data);
-        
         let mdpToCheck = response.data.pass;
         if (bcrypt.compareSync(this.password_saisi,mdpToCheck)) {
           this.authService.login(response.data.user)
@@ -53,9 +52,16 @@ export class LoginComponent implements OnInit {
         } else {
           console.log("connexion échouée");
           this.loginForm.reset();
+          this.errorMsg = 'Mot de passe erroné.' 
         }
-      }).catch(error => {
-        console.log("Une erreur s'est produite ici: " + error);
+      }).catch((err) => {
+        //console.log("Une erreur s'est produite ici: " + err.response.data);
+        if(err.response.data == "Utilisateur introuvable"){
+          console.log("Identifiant inconnu");
+          this.errorMsg = 'Identifiant non reconnu.' 
+        }
+        
+        
       })
   }
 }
