@@ -23,6 +23,7 @@ export class NavbarComponent implements OnInit{
   }
    handleOnLoout(){
     this.cookiesService.delete('session');
+    this.cookiesService.delete('whoswho');
     this.authService.logout();
     this.router.navigate(['login']);
    }

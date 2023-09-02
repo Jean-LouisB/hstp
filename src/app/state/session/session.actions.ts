@@ -1,3 +1,7 @@
-import { createAction } from "@ngrx/store";
+import { createAction, props } from "@ngrx/store";
+import { User } from "src/app/models/userModel";
 
-export const userConnected = createAction('[Login] Connexion validée')
+export const dataUserConnected = createAction('[Login] dataUser',
+    props<{user: User }>()
+    );
+

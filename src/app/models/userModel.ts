@@ -5,7 +5,7 @@ export class User implements Deserializable{
     matricule:string;
     nom:string;
     prenom:string;
-    password:string; // ----------------  /!\ le mot de passe est exposé !! => prévoir une alternative plus sécure.
+    //password:string; // ----------------  /!\ le mot de passe est exposé !! => prévoir une alternative plus sécure.
     responsable:string;
     present:string;
     type:number

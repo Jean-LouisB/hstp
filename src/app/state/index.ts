@@ -1,8 +1,10 @@
 import * as formSession from './session/session.reducers';
-
+import { User } from '../models/userModel';
 
 export interface AppState{
-    session : boolean;
+    session: {
+        userConnected: User;
+    };
 }
 
 export const reducers = {

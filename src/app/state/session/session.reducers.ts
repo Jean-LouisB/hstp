@@ -1,10 +1,22 @@
 import { createReducer, on } from "@ngrx/store";
-import { userConnected } from "./session.actions";
+import { dataUserConnected } from "./session.actions";
+import { User } from "src/app/models/userModel";
+import { AppState } from "..";
 
-const initialState = false;
-
+const intiUser = new User();
+const initialState: AppState = {
+    session: {
+        userConnected: intiUser 
+    }
+}
 
 export const sessionReducer = createReducer(
     initialState,
-    on(userConnected,(state)=> state = true)
-    )
+    on(dataUserConnected, (state, {user}) => ({
+        ...state,
+        session: {
+            ...state.session,
+            userConnected: user
+        }
+    }))
+);

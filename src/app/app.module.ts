@@ -9,6 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { AccueilComponent } from './accueil/accueil.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { StateModule } from './state/state.module';
+import { StoreModule } from '@ngrx/store';
+import { sessionReducer } from './state/session/session.reducers';
 
 
 @NgModule({
@@ -24,7 +26,8 @@ import { StateModule } from './state/state.module';
     BrowserModule,
     AppRoutingModule, 
     FormsModule,
-    StateModule
+    StateModule,
+    StoreModule.forRoot({session:sessionReducer})
   ],
   providers: [],
   bootstrap: [AppComponent]
