@@ -22,9 +22,7 @@ export class UserListComponent implements OnInit{
      ){}
 
   ngOnInit(){
-    if(!this.authService.isLoggedIn()){
-      this.router.navigate(['login'])
-    }
+    
     this.apiBDD.getAllUsers()
       .then(response => {
         const list = response.data;

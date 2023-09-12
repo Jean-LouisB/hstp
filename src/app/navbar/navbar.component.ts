@@ -1,7 +1,9 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { ConnexionService } from '../services/connexion/connexion.service';
+import { ServerService } from '../services/serveur/server.service';
+import { User } from '../models/userModel';
+import { toggleConnected } from '../state/session/session.actions';
+import { Store } from '@ngrx/store';
 
 
 @Component({
@@ -10,26 +12,30 @@ import { ConnexionService } from '../services/connexion/connexion.service';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit{
-
+  @Output() toggle : EventEmitter<void> = new EventEmitter()
+  connected:boolean = false;
+  user: User = new User;
   constructor(
-    private cookiesService: CookieService,
     private router: Router,
-    private authService: ConnexionService
+    private apiBDD: ServerService,
+    private store: Store,
+
+
     ) { }
   
   ngOnInit(): void {
-    console.log(this.getIsLoggedIn());
-    
+
   }
    handleOnLoout(){
-    this.cookiesService.delete('session');
-    this.cookiesService.delete('whoswho');
-    this.authService.logout();
-    this.router.navigate(['login']);
+    this.store.dispatch(toggleConnected());
+    this.apiBDD.getLogout();
+    this.router.navigate(['/login']);
    }
+   toggleConnected() {
+    this.toggle.emit();
+  }
 
-   getIsLoggedIn(){
-    return this.authService.isLoggedIn()
-   }
+
+
 }
 

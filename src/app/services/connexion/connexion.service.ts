@@ -5,24 +5,17 @@ import { User } from 'src/app/models/userModel';
   providedIn: 'root'
 })
 export class ConnexionService {
-  private isAuthenticated: boolean = false;
+  private connected: boolean = false;
   private userConnected: User | null;
   constructor() { }
 
-  login(userIsConnecting: User){
-    this.isAuthenticated = true;
-    this.userConnected = userIsConnecting;
-  }
-
-  logout(){
-    this.isAuthenticated = false;
-    this.userConnected = null
-  }
-
-  isLoggedIn(){
-    return this.isAuthenticated;
-  }
-  UserConnected():User{
-      return this.userConnected;
-  }
+    isConnected(){
+      return this.connected;
+    }
+    connection(){
+      this.connected=true;
+    }
+    disConnection(){
+      this.connected=false;
+    }
 }

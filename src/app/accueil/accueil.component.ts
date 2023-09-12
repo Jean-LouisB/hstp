@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ConnexionService } from '../services/connexion/connexion.service';
 import { Store, select } from '@ngrx/store';
-import { AppState } from '../state';
+
 
 @Component({
   selector: 'app-accueil',
@@ -22,14 +22,8 @@ export class AccueilComponent implements OnInit {
   }
   ngOnInit(): void {
 
-    if (!this.authService.isLoggedIn()) {
-      this.router.navigate(['login'])
-    }
+  }
 
-  }
-  getUserConnectedName() {
-    return this.authService.UserConnected()
-  }
 
 
 
