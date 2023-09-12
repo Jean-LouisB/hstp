@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   userMatricule: string = "";
   userPassWord: string = "";
   errorMsg = null;
+  waiting=false;
 
 
   constructor(
@@ -29,21 +30,31 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
    
   }
-
+/**
+ * 
+ * @returns un message
+ */
   connectIsValid() {
     if (this.userMatricule.length!=4){
       this.errorMsg = "Identifiant incorrect"
       return
     }
+    this.toggleWaiting();
     this.apiBDD.getLogin(this.userMatricule, this.userPassWord)
     .subscribe((response)=>{
       if(response == "Authentification réussie" ){
         this.store.dispatch(toggleConnected())
         this.router.navigate(['accueil']);
       }else{
+        this.toggleWaiting();
         this.errorMsg = response
       }
     })
+    }
+
+    toggleWaiting(){
+    this.waiting=!this.waiting;
+      
     }
 }
 

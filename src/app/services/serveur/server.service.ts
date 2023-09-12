@@ -37,6 +37,10 @@ export class ServerService {
           this.cookieService.set('session',token, null,'/',null, true, 'Strict');
           observable.next(msg);
           observable.complete();
+        }).catch(err=>{
+          const msg = "Le serveur ne répond pas";
+          observable.next(msg);
+          console.log("Le serveur ne répond pas");
         })
     }))
 
