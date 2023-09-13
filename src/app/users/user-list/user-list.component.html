@@ -1,11 +1,14 @@
 <div class="container-fluid d-flex justify-content-center">
-        <div ngClass="container d-flex w-100 justify-content-around">
+    <div ngClass="container d-flex w-100 justify-content-around">
         <p ngClass="h2">Liste des salarié(e)s</p>
-    <button ngClass="btn btn-primary mb-3" (click)="handelOnFilter()">{{ titreBtnFiltre }}</button>
+        <button ngClass="btn btn-primary mb-3" (click)="handelOnFilter()">{{ titreBtnFiltre }}</button>
     </div>
-    
+    <div>
+        <input type="text" placeholder="Rechercher ..." (input)="handleOnSearch($event)">
+    </div>
+
 </div>
 
 <div>
-    <app-user [users]="userList" [filter]="filtreAbsent"  (presenceUpdated)="fetchUsers()"></app-user>
+    <app-user [users]="filteredList" [filter]="filtreAbsent" (presenceUpdated)="fetchUsers()"></app-user>
 </div>

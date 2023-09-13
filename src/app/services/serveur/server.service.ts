@@ -75,20 +75,17 @@ export class ServerService {
   }
 
 
-
-  //************************************************** plus tard ************************************* */
-
    getAllUsers() {
     //fournit la liste de tous les utilisateurs
-    return axios.get(`/allusers`);
+    return this.axiosInstance.get(`/users/allusers`);
   }
   getUserById(id: string) {
     //Fournit les données de l'utilisateur selon sont id
-    return axios.get(`/find_user_by_id/${id}`)
+    return this.axiosInstance.get(`/find_user_by_id/${id}`)
   }
 
   putPresenceToggle(matricule: string, presence: number) {
     //change le status de la présence (true si false et vis et versa)
-    return axios.put(`/user/update/presence/${matricule}/${presence}`)
+    return this.axiosInstance.put(`/users/update/presence/${matricule}/${presence}`)
   } 
 }

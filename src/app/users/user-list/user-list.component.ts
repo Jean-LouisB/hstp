@@ -13,6 +13,8 @@ export class UserListComponent implements OnInit{
   userList = [];
   filtreAbsent = true;
   titreBtnFiltre = "Voir les absents";
+  filterByName = "*";
+  filteredList=[];
 
 
   constructor(
@@ -28,10 +30,12 @@ export class UserListComponent implements OnInit{
         const list = response.data;
         list.sort((a, b)=>a.nom.localeCompare(b.nom))
         this.userList = list;
+        this.filtreLaListe()
       })
       .catch(error => {
         console.log("Une erreur s'est produite : "+error);
       })
+      
   }
   handelOnFilter(){
    
@@ -54,5 +58,25 @@ export class UserListComponent implements OnInit{
     );
   }
   
+  filtreLaListe(){
+    if (this.filterByName === "*" || this.filterByName === "" ){
+      this.filteredList = this.userList;
+    }else{
+      this.filteredList = this.userList.filter((user)=>{
+      const userNameUpperCase = user.nom.toUpperCase()
+      const userFirstNameUpperCase = user.prenom.toUpperCase()
+      const nameSearched = this.filterByName.toUpperCase()
+      const nomPrenom = userNameUpperCase+userFirstNameUpperCase
+      return nomPrenom.includes(nameSearched) 
+    })
+    }
+   
+  }
+
+  handleOnSearch(event: Event){
+    const inputElement = event.target as HTMLInputElement;
+    this.filterByName = inputElement.value
+    this.filtreLaListe();
+  }
 
 }

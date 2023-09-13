@@ -26,6 +26,7 @@
                 <div class="card-body">
                     <div class="card-text">
                         <p>Matricule : {{ user.matricule }}</p>
+                        <p>Niveau de droits : {{ user.type }}</p>
                         <p>Présent : {{user.present ? 'Oui' : 'Non'}}
                             <button class="btn" (click)="handleOnChangePresent(user.matricule, (user.present == true ? 0 : 1))">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
