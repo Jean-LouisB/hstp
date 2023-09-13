@@ -1,2 +1,6 @@
-<p>Hello Fabrice</p>
-<p>accueil works!</p>
+<h1>Accueil</h1>
+<div *ngIf=(user)>
+    <p>Hello {{user.prenom}} {{user.nom}}</p>
+    <p>Niveau de droit: {{user.type}}</p>
+</div>
+

@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
-import { ConnexionService } from '../services/connexion/connexion.service';
-import { Store, select } from '@ngrx/store';
+import { ServerService } from '../services/serveur/server.service';
 
 
 @Component({
@@ -14,16 +11,15 @@ export class AccueilComponent implements OnInit {
   isConnected = false;
   user = null;
   constructor(
-    private router: Router,
-    private cookiesService: CookieService,
-    private authService: ConnexionService,
+    private apiBDD: ServerService,
   ) {
 
   }
   ngOnInit(): void {
-
+    this.apiBDD.getUserProfil().subscribe((data)=>{
+      this.user= data;
+    })
   }
-
 
 
 

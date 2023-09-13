@@ -30,6 +30,6 @@ import { sessionReducer } from './state/session/session.reducers';
     StoreModule.forRoot({session:sessionReducer})
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }
