@@ -1,14 +1,18 @@
-<header class="navbar navbar-expand-md navbar-dark bg-dark px-3 mb-5">
-    <button type="button" class="navbar-toggler ms-auto" data-bs-toggle="collapse" data-bs-target="#navContent">
-        <span class="navbar-toggler-icon"></span>
+<header ngClass="navbar navbar-expand-md navbar-dark bg-dark px-3 mb-5">
+    <span *ngIf="user" ngClass="navbar-brand">{{ user.prenom }} {{ user.nom }}</span>
+    <button type="button" ngClass="navbar-toggler ms-auto" data-bs-toggle="collapse" data-bs-target="#navContent">
+        <span ngClass="navbar-toggler-icon"></span>
     </button>
-    <nav class="collapse navbar-collapse" id="navContent">
-        <ul class="navbar-nav ms-auto">
-            <li class="nav-item" routerLinkActive="lienActif"><a class="nav-link" routerLink="/accueil">Accueil</a></li>
-            <li class="nav-item" routerLinkActive="lienActif"><a class="nav-link" routerLink="/users">Utilisateurs</a>
+    <nav ngClass="collapse navbar-collapse" id="navContent">
+        <ul ngClass="navbar-nav ms-auto">
+            <li ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Accueil</a></li>
+            <li ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Mes heures</a></li>
+            <li *ngIf="(user.type >= 2)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Mon service</a></li>
+            <li *ngIf="(user.type == 3)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Toutes les heures</a></li>
+            <li *ngIf="(user.type == 3)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Utilisateurs</a></li>
+            <li ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/"
+                    (click)="handleOnLoout()">Déconnexion</a>
             </li>
-            <li class="nav-item" routerLinkActive="lienActif"><a class="nav-link" routerLink="/"
-                    (click)="handleOnLoout()">Déconnexion</a></li>
         </ul>
     </nav>
 

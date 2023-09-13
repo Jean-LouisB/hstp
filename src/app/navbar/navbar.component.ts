@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { ServerService } from '../services/serveur/server.service';
 import { User } from '../models/userModel';
 import { toggleConnected } from '../state/session/session.actions';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { SessionState } from '../state/session/session.reducers';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -15,16 +17,16 @@ export class NavbarComponent implements OnInit{
   @Output() toggle : EventEmitter<void> = new EventEmitter()
   connected:boolean = false;
   user: User = new User;
+  private userSubscription: Subscription | undefined;
   constructor(
     private router: Router,
     private apiBDD: ServerService,
-    private store: Store,
-
+    private store: Store<{ session: SessionState }>
 
     ) { }
   
   ngOnInit(): void {
-
+    this.getNameUserState();
   }
    handleOnLoout(){
     this.store.dispatch(toggleConnected());
@@ -34,8 +36,13 @@ export class NavbarComponent implements OnInit{
    toggleConnected() {
     this.toggle.emit();
   }
-
-
-
+  getNameUserState() {
+    this.userSubscription = this.store.pipe(select(state => state.session.userState))
+      .subscribe((userData: { user: User | null }) => {
+        if(userData && userData.user){
+          this.user = userData.user;
+        }
+      });
+  }
 }
 
