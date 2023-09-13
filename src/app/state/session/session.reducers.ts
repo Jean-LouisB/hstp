@@ -1,9 +1,16 @@
 import { createReducer, on } from "@ngrx/store";
 import { toggleConnected } from "./session.actions";
+import { User } from "src/app/models/userModel";
+import { setUser } from "./session.actions";
 
+export interface SessionState {
+    isConnected: boolean;
+    userState: { user: User | null };
+}
 
-export const initialState = {
+export const initialState: SessionState = {
     isConnected: false,
+    userState: null,
 }
 
 export const sessionReducer = createReducer(
@@ -12,5 +19,9 @@ export const sessionReducer = createReducer(
         ...state,
         isConnected: !state.isConnected
     })),
+    on(setUser, (state, { user }) => ({
+        ...state,
+        userState: {user : user},
+    }))
 );
 

@@ -45,6 +45,7 @@ export class ServerService {
   }
 
   getLogout() {
+    this.axiosInstance.get('/connexion/logout');
     this.router.navigate(['/login']);
     this.cookieService.delete('session', '/', null, true, 'Strict');
 

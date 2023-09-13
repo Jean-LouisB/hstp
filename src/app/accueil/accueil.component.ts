@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ServerService } from '../services/serveur/server.service';
+import { Store, select } from '@ngrx/store';
+import { setUser } from '../state/session/session.actions';
+import { SessionState } from '../state/session/session.reducers';
+import { User } from '../models/userModel';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -9,18 +14,33 @@ import { ServerService } from '../services/serveur/server.service';
 })
 export class AccueilComponent implements OnInit {
   isConnected = false;
-  user = null;
+  user: User | null = null;
+  private userSubscription: Subscription | undefined;
   constructor(
     private apiBDD: ServerService,
+    private store: Store<{ session: SessionState }>
   ) {
-
   }
   ngOnInit(): void {
-    this.apiBDD.getUserProfil().subscribe((data)=>{
-      this.user= data;
-    })
+    this.getNameUserState();
+    if (this.user == null) {
+      this.apiBDD.getUserProfil().subscribe((data) => {
+        this.user = new User().deserialize(data)
+        //console.log(this.user);
+        this.store.dispatch(setUser({ user: this.user }));
+      })
+    }
+
   }
 
+
+  getNameUserState() {
+    this.userSubscription = this.store.pipe(select(state => state.session.userState))
+      .subscribe((userData: { user: User | null }) => {
+        this.user = userData.user;
+      });
+
+  }
 
 
 }
