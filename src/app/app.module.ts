@@ -11,6 +11,9 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { StateModule } from './state/state.module';
 import { StoreModule } from '@ngrx/store';
 import { sessionReducer } from './state/session/session.reducers';
+import { HeuresComponent } from './heures/heures.component';
+import { ServiceComponent } from './service/service.component';
+import { EntrepriseComponent } from './entreprise/entreprise.component';
 
 
 @NgModule({
@@ -20,7 +23,10 @@ import { sessionReducer } from './state/session/session.reducers';
     UserListComponent,
     LoginComponent,
     AccueilComponent,
-    NavbarComponent
+    NavbarComponent,
+    HeuresComponent,
+    ServiceComponent,
+    EntrepriseComponent
   ],
   imports: [
     BrowserModule,

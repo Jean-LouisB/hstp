@@ -6,10 +6,10 @@
     <nav ngClass="collapse navbar-collapse" id="navContent">
         <ul ngClass="navbar-nav ms-auto">
             <li ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Accueil</a></li>
-            <li ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Mes heures</a></li>
-            <li *ngIf="(user.type >= 2)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Mon service</a></li>
-            <li *ngIf="(user.type == 3)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Toutes les heures</a></li>
-            <li *ngIf="(user.type == 3)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Utilisateurs</a></li>
+            <li ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/heures">Mes heures</a></li>
+            <li *ngIf="(user.type >= 2)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/service">Mon service</a></li>
+            <li *ngIf="(user.type == 3)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/entreprise">Toutes les heures</a></li>
+            <li *ngIf="(user.type == 3)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/users">Utilisateurs</a></li>
             <li ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/"
                     (click)="handleOnLoout()">Déconnexion</a>
             </li>
