@@ -43,15 +43,22 @@ export class ServerService {
     }))
 
   }
-
+  /**
+   * Gère la déconnexion.
+   * Supprime le cookie local et informe le serveur
+   * TODO : La redirection est déjà gérée par le bouton 'deconnexion' il faut vérifier si ce n'est pas un doublon supprimable
+   */
   getLogout() {
     this.axiosInstance.get('/connexion/logout');
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login']); //Doublon !!! à vérifier avec le bouton déconnexion
     this.cookieService.delete('session', '/', null, true, 'Strict');
 
   }
 
-
+  /**
+   * Axios récupère le cookie qui contient le token pour demander le détail du profil connecté au serveur.
+   * @returns le profil de l'utilisateur
+   */
   getUserProfil(): Observable<any> {
     let user = new User;
     return new Observable<any>((observable) => {
@@ -74,9 +81,11 @@ export class ServerService {
     });
   }
 
-
+  /**
+   * 
+   * @returns la liste de tous les utilisateurs
+   */
    getAllUsers() {
-    //fournit la liste de tous les utilisateurs
     return this.axiosInstance.get(`/users/allusers`);
   }
   getUserById(id: string) {
