@@ -6,7 +6,7 @@ import { toggleConnected } from '../state/session/session.actions';
 import { Store, select } from '@ngrx/store';
 import { SessionState } from '../state/session/session.reducers';
 import { Subscription } from 'rxjs';
-
+import { setUser } from '../state/session/session.actions';
 
 @Component({
   selector: 'app-navbar',
@@ -28,8 +28,10 @@ export class NavbarComponent implements OnInit{
   ngOnInit(): void {
     this.getNameUserState();
   }
+  
    handleOnLoout(){
     this.store.dispatch(toggleConnected());
+    this.store.dispatch(setUser(null));
     this.apiBDD.getLogout();
     this.router.navigate(['/login']);
    }
@@ -44,5 +46,6 @@ export class NavbarComponent implements OnInit{
         }
       });
   }
+
 }
 
