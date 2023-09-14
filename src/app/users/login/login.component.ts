@@ -69,6 +69,7 @@ export class LoginComponent implements OnInit {
         /*Si le serveur répond "Authentification réussie" 
         toggleConnected (valeur booléenne) pemet d'afficher la barre de navigation
         L'utilisateur ainsi connecté est redirigé vers sa page d'accueil
+        un token crypté est déposé dans les cookies par AXIOS
         */
         this.store.dispatch(toggleConnected())
         this.router.navigate(['accueil']);
