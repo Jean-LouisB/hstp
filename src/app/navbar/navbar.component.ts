@@ -5,7 +5,7 @@ import { User } from '../models/userModel';
 import { toggleConnected } from '../state/session/session.actions';
 import { Store, select } from '@ngrx/store';
 import { SessionState } from '../state/session/session.reducers';
-import { Subscription } from 'rxjs';
+//import { Subscription } from 'rxjs';
 import { setUser } from '../state/session/session.actions';
 
 @Component({
@@ -15,13 +15,27 @@ import { setUser } from '../state/session/session.actions';
 })
 export class NavbarComponent implements OnInit{
   @Output() toggle : EventEmitter<void> = new EventEmitter()
-  connected:boolean = false;
+  /**
+   * connected précise si l'utilisateur est connecté
+   * ne sert plus A SUPPRIMER !!!
+   */
+  //connected:boolean = false;
+  /**
+   * user doit recevoir les informations de l'utilisateur.
+   * Son prénom et nom pour personnaliser l'affichage.
+   * Son niveau de droit1, 2 ou 3 pour définir les menus à afficher.
+   */
   user: User = new User;
-  private userSubscription: Subscription | undefined;
+
+   /**
+   * userSubscription
+   * ne sert plus A SUPPRIMER !!!
+   */
+  //private userSubscription: Subscription | undefined;
   constructor(
-    private router: Router,
-    private apiBDD: ServerService,
-    private store: Store<{ session: SessionState }>
+    private router: Router, //gère les redirection (si pas connecté ...)
+    private apiBDD: ServerService, // accès au service local pour interroger le serveur (et donc la BDD)
+    private store: Store<{ session: SessionState }>  //accès au store pour récupèrer les données utilisateurs
 
     ) { }
   
@@ -29,17 +43,36 @@ export class NavbarComponent implements OnInit{
     this.getNameUserState();
   }
   
+  /**
+   * Par le clic sur "deconnexion" cette fonction 'handleOnLoout' détruit toutes les traces de l'utilisateur :
+   * le profil enregistré sur le store,
+   * isConnected du store (affichage de la navbar),
+   * appelle la route logout qui va détruire le cookie et informer le serveur
+   * redirige vers la page de connexion.
+   * 
+   */
    handleOnLoout(){
     this.store.dispatch(toggleConnected());
     this.store.dispatch(setUser(null));
     this.apiBDD.getLogout();
     this.router.navigate(['/login']);
    }
-   toggleConnected() {
+
+   /**
+    * A SUPPRIMER ???
+    */
+   /* toggleConnected() {
     this.toggle.emit();
-  }
+  } */
+
+  /**
+   * Chaque page a la responsabilité de vérifier si l'utilisateur est enregistré dans le store, et de le faire avec le token 
+   * si il ne l'est pas.
+   * Donc la navbar récupère les données de l'utilisateur par cette fonction getNameUserState qui les affecte à l'attribut local.
+   * Ainsi elle peut contrôler le niveau de droit pour l'affichage spécifique, et afficher le prénom et nom.
+   */
   getNameUserState() {
-    this.userSubscription = this.store.pipe(select(state => state.session.userState))
+    this.store.pipe(select(state => state.session.userState))
       .subscribe((userData: { user: User | null }) => {
         if(userData && userData.user){
           this.user = userData.user;
