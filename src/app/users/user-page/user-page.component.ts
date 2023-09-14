@@ -6,7 +6,10 @@ import { SessionState } from 'src/app/state/session/session.reducers';
 import { setUser } from 'src/app/state/session/session.actions';
 import { ServerService } from 'src/app/services/serveur/server.service';
 
-
+/**
+ * user-page est la page principale de la gestion des utilisateurs.
+ * L'utilisateur de niveau 3 est seul à y accéder par le menu 'utilisateurs' (nom potentiellement à changer)
+ */
 @Component({
   selector: 'app-user-page',
   templateUrl: './user-page.component.html',
