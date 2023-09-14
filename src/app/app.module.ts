@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UserComponent } from './users/user/user.component';
 import { UserListComponent } from './users/user-list/user-list.component';
 import { LoginComponent } from './users/login/login.component';
 import { FormsModule } from '@angular/forms';
@@ -14,19 +13,22 @@ import { sessionReducer } from './state/session/session.reducers';
 import { HeuresComponent } from './heures/heures.component';
 import { ServiceComponent } from './service/service.component';
 import { EntrepriseComponent } from './entreprise/entreprise.component';
+import { UserPageComponent } from './users/user-page/user-page.component';
+import { UserCardComponent } from './users/user-card/user-card.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    UserComponent,
     UserListComponent,
     LoginComponent,
     AccueilComponent,
     NavbarComponent,
     HeuresComponent,
     ServiceComponent,
-    EntrepriseComponent
+    EntrepriseComponent,
+    UserPageComponent,
+    UserCardComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,10 +1,10 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-4 mb-3" *ngFor="let user of users" [ngClass]="{ 'd-none': filter && !user.present}">
-            <div class="card">
-                <p class="card-title p-3 bg-success text-white rounded-top" [ngClass]="{ 'bg-danger': !user.present}">
+        <div class="col-4 mb-3" *ngFor="let user of users" ngClass="{ 'd-none': filter && !user.present}">
+            <div class="card shadow">
+                <p class="card-title p-3 bg-success text-white rounded-top" ngClass="{ 'bg-danger': !user.present}">
                     {{ user.prenom}} {{ user.nom}}
-                    <span *ngIf="user.present">
+                    <span *ngIf="user.present" (click)="handleOnChangePresent(user.matricule, (user.present == true ? 0 : 1))">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-check2-circle" viewBox="0 0 16 16">
                             <path
@@ -13,7 +13,7 @@
                                 d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
                         </svg>
                     </span>
-                    <span *ngIf="!user.present">
+                    <span *ngIf="!user.present" (click)="handleOnChangePresent(user.matricule, (user.present == true ? 0 : 1))">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-person-fill-x" viewBox="0 0 16 16">
                             <path

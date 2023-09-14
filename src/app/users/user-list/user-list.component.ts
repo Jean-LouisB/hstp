@@ -15,6 +15,7 @@ export class UserListComponent implements OnInit{
   titreBtnFiltre = "Voir les absents";
   filterByName = "*";
   filteredList=[];
+  nbSalaries = 0;
 
 
   constructor(
@@ -35,7 +36,6 @@ export class UserListComponent implements OnInit{
       .catch(error => {
         console.log("Une erreur s'est produite : "+error);
       })
-      
   }
   handelOnFilter(){
    
@@ -77,6 +77,17 @@ export class UserListComponent implements OnInit{
     const inputElement = event.target as HTMLInputElement;
     this.filterByName = inputElement.value
     this.filtreLaListe();
+  }
+
+  countEmployees(){
+    let count = 0;
+    this.userList.map((user)=>{
+      if(user.present == 1){
+        count++
+      }
+    })
+    this.nbSalaries = count;
+    return count
   }
 
 }

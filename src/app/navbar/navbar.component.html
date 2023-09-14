@@ -8,7 +8,7 @@
             <li ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Accueil</a></li>
             <li ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/heures">Mes heures</a></li>
             <li *ngIf="(user.type >= 2)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/service">Mon service</a></li>
-            <li *ngIf="(user.type == 3)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/entreprise">Toutes les heures</a></li>
+<!--             <li *ngIf="(user.type == 3)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/entreprise">Toutes les heures</a></li> -->
             <li *ngIf="(user.type == 3)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/users">Utilisateurs</a></li>
             <li ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/"
                     (click)="handleOnLoout()">Déconnexion</a>

@@ -1,14 +1,25 @@
-<div class="container-fluid d-flex justify-content-center">
-    <div ngClass="container d-flex w-100 justify-content-around">
-        <p ngClass="h2">Liste des salarié(e)s</p>
-        <button ngClass="btn btn-primary mb-3" (click)="handelOnFilter()">{{ titreBtnFiltre }}</button>
-    </div>
-    <div>
-        <input type="text" placeholder="Rechercher ..." (input)="handleOnSearch($event)">
-    </div>
+<div ngClass="container-fluid">
+     <div ngClass="row">
+        <div ngClass="col-2 container-fluid d-flex flex-column">
+            <div ngClass="card p-3 shadow mb-3">
+                <h3 ngClass="card-title">Filtres</h3>
+                <hr>
+                <button ngClass="btn btn-primary mb-3 w-100" (click)="handelOnFilter()">{{ titreBtnFiltre }}</button>
+                <div ngClass="form-floating mb-3">
+                    <input ngClass="form-control" type="text" name="nameSearching" id="nameSearching"
+                        placeholder="Rechercher ..." (input)="handleOnSearch($event)">
+                    <label for="nameSearching">Rechercher ...</label>
+                </div>
+            </div>
+            <div ngClass="card p-3 shadow">
+                <h3 ngClass="card-title">Stats</h3>
+                <hr>
+                <p ngClass="card-text">{{countEmployees()}} salarié(e)s présents</p>
+            </div>
+        </div>
 
-</div>
-
-<div>
-    <app-user [users]="filteredList" [filter]="filtreAbsent" (presenceUpdated)="fetchUsers()"></app-user>
+        <div ngClass="col-10">
+            <app-user-card [users]="filteredList" [filter]="filtreAbsent" (presenceUpdated)="fetchUsers()"></app-user-card>
+        </div>
+    </div>
 </div>

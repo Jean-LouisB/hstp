@@ -33,7 +33,7 @@ export class AppComponent implements OnInit{
   checkSession() {
     if (this.cookieService.get('session')) {
       this.store.dispatch(toggleConnected());
-      this.router.navigate(['/accueil']);
+      //this.router.navigate(['/accueil']);
     }else{
       this.router.navigate(['/login']);
     }
