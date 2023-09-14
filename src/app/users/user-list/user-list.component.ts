@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ServerService } from '../../services/serveur/server.service';
-import { ConnexionService } from 'src/app/services/connexion/connexion.service';
-import { Router } from '@angular/router';
 
 
 @Component({
@@ -20,12 +18,9 @@ export class UserListComponent implements OnInit{
 
   constructor(
     private apiBDD : ServerService,
-    private authService: ConnexionService,
-    private router: Router
      ){}
 
   ngOnInit(){
-    
     this.apiBDD.getAllUsers()
       .then(response => {
         const list = response.data;
@@ -36,12 +31,11 @@ export class UserListComponent implements OnInit{
       .catch(error => {
         console.log("Une erreur s'est produite : "+error);
       })
+      this.countEmployees()
   }
   handelOnFilter(){
-   
     this.filtreAbsent = !this.filtreAbsent
     this.titreBtnFiltre = this.filtreAbsent === true ? "Voir les absents" : "Masquer les absents"
-
   }
 
 
@@ -51,6 +45,7 @@ export class UserListComponent implements OnInit{
         const list = data.data;
         list.sort((a, b)=>a.nom.localeCompare(b.nom))
         this.userList = list;
+        this.filtreLaListe()
       },
       (error) => {
         console.error('Erreur lors de la récupération des utilisateurs :', error);

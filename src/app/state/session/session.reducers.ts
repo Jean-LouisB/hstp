@@ -1,7 +1,7 @@
 import { createReducer, on } from "@ngrx/store";
-import { toggleConnected } from "./session.actions";
+import { toggleConnected, setUser} from "./session.actions";
 import { User } from "src/app/models/userModel";
-import { setUser } from "./session.actions";
+
 
 export interface SessionState {
     isConnected: boolean;

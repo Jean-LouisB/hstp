@@ -1,0 +1,8 @@
+#sideBar{
+    position:fixed;
+    left:0;
+    width: 25%;
+}
+.cardPerso{
+    max-width: 100%;
+}
