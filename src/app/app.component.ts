@@ -30,11 +30,15 @@ export class AppComponent implements OnInit{
     this.checkSession()
     
   }
-
+  
+/**
+ * A chaque refraichissement, app.componant vérifie la présence du cookie de session.
+ * Si oui, il repasse isConnected sur true dans le store pour l'affichage de la nav-barre
+ * Si non, il redirige vers la page de connexion.
+ */
   checkSession() {
     if (this.cookieService.get('session')) {
       this.store.dispatch(toggleConnected());
-      //this.router.navigate(['/accueil']);
     }else{
       this.router.navigate(['/login']);
     }
