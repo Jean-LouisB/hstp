@@ -21,7 +21,7 @@ export class AppComponent implements OnInit{
     private cookieService: CookieService,
     private store: Store<{ session : any}> //session = le nom donné dans app.module
   ) {
-    this.isConnected$ = store.select(state=>state.session.isConnected);
+    this.isConnected$ = store.select(state=>state.session.isConnected);//récupère la valeur dans le store pour l'affichage de la nav-barre
     
   }
   
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit{
     this.checkSession()
     
   }
-  
+
 /**
  * A chaque refraichissement, app.componant vérifie la présence du cookie de session.
  * Si oui, il repasse isConnected sur true dans le store pour l'affichage de la nav-barre
