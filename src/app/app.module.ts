@@ -15,6 +15,7 @@ import { ServiceComponent } from './service/service.component';
 import { EntrepriseComponent } from './entreprise/entreprise.component';
 import { UserPageComponent } from './users/user-page/user-page.component';
 import { UserCardComponent } from './users/user-card/user-card.component';
+import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { UserCardComponent } from './users/user-card/user-card.component';
     EntrepriseComponent,
     UserPageComponent,
     UserCardComponent,
+    NotFoundPageComponent,
   ],
   imports: [
     BrowserModule,
