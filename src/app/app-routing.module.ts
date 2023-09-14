@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AccueilComponent } from './accueil/accueil.component';
 import { LoginComponent } from './users/login/login.component';
-import { UserListComponent } from './users/user-list/user-list.component';
 import { HeuresComponent } from './heures/heures.component';
 import { ServiceComponent } from './service/service.component';
 import { EntrepriseComponent } from './entreprise/entreprise.component';
 import { UserPageComponent } from './users/user-page/user-page.component';
+import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 
 const routes: Routes = [
   {path: 'accueil', component: AccueilComponent},
@@ -15,6 +15,7 @@ const routes: Routes = [
   {path: 'service', component: ServiceComponent},
   {path: 'entreprise', component: EntrepriseComponent},
   {path: 'users', component: UserPageComponent},
+  {path: '**', component: NotFoundPageComponent},
 ];
 
 @NgModule({
