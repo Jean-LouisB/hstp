@@ -24,7 +24,12 @@ export class UserCardComponent implements OnInit , OnChanges{
   ngOnInit(){
   
   }
-  
+  /**
+   * Au clic sur le bouton, 
+   * @param matricule de la carte selectionnée
+   * @param presence état de la présence en cours 0 ou 1 
+   * Demande au serveur de modifier la présence du salarié 1 à 0 ou 0 à 1 selon l'état courant.
+   */
   handleOnChangePresent(matricule, presence) {
     this.apiBDD.putPresenceToggle(matricule, presence).then(
       () => {
