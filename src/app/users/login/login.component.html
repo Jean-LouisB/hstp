@@ -7,21 +7,14 @@
                     placeholder="Votre identifiant" [(ngModel)]="userMatricule">
                 <label for="identifiant">Votre identifiant</label>
             </div>
-            <div class="d-flex justify-content-center flex-column align-items-center pb-3 fs-4"><i *ngIf="(waiting)" class="fa-solid fa-gear fa-spin"></i></div>
+            <div class="d-flex justify-content-center flex-column align-items-center pb-3 fs-4"><i *ngIf="(waiting)"
+                    class="fa-solid fa-gear fa-spin"></i></div>
             <div class="form-floating mb-3">
                 <input class="form-control" type="password" name="password" id="password"
                     placeholder="votre mot de passe" [(ngModel)]="userPassWord">
                 <label for="password">Votre mot de passe</label>
             </div>
-
             <button type="submit" class="btn btn-primary w-100" (click)="connectIsValid()">Connexion</button>
         </form>
-        <!-- 
-    <div *ngIf="isConnect == true" class="bg-dark bg-opacity-50 position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center flex-column align-items-center z-3">
-        <p class="h2 text-white">Connesion réussie !</p>
-    </div> -->
     </div>
 </div>
-
-
-<!-- *ngIf="isConnect == true" -->
