@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <div class="card-text">
                         <p>Matricule : {{ user.matricule }}</p>
-                        <p *ngIf="(idToModify != user.id)">Responsable : <br>{{ user.responsable }} {{
+                        <p *ngIf="(idToModify != user.id)">Responsable : <br>{{
                             findUserByMatricule(user.responsable) }}</p>
                         <div *ngIf="(idToModify === user.id)" class="bg-warning rounded p-1 mb-2">
                             <label>Matricule du responsable :</label>
