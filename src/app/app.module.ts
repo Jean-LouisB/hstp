@@ -17,6 +17,7 @@ import { UserPageComponent } from './users/user-page/user-page.component';
 import { UserCardComponent } from './users/user-card/user-card.component';
 import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 import { SideBarComponent } from './users/user-page/side-bar/side-bar.component';
+import { UserAddComponent } from './users/user-add/user-add.component';
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { SideBarComponent } from './users/user-page/side-bar/side-bar.component'
     UserCardComponent,
     NotFoundPageComponent,
     SideBarComponent,
+    UserAddComponent,
   ],
   imports: [
     BrowserModule,
