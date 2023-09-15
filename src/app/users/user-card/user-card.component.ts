@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { User } from 'src/app/models/userModel';
 import { ServerService } from 'src/app/services/serveur/server.service';
 
 
@@ -7,22 +8,30 @@ import { ServerService } from 'src/app/services/serveur/server.service';
   templateUrl: './user-card.component.html',
   styleUrls: ['./user-card.component.css']
 })
-export class UserCardComponent implements OnInit , OnChanges{
+export class UserCardComponent implements OnInit {
   @Input() users: any[] | undefined;
   @Input() filter: boolean | undefined;
   @Output() presenceUpdated = new EventEmitter();
+  @Output() userUpdated = new EventEmitter();
+
+
+  /**
+   * okToModify = commutateur qui fait apparaitre le bouton "modifier" si une modification est à faire
+   */
+  idToModify: string = null;
+  nameToModify: string = null;
+  firstNameToModify: string = null;
+  droitsToModify: number = null;
+  respToModify: string = null
+
   constructor(
-    private apiBDD: ServerService
+    private apiBDD: ServerService,
   ){
     
   }
-    ngOnChanges(changes: SimpleChanges): void {
-  
-    }
-    
-  
+
   ngOnInit(){
-  
+ 
   }
   /**
    * Au clic sur le bouton, 
@@ -42,4 +51,50 @@ export class UserCardComponent implements OnInit , OnChanges{
     );
   }
 
+  /**
+   * commute l'attribut okToModify qui gère l'affichage des champs
+   */
+  commuteModify(user: User){
+    this.idToModify = user.id;
+    this.nameToModify = user.nom;
+    this.firstNameToModify = user.prenom;
+    this.respToModify = user.responsable;
+    this.droitsToModify = user.type;
+  }
+
+  cancelModification(){
+    this.idToModify = null;
+
+  }
+
+  
+  /**
+   * 
+   * Modifier la fiche:
+   */
+  handleOnModify(user: User){
+    const updatedUser = {
+      ...user,
+      nom:this.nameToModify,
+      prenom:this.firstNameToModify,
+      responsable:this.respToModify,
+      type:this.droitsToModify,
+    }
+    const userUpdatedToSend = new User().deserialize(updatedUser)
+    this.apiBDD.putModifyUser(userUpdatedToSend);
+    this.idToModify = null;
+    this.userUpdated.emit();
+  }
+
+  /**
+   * Cette fonction sert dans les carte à récupèrer le nom du responsable de service de chaque salarié.
+   * @param matricule du salarié recherché
+   * @returns le prénom et nom du salarié
+   */
+  findUserByMatricule(mat: string){
+    const userToFind = this.users.find(user=>
+      user.matricule === mat
+    )
+    return userToFind.prenom+" "+userToFind.nom
+  }
 }

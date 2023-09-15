@@ -4,7 +4,7 @@
         <div class="form-floating mb-3">
             <input class="form-control" type="text" name="nameSearching" id="nameSearching"
                 placeholder="Rechercher ..." (input)="handleOnSearch($event)">
-            <label for="nameSearching" class="p-3">Rechercher ...</label>
+            <label for="nameSearching" class="p-3">Rechercher (sur le prénom et le nom) ...</label>
         </div>
         <div class="row">
             <div class="mb-2 col-6">Il y a {{ countEmployees() }} salarié(e)s présents.</div>
@@ -12,7 +12,7 @@
         </div>
         
         <div class="col-12">
-            <app-user-card [users]="filteredList" [filter]="filtreAbsent" (presenceUpdated)="fetchUsers()"></app-user-card>
+            <app-user-card [users]="filteredList" [filter]="filtreAbsent" (presenceUpdated)="fetchUsers()" (userUpdated)="fetchUsers()"></app-user-card>
         </div>
     </div>
 </div>

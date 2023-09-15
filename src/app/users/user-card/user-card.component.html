@@ -1,34 +1,33 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-4 mb-3" *ngFor="let user of users" [ngClass]="{ 'd-none': filter && !user.present}">
+        <div class="col-12-sm col-md-6 col-lg-4 mb-3" *ngFor="let user of users" [ngClass]="{ 'd-none': filter && !user.present}">
             <div class="card shadow">
-                <p class="card-title p-3 bg-success text-white rounded-top" [ngClass]="{ 'bg-danger': !user.present}">
-                    {{ user.prenom}} {{ user.nom}}
-                    <span *ngIf="user.present" (click)="handleOnChangePresent(user.matricule, (user.present == true ? 0 : 1))">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-check2-circle" viewBox="0 0 16 16">
-                            <path
-                                d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
-                            <path
-                                d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
-                        </svg>
-                    </span>
-                    <span *ngIf="!user.present" (click)="handleOnChangePresent(user.matricule, (user.present == true ? 0 : 1))">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-person-fill-x" viewBox="0 0 16 16">
-                            <path
-                                d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Z" />
-                            <path
-                                d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708Z" />
-                        </svg>
-                    </span>
-                </p>
+                <div class="card-title p-3 bg-success text-white rounded-top" [ngClass]="{ 'bg-danger': !user.present}"
+                    (click)="commuteModify(user)">
+                    <p *ngIf="(idToModify != user.id)" class="h5">{{ user.prenom}} {{ user.nom}} </p>
+                    <div *ngIf="(idToModify === user.id)" class="container-fluid">
+                        <input class="form-control mb-2 bg-transparent text-white" [(ngModel)]="firstNameToModify">
+                        <input class="form-control bg-transparent text-white" [(ngModel)]="nameToModify">
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="card-text">
                         <p>Matricule : {{ user.matricule }}</p>
-                        <p>Niveau de droits : {{ user.type }}</p>
+                        <p *ngIf="(idToModify != user.id)">Responsable : <br>{{ user.responsable }} {{
+                            findUserByMatricule(user.responsable) }}</p>
+                        <div *ngIf="(idToModify === user.id)" class="bg-warning rounded p-1 mb-2">
+                            <label>Matricule du responsable :</label>
+                            <input class="form-control bg-transparent mb-2" [(ngModel)]="respToModify">
+                        </div>
+                        <p *ngIf="(idToModify != user.id)">Niveau de droits : {{ user.type }}</p>
+                        <div *ngIf="(idToModify === user.id)" class="bg-warning rounded p-1">
+                            <label>Niveau de droits :</label>
+                            <input class="form-control bg-transparent mb-2" [(ngModel)]="droitsToModify">
+                            <p class="petitText">1 = salarié(e) ; 2 = responsable ; 3 RH et direction</p>
+                        </div>
                         <p>Présent : {{user.present ? 'Oui' : 'Non'}}
-                            <button class="btn" (click)="handleOnChangePresent(user.matricule, (user.present == true ? 0 : 1))">
+                            <button class="btn"
+                                (click)="handleOnChangePresent(user.matricule, (user.present == true ? 0 : 1))">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                                     class="bi bi-arrow-repeat" viewBox="0 0 16 16" style="vertical-align: top;">
                                     <path
@@ -38,9 +37,16 @@
                                 </svg>
                             </button>
                         </p>
+                        <div class="d-flex justify-content-around">
+                            <button *ngIf="(idToModify === user.id)" class="btn btn-success"
+                                (click)="handleOnModify(user)">Modifier</button>
+                            <button *ngIf="(idToModify === user.id)" class="btn btn-success"
+                                (click)="cancelModification()">Annuler</button>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

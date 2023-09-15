@@ -97,4 +97,13 @@ export class ServerService {
     //change le status de la présence (true si false et vis et versa)
     return this.axiosInstance.put(`/users/update/presence/${matricule}/${presence}`)
   } 
+
+  /**
+   * 
+   * Modification d'une fiche
+   * 
+   */
+  putModifyUser(user: User){
+    this.axiosInstance.put('/users/update',user)
+  }
 }
