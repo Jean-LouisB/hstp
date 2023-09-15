@@ -1,17 +1,17 @@
-<div ngClass="container-fluid">
-     <div ngClass="row">
+<div class="container-fluid">
+     <div class="row">
         
-        <div ngClass="form-floating mb-3">
-            <input ngClass="form-control" type="text" name="nameSearching" id="nameSearching"
+        <div class="form-floating mb-3">
+            <input class="form-control" type="text" name="nameSearching" id="nameSearching"
                 placeholder="Rechercher ..." (input)="handleOnSearch($event)">
-            <label for="nameSearching" ngClass="p-3">Rechercher ...</label>
+            <label for="nameSearching" class="p-3">Rechercher ...</label>
         </div>
-        <div ngClass="row">
-            <div ngClass="mb-2 col-6">Il y a {{ countEmployees() }} salarié(e)s présents.</div>
-            <button ngClass="btn btn-primary mb-3 col-6" (click)="handelOnFilter()">{{ titreBtnFiltre }}</button>
+        <div class="row">
+            <div class="mb-2 col-6">Il y a {{ countEmployees() }} salarié(e)s présents.</div>
+            <button class="btn btn-primary mb-3 col-6" (click)="handelOnFilter()">{{ titreBtnFiltre }}</button>
         </div>
         
-        <div ngClass="col-12">
+        <div class="col-12">
             <app-user-card [users]="filteredList" [filter]="filtreAbsent" (presenceUpdated)="fetchUsers()"></app-user-card>
         </div>
     </div>
