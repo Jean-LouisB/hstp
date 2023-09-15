@@ -4,9 +4,10 @@
             <h5 ngClass="card-title">Sous-Menu</h5>
             <hr>
             <ul class="list-group">
-                <li class="list-group-item">Ajouter un salarié</li>
-                <li class="list-group-item">Réinitialiser la J.S.</li>
-                <li class="list-group-item">Vois les compteurs</li>
+                <li class="list-group-item" routerLinkActive="active"><a class="nav-link" routerLink="/users/liste">Liste des salariés</a></li>
+                <li class="list-group-item" routerLinkActive="active"><a class="nav-link" routerLink="/users/ajout">Ajouter un salarié</a></li>
+                <li class="list-group-item bg-secondary-subtle" routerLinkActive="active"><a class="nav-link" routerLink="/users/#">Réinitialiser la J.S.</a></li>
+                <li class="list-group-item bg-secondary-subtle" routerLinkActive="active"><a class="nav-link" routerLink="/users/#">Voir les compteurs</a></li>
             </ul>
         </div>
         <div ngClass="cardPerso card p-3 shadow cardPerso">

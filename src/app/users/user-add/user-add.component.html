@@ -1,0 +1,42 @@
+<div class="container-fluid">
+    <div class="card p-2 shadow">
+        <div class="card-title p-3 bg-success text-white rounded-top">
+            <p class="h2">Ajouter un salarié</p>
+        </div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control" type="string" name="matricule" id="matricule" placeholder="Matricule" [(ngModel)]="matricule">
+                <label for="matricule">Matricule</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" type="string" name="prenom" id="prenom" placeholder="Prenom" [(ngModel)]="prenom">
+                <label for="prenom">Prenom</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" type="string" name="nom" id="nom" placeholder="Nom" [(ngModel)]="nom">
+                <label for="nom">Nom</label>
+            </div>
+            <div class="row">
+                <div class="col-6 form-floating mb-3">
+                    <input class="form-control p-2" type="number" name="niveauDeDroit" id="niveauDeDroit"
+                        placeholder="Niveau de droit (1, 2 ou 3)" max="3" min="1" step="1" [(ngModel)]="niveauDeDroit">
+                    <label class="p-3" for="niveauDeDroit">Niveau de droit (1,2 ou 3)</label>
+                </div>
+                <div class="col-6 form-floating mb-3">
+                    <input class="form-control" type="string" name="matResp" id="matResp"
+                        placeholder="Matricule du responsable" [(ngModel)]="matResponsable">
+                    <label class="p-3" for="matResp">Matricule du responsable</label>
+                </div>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control" type="password" name="password" id="password" placeholder="Password" [(ngModel)]="passwordRaw">
+                <label for="password">Password</label>
+            </div>
+            <div>
+                <button class="btn btn-primary" (click)="onSubmit()">Valider</button>
+            </div>
+
+    </div>
+
+</div>

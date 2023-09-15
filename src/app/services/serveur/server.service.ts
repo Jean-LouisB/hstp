@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/models/userModel';
 import { CookieService } from 'ngx-cookie-service';
@@ -89,7 +88,7 @@ export class ServerService {
     return this.axiosInstance.get(`/users/allusers`);
   }
   getUserById(id: string) {
-    //Fournit les données de l'utilisateur selon sont id
+    //Fournit les données de l'utilisateur selon son id
     return this.axiosInstance.get(`/find_user_by_id/${id}`)
   }
 
@@ -100,10 +99,19 @@ export class ServerService {
 
   /**
    * 
-   * Modification d'une fiche
+   * Modification d'une fiche d'utilisateur
    * 
    */
   putModifyUser(user: User){
     this.axiosInstance.put('/users/update',user)
+  }
+  /**
+   * 
+   * Ajout d'une fiche
+   * 
+   */
+  putAddUser(user: User){
+    console.log("putAddUser se lance");
+    this.axiosInstance.post('/users/addUser',user)
   }
 }
