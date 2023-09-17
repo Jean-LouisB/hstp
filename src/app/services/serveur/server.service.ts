@@ -103,7 +103,7 @@ export class ServerService {
    * 
    */
   putModifyUser(user: User){
-    this.axiosInstance.put('/users/update',user)
+    this.axiosInstance.put('/users/update',user);
   }
   /**
    * 
@@ -111,7 +111,13 @@ export class ServerService {
    * 
    */
   putAddUser(user: User){
-    console.log("putAddUser se lance");
-    this.axiosInstance.post('/users/addUser',user)
+    this.axiosInstance.post('/users/addUser',user);
   }
+
+  getSoldes(){
+    return this.axiosInstance.get('/compteurs/soldes');
+  }
+
+
 }
+

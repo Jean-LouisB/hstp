@@ -59,8 +59,25 @@
                                 (click)="cancelModification()">Annuler</button>
                         </div>
                     </div>
+                    <hr>
                     <div>
-                        compteurs ...
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Heures supp. :</th>
+                                    <td>{{(user.soldes['heures_supplementaires']).toFixed(2)}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Récupération :</th>
+                                    <td>{{(user.soldes['recuperation']).toFixed(2)}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Solidarité</th>
+                                    <td>{{(user.soldes['solidarite']).toFixed(2)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
                     </div>
                 </div>
             </div>

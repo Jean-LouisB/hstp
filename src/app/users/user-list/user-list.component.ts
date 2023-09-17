@@ -53,6 +53,20 @@ export class UserListComponent implements OnInit {
       .catch(error => {
         console.log("Une erreur s'est produite : " + error);
       })
+
+    this.apiBDD.getSoldes()
+      .then((response) => {
+        const tableauDesSoldes = response.data
+        this.filteredList.forEach((salarie) => {
+          salarie.soldes = tableauDesSoldes[salarie.matricule]
+        })
+        console.log(this.filteredList);
+      })
+      .catch((erreur) => {
+        console.log("Erreur dans la récupèreation des soldes");
+
+      })
+    
     this.countEmployees()
   }
   /**
