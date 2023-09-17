@@ -15,6 +15,10 @@ import { Subscription } from 'rxjs';
 export class AccueilComponent implements OnInit {
   isConnected = false;
   user: User | null = null;
+  heures_supplementaires: number = 0;
+  recuperation:number = 0;
+  solidarite: number = 0;
+
   private userSubscription: Subscription | undefined;
   constructor(
     private apiBDD: ServerService,
@@ -30,7 +34,15 @@ export class AccueilComponent implements OnInit {
         this.store.dispatch(setUser({ user: this.user }));
       })
     }
-
+    this.apiBDD.getSoldesDuProfil()
+    .then((data)=>{
+      console.log(data.data);
+      this.heures_supplementaires = data.data.heures_supplementaires;
+      this.recuperation = data.data.recuperation;
+      this.solidarite = data.data.solidarite;
+    });
+    
+    
   }
 
 

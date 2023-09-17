@@ -118,6 +118,10 @@ export class ServerService {
     return this.axiosInstance.get('/compteurs/soldes');
   }
 
+  getSoldesDuProfil(){
+    return this.axiosInstance.get('/compteurs/soldes/user');
+  }
+
 
 }
 

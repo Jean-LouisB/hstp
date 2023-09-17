@@ -1,6 +1,27 @@
-<h1>Accueil</h1>
-<div *ngIf=(user)>
-    <p>Hello {{user.prenom}} {{user.nom}}</p>
-    <p>Niveau de droit: {{user.type}}</p>
-</div>
+<div class="container-fluid row mt-5">
+    <div class="col-8 offset-2">
+        <h1>Accueil</h1>
+        <div *ngIf=(user)>
+            <p>Bonjour {{user.prenom}},</p>
+            <p class="fs-5">Voici vos soldes validés</p>
+            <table class="table table-striped w-50">
+                <tbody>
+                    <tr>
+                        <th>Heures supplémentaires :</th>
+                        <td>{{(heures_supplementaires).toFixed(2)}}</td>
+                    </tr>
+                    <tr>
+                        <th>Récupération :</th>
+                        <td>{{(recuperation).toFixed(2)}}</td>
+                    </tr>
+                    <tr>
+                        <th>Solidarité</th>
+                        <td>{{(solidarite).toFixed(2)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
+
+</div>
