@@ -8,18 +8,21 @@
                 <tbody>
                     <tr>
                         <th>Heures supplémentaires :</th>
-                        <td>{{(heures_supplementaires).toFixed(2)}}</td>
+                        <td>{{(heures_supplementaires)}}</td>
                     </tr>
                     <tr>
                         <th>Récupération :</th>
-                        <td>{{(recuperation).toFixed(2)}}</td>
+                        <td>{{(recuperation)}}</td>
                     </tr>
                     <tr>
                         <th>Solidarité</th>
-                        <td>{{(solidarite).toFixed(2)}}</td>
+                        <td>{{(solidarite)}}</td>
                     </tr>
                 </tbody>
             </table>
+            <p>date de début : {{ date_debut }}</p>
+            <p>date de début : {{ date_fin }}</p>
+            <input type="date" [min]="date_debut.toISOString().split('T')[0]" [max]="date_fin.toISOString().split('T')[0]">
         </div>
     </div>
 

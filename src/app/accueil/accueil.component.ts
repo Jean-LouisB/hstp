@@ -5,6 +5,8 @@ import { setUser } from '../state/session/session.actions';
 import { SessionState } from '../state/session/session.reducers';
 import { User } from '../models/userModel';
 import { Subscription } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
+import { heureDecToStr } from '@fabricekopf/date-france';
 
 
 @Component({
@@ -15,14 +17,17 @@ import { Subscription } from 'rxjs';
 export class AccueilComponent implements OnInit {
   isConnected = false;
   user: User | null = null;
-  heures_supplementaires: number = 0;
-  recuperation:number = 0;
-  solidarite: number = 0;
+  heures_supplementaires: string = '';
+  recuperation: string = '';
+  solidarite: string = '';
+  date_debut: Date = null;
+  date_fin: Date = null;
 
   private userSubscription: Subscription | undefined;
   constructor(
     private apiBDD: ServerService,
-    private store: Store<{ session: SessionState }>
+    private store: Store<{ session: SessionState }>,
+    private cookieService: CookieService,
   ) {
   }
   ngOnInit(): void {
@@ -30,19 +35,22 @@ export class AccueilComponent implements OnInit {
     if (this.user == null) {
       this.apiBDD.getUserProfil().subscribe((data) => {
         this.user = new User().deserialize(data)
-        //console.log(this.user);
         this.store.dispatch(setUser({ user: this.user }));
       })
     }
     this.apiBDD.getSoldesDuProfil()
-    .then((data)=>{
-      console.log(data.data);
-      this.heures_supplementaires = data.data.heures_supplementaires;
-      this.recuperation = data.data.recuperation;
-      this.solidarite = data.data.solidarite;
-    });
-    
-    
+      .then((data) => {
+
+        this.heures_supplementaires = heureDecToStr(data.data.heures_supplementaires);
+        this.recuperation = heureDecToStr(data.data.recuperation);
+        this.solidarite = heureDecToStr(data.data.solidarite);
+      });
+    const mesBornes = this.cookieService.get('bornes');
+    const mesBornesJson = JSON.parse(mesBornes);
+    //const date_minimum = formatDate(mesBornesJson['date_debut'])
+    this.date_debut = new Date(mesBornesJson['date_debut']);
+    this.date_fin = new Date(mesBornesJson['date_fin']);
+
   }
 
 

@@ -9,11 +9,20 @@ import { UserPageComponent } from './users/user-page/user-page.component';
 import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 import { UserListComponent } from './users/user-list/user-list.component';
 import { UserAddComponent } from './users/user-add/user-add.component';
+import { HeuresDeclareComponent } from './heures/heures-declare/heures-declare.component';
+import { HeuresValideComponent } from './heures/heures-valide/heures-valide.component';
+import { HeuresConsulteComponent } from './heures/heures-consulte/heures-consulte.component';
+import { HeuresArchivesComponent } from './heures/heures-archives/heures-archives.component';
 
 const routes: Routes = [
   {path: 'accueil', component: AccueilComponent},
   {path: 'login', component: LoginComponent},
-  {path: 'heures', component: HeuresComponent},
+  {path: 'heures', component: HeuresComponent, children:[
+    {path: 'declarer', component: HeuresDeclareComponent},
+    {path: 'valider', component: HeuresValideComponent},
+    {path: 'consulter', component: HeuresConsulteComponent},
+    {path: 'archives', component: HeuresArchivesComponent},
+  ]},
   {path: 'service', component: ServiceComponent},
   {path: 'entreprise', component: EntrepriseComponent},
   {path: 'users', component: UserPageComponent, children:[

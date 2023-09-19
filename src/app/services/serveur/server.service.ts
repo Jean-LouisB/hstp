@@ -4,6 +4,8 @@ import { User } from 'src/app/models/userModel';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 import { configureAxios } from './config.axios';
+import { formatDate } from '@fabricekopf/date-france';
+
 
 
 @Injectable({
@@ -31,7 +33,19 @@ export class ServerService {
         .then((response) => {
           const msg = response.data.message
           const token = response.data.token;
+
+          //récupèration de la date des bornes
+          const bornes = response.data.bornes;
+          const date_debut = formatDate(bornes['0']['date_debut']);
+          const date_fin = formatDate(bornes['0']['date_fin']);
+          const bornesPourCookies = {
+           'date_debut':date_debut.normalDate,
+           'date_fin':date_fin.normalDate
+          }
+          const bornesJSON = JSON.stringify(bornesPourCookies);
           this.cookieService.set('session', token, null, '/', null, true, 'Strict');
+          this.cookieService.set('bornes', bornesJSON, null, '/', null, true, 'Strict');
+
           observable.next(msg);
           observable.complete();
         }).catch(err => {
