@@ -40,7 +40,6 @@ export class AccueilComponent implements OnInit {
     }
     this.apiBDD.getSoldesDuProfil()
       .then((data) => {
-
         this.heures_supplementaires = heureDecToStr(data.data.heures_supplementaires);
         this.recuperation = heureDecToStr(data.data.recuperation);
         this.solidarite = heureDecToStr(data.data.solidarite);
