@@ -1,1 +1,49 @@
-<p>heures-declare works!</p>
+<div class="container-fluid  w-75">
+    <p class="h4 mb-5">Déclarer mes heures</p>
+
+    <div class="container-fluid row">
+        <div class="p-1 col-6 mb-3">
+            <div class="card p-2">
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="dateEvenement" name="dateEvenement" type="date">
+                    <!-- brider sur les dates bornées -->
+                    <label for="dateEvenement">Date de l'évènement</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Temps effectué en plus
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Temps effectué en moins
+                    </label>
+                </div>
+            </div>
+
+        </div>
+        <div class="p-1 col-6 mb-3">
+            <div class="card p-2">
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="heureDebut" name="heureDebut" type="text" placeholder="00h00">
+                    <label for="heureDebut">Entre (00h00):</label>
+                </div>
+                <div class="form-floating">
+                    <input class="form-control" id="heureFin" name="heureFin" type="text" placeholder="00h00">
+                    <label for="heureFin">et (00h00):</label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="form-floating mb-3">
+        <input class="form-control" id="commentaire" name="commentaire" type="text" placeholder="Commentaire">
+        <label for="commentaire">Commentaire / justification</label>
+    </div>
+    <div>
+        <button class="btn btn-success">Valider</button>
+    </div>
+</div>
