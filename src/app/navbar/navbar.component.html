@@ -5,11 +5,11 @@
     </button>
     <nav class="collapse navbar-collapse" id="navContent">
         <ul class="navbar-nav ms-auto">
-            <li class="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/accueil">Accueil</a></li>
-            <li class="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/heures/declarer">Mes heures</a></li>
-            <li *ngIf="(user.type >= 2)" class="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/service">Mon service</a></li>
+            <li class="nav-item" routerLinkActive="activeBtn"><a class="nav-link" routerLink="/accueil">Accueil</a></li>
+            <li class="nav-item" routerLinkActive="activeBtn"><a class="nav-link" routerLink="/heures/declarer">Mes heures</a></li>
+            <li *ngIf="(user.type >= 2)" class="nav-item" routerLinkActive="activeBtn"><a class="nav-link" routerLink="/service">Mon service</a></li>
 <!--             <li *ngIf="(user.type == 3)" ngClass="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/entreprise">Toutes les heures</a></li> -->
-            <li *ngIf="(user.type == 3)" class="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/users/liste">Utilisateurs</a></li>
+            <li *ngIf="(user.type == 3)" class="nav-item" routerLinkActive="activeBtn"><a class="nav-link" routerLink="/users/liste">Utilisateurs</a></li>
             <li class="nav-item" routerLinkActive="active"><a class="nav-link" routerLink="/"
                     (click)="handleOnLoout()">Déconnexion</a>
             </li>
