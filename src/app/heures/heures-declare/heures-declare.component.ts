@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-
+import { Heure } from 'src/app/models/heureModel';
+import { formatDate } from '@fabricekopf/date-france';
+import { ServerService } from 'src/app/services/serveur/server.service';
 
 @Component({
   selector: 'app-heures-declare',
@@ -8,6 +10,7 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./heures-declare.component.css']
 })
 export class HeuresDeclareComponent implements OnInit {
+  matricule: string = "S058"; // en attendant de le récupérer sur le cookie !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   date_debut: Date = null;
   date_fin: Date = null;
   dateEvenement: Date = null;
@@ -15,15 +18,21 @@ export class HeuresDeclareComponent implements OnInit {
   heureDebut: string = null;
   heureFin: string = null;
   commentaire: string = null;
+  msgErreurTemps: string = null;
+  validationPossible: boolean = false;
 
   constructor(
     private cookieService: CookieService,
+    private apiDBB: ServerService,
   ) { }
+
 
   ngOnInit(): void {
     this.getDatesDeSaisie();
   }
-
+/**
+ * récupère les bornes de saisie dans le cookie afin de brider le champs date.
+ */
   getDatesDeSaisie() {
     const bornesDeSaisie = this.cookieService.get('bornes');
     const bornesDeSaisieJson = JSON.parse(bornesDeSaisie);
@@ -31,18 +40,69 @@ export class HeuresDeclareComponent implements OnInit {
     this.date_fin = new Date(bornesDeSaisieJson['date_fin']);
   }
 
+  /**
+   * Vérifie si le temps saisi n'est pas négatif (fin<début).
+   * si oui, bloque la validation et affiche un message d'alerte.
+   * @returns temps en décimale entre deux horaires.
+   */
   getTemps(){
     const heureDebutDec = this.getHeureStrToDec(this.heureDebut);
     const heureFinDec = this.getHeureStrToDec(this.heureFin);
-    console.log(heureFinDec-heureDebutDec);
-    
-    return heureFinDec-heureDebutDec;
+    const temps = heureFinDec-heureDebutDec;
+    if(temps < 0){
+      this.msgErreurTemps = "L'heure de fin doit être postérieure à l'heure de début, vérifiez votre saisie"
+      this.validationPossible = false;
+    }else{
+      this.msgErreurTemps = null
+      this.validationPossible = true;
+    }
+    return temps;
   }
+
+  /**
+   * Transforme une chaine '00h00' en décimale.
+   * ex : 10h30 => 10,5
+   * @param heure en chaine de caractère avec un h comme séparateur et sans espace
+   * @returns un décimal
+   */
   getHeureStrToDec(heure: string){
     const heureMinuscule = heure.toLowerCase();
     const heureSplited = heureMinuscule.split('h');
     const heureValueDec = parseInt(heureSplited[0]);
     const minutesValueDec = parseInt(heureSplited[1])/60;
     return heureValueDec +minutesValueDec;
+  }
+
+  /**
+   * Envoie la nouvelle heure à la bdd.
+   */
+  sendNewHour(){
+    const debutPourBornes = formatDate(this.date_debut).dateCourte;
+    const finPourBornes = formatDate(this.date_fin).dateCourte;
+    const bornes = debutPourBornes+" au "+finPourBornes;
+    const duree = this.getTemps();
+    const dateEv = formatDate(this.dateEvenement).dateCourte
+    const newHour = new Heure(this.matricule,bornes,duree, this.commentaire, dateEv)
+    this.apiDBB.putHeureHebdo(newHour);
+  }
+
+  /**
+   * Après la saisie du champ 'heure de fin' verifie si la différence entre les deux horaires n'est pas négative.
+   * Sinon affiche l'alerte.
+   * Puis contrôle la validation du formulaire (en cas de correction apportée)
+   */
+  controleSaisie(){
+    this.getTemps();
+    this.accepteLaSasie();
+  }
+
+  /**
+   * A chaque sortie de champs, vérifi si tous les champs sont remplis et qu'il n'y ai pas d'erreur. Si oui l'attribut validationPossible active le bouton 'valider' du formulaire.
+   * 
+   */
+  accepteLaSasie(){
+    if(this.dateEvenement != null && this.sens != null && this.heureDebut != null && this.heureFin != null && this.commentaire !=null &&this.msgErreurTemps == null){
+      this.validationPossible = true;
+    }
   }
 }

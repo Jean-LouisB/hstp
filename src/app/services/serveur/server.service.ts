@@ -5,6 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 import { configureAxios } from './config.axios';
 import { formatDate } from '@fabricekopf/date-france';
+import { Heure } from 'src/app/models/heureModel';
 
 
 
@@ -128,14 +129,28 @@ export class ServerService {
     this.axiosInstance.post('/users/addUser',user);
   }
 
+  /**
+   * 
+   * @returns Récupère les soldes de tous les salariés;
+   */
   getSoldes(){
     return this.axiosInstance.get('/compteurs/soldes');
   }
 
+  /**
+   * 
+   * @returns Récupère les soldes du salarié connecté.
+   */
   getSoldesDuProfil(){
     return this.axiosInstance.get('/compteurs/soldes/user');
   }
 
-
+  /**
+   * Ajoute une heure dans la semaine du salarié.
+   */
+  putHeureHebdo(hour: Heure){
+    console.log("api à bien reçu l'heure");
+    this.axiosInstance.put("/heures/ajouter", hour)
+  }
 }
 
