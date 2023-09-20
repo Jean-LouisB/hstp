@@ -20,9 +20,9 @@ import { SideBarComponent } from './users/user-page/side-bar/side-bar.component'
 import { UserAddComponent } from './users/user-add/user-add.component';
 import { SidebarHeuresComponent } from './heures/sidebar-heures/sidebar-heures.component';
 import { HeuresDeclareComponent } from './heures/heures-declare/heures-declare.component';
-import { HeuresValideComponent } from './heures/heures-valide/heures-valide.component';
 import { HeuresConsulteComponent } from './heures/heures-consulte/heures-consulte.component';
 import { HeuresArchivesComponent } from './heures/heures-archives/heures-archives.component';
+import { ClotureComponent } from './heures/cloture/cloture.component';
 
 
 @NgModule({
@@ -42,9 +42,9 @@ import { HeuresArchivesComponent } from './heures/heures-archives/heures-archive
     UserAddComponent,
     SidebarHeuresComponent,
     HeuresDeclareComponent,
-    HeuresValideComponent,
     HeuresConsulteComponent,
     HeuresArchivesComponent,
+    ClotureComponent,
   ],
   imports: [
     BrowserModule,

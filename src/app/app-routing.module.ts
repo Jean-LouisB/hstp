@@ -10,16 +10,16 @@ import { NotFoundPageComponent } from './not-found-page/not-found-page.component
 import { UserListComponent } from './users/user-list/user-list.component';
 import { UserAddComponent } from './users/user-add/user-add.component';
 import { HeuresDeclareComponent } from './heures/heures-declare/heures-declare.component';
-import { HeuresValideComponent } from './heures/heures-valide/heures-valide.component';
 import { HeuresConsulteComponent } from './heures/heures-consulte/heures-consulte.component';
 import { HeuresArchivesComponent } from './heures/heures-archives/heures-archives.component';
+import { ClotureComponent } from './heures/cloture/cloture.component';
 
 const routes: Routes = [
   {path: 'accueil', component: AccueilComponent},
   {path: 'login', component: LoginComponent},
   {path: 'heures', component: HeuresComponent, children:[
     {path: 'declarer', component: HeuresDeclareComponent},
-    {path: 'valider', component: HeuresValideComponent},
+    {path: 'cloturer', component: ClotureComponent},
     {path: 'consulter', component: HeuresConsulteComponent},
     {path: 'archives', component: HeuresArchivesComponent},
   ]},

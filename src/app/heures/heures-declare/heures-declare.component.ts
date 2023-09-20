@@ -3,6 +3,10 @@ import { CookieService } from 'ngx-cookie-service';
 import { Heure } from 'src/app/models/heureModel';
 import { formatDate } from '@fabricekopf/date-france';
 import { ServerService } from 'src/app/services/serveur/server.service';
+import { Store, select } from '@ngrx/store';
+import { SessionState } from 'src/app/state/session/session.reducers';
+import { User } from 'src/app/models/userModel';
+
 
 @Component({
   selector: 'app-heures-declare',
@@ -10,7 +14,7 @@ import { ServerService } from 'src/app/services/serveur/server.service';
   styleUrls: ['./heures-declare.component.css']
 })
 export class HeuresDeclareComponent implements OnInit {
-  matricule: string = "S058"; // en attendant de le récupérer sur le cookie !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  matricule: string = null;
   date_debut: Date = null;
   date_fin: Date = null;
   dateEvenement: Date = null;
@@ -20,19 +24,22 @@ export class HeuresDeclareComponent implements OnInit {
   commentaire: string = null;
   msgErreurTemps: string = null;
   validationPossible: boolean = false;
+  openMessageBoxValidation: boolean = false;
 
   constructor(
     private cookieService: CookieService,
     private apiDBB: ServerService,
+    private store: Store<{ session: SessionState }>,
   ) { }
 
 
   ngOnInit(): void {
+    this.getNameUserState();
     this.getDatesDeSaisie();
   }
-/**
- * récupère les bornes de saisie dans le cookie afin de brider le champs date.
- */
+  /**
+   * récupère les bornes de saisie dans le cookie afin de brider le champs date.
+   */
   getDatesDeSaisie() {
     const bornesDeSaisie = this.cookieService.get('bornes');
     const bornesDeSaisieJson = JSON.parse(bornesDeSaisie);
@@ -45,18 +52,24 @@ export class HeuresDeclareComponent implements OnInit {
    * si oui, bloque la validation et affiche un message d'alerte.
    * @returns temps en décimale entre deux horaires.
    */
-  getTemps(){
+  getTemps() {
     const heureDebutDec = this.getHeureStrToDec(this.heureDebut);
     const heureFinDec = this.getHeureStrToDec(this.heureFin);
-    const temps = heureFinDec-heureDebutDec;
-    if(temps < 0){
+    const temps = heureFinDec - heureDebutDec;
+    if (temps < 0) {
       this.msgErreurTemps = "L'heure de fin doit être postérieure à l'heure de début, vérifiez votre saisie"
       this.validationPossible = false;
-    }else{
+    } else {
       this.msgErreurTemps = null
       this.validationPossible = true;
     }
-    return temps;
+
+    if (this.sens === "-1") {
+      return temps * -1;
+    } else {
+      return temps;
+    }
+
   }
 
   /**
@@ -65,25 +78,33 @@ export class HeuresDeclareComponent implements OnInit {
    * @param heure en chaine de caractère avec un h comme séparateur et sans espace
    * @returns un décimal
    */
-  getHeureStrToDec(heure: string){
+  getHeureStrToDec(heure: string) {
     const heureMinuscule = heure.toLowerCase();
     const heureSplited = heureMinuscule.split('h');
     const heureValueDec = parseInt(heureSplited[0]);
-    const minutesValueDec = parseInt(heureSplited[1])/60;
-    return heureValueDec +minutesValueDec;
+    let minutesValueDec= 0;
+    if(heureSplited[1]){
+      minutesValueDec = parseInt(heureSplited[1]) / 60;
+    }
+
+    return heureValueDec + minutesValueDec;
   }
 
   /**
    * Envoie la nouvelle heure à la bdd.
    */
-  sendNewHour(){
+  sendNewHour() {
     const debutPourBornes = formatDate(this.date_debut).dateCourte;
     const finPourBornes = formatDate(this.date_fin).dateCourte;
-    const bornes = debutPourBornes+" au "+finPourBornes;
+    const bornes = debutPourBornes + " au " + finPourBornes;
     const duree = this.getTemps();
     const dateEv = formatDate(this.dateEvenement).dateCourte
-    const newHour = new Heure(this.matricule,bornes,duree, this.commentaire, dateEv)
+    const commentaireComplete = "De " + this.heureDebut + " à " + this.heureFin + " => " + this.commentaire
+    const newHour = new Heure(this.matricule, bornes, duree, commentaireComplete, dateEv)
     this.apiDBB.putHeureHebdo(newHour);
+    this.dateEvenement = this.sens = this.heureDebut = this.heureFin = this.commentaire = this.msgErreurTemps = null;
+    this.validationPossible = false;
+    this.openMessageBoxValidation = true;
   }
 
   /**
@@ -91,7 +112,7 @@ export class HeuresDeclareComponent implements OnInit {
    * Sinon affiche l'alerte.
    * Puis contrôle la validation du formulaire (en cas de correction apportée)
    */
-  controleSaisie(){
+  controleSaisie() {
     this.getTemps();
     this.accepteLaSasie();
   }
@@ -100,9 +121,22 @@ export class HeuresDeclareComponent implements OnInit {
    * A chaque sortie de champs, vérifi si tous les champs sont remplis et qu'il n'y ai pas d'erreur. Si oui l'attribut validationPossible active le bouton 'valider' du formulaire.
    * 
    */
-  accepteLaSasie(){
-    if(this.dateEvenement != null && this.sens != null && this.heureDebut != null && this.heureFin != null && this.commentaire !=null &&this.msgErreurTemps == null){
+  accepteLaSasie() {
+    if (this.dateEvenement != null && this.sens != null && this.heureDebut != null && this.heureFin != null && this.commentaire != null && this.msgErreurTemps == null) {
       this.validationPossible = true;
     }
   }
+
+  toggelMsgBox() {
+    this.openMessageBoxValidation = !this.openMessageBoxValidation;
+  }
+
+  getNameUserState() {
+    this.store.pipe(select(state => state.session.userState))
+      .subscribe((userData: { user: User | null }) => {
+        this.matricule = userData.user.matricule;
+      });
+
+  }
+
 }

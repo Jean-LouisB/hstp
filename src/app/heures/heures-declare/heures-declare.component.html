@@ -1,22 +1,27 @@
-<div class="container-fluid w-75 d-flex flex-column justify-content-center">
-    <p class="h4 mb-4">Déclarer mes heures</p>
+<p class="h3 mb-3">Déclarer mes heures</p>
+
+<div class="card p-1 shadow mt-3 d-flex flex-column justify-content-center">
     <p *ngIf="msgErreurTemps" class="fs-5 text-danger text-center">{{ msgErreurTemps }}</p>
-    <div class="row">
+    <div class="row ">
         <div class="col-6 mb-3">
-            <div class="card p-2">
+            <div class="p-2">
                 <div class="form-floating mb-3">
-                    <input [(ngModel)]="dateEvenement" class="form-control" id="dateEvenement" name="dateEvenement" type="date" [min]="date_debut.toISOString().split('T')[0]" [max]="date_fin.toISOString().split('T')[0]" (blur)="accepteLaSasie()">
+                    <input [(ngModel)]="dateEvenement" class="form-control" id="dateEvenement" name="dateEvenement"
+                        type="date" [min]="date_debut.toISOString().split('T')[0]"
+                        [max]="date_fin.toISOString().split('T')[0]" (blur)="accepteLaSasie()">
                     <!-- brider sur les dates bornées -->
                     <label for="dateEvenement">Date de l'évènement</label>
                 </div>
                 <div class="form-check mb-2">
-                    <input [(ngModel)]="sens" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="1" checked (blur)="accepteLaSasie()">
+                    <input [(ngModel)]="sens" class="form-check-input" type="radio" name="flexRadioDefault"
+                        id="flexRadioDefault1" value="1" checked (blur)="accepteLaSasie()">
                     <label class="form-check-label" for="flexRadioDefault1">
                         Temps effectué en plus
                     </label>
                 </div>
                 <div class="form-check">
-                    <input [(ngModel)]="sens" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="-1" (blur)="accepteLaSasie()">
+                    <input [(ngModel)]="sens" class="form-check-input" type="radio" name="flexRadioDefault"
+                        id="flexRadioDefault2" value="-1" (blur)="accepteLaSasie()">
                     <label class="form-check-label" for="flexRadioDefault2">
                         Temps effectué en moins
                     </label>
@@ -24,14 +29,18 @@
             </div>
         </div>
         <div class="col-6 mb-3">
-            <div class="card p-2">
+            <div class="p-2">
                 <div class="form-floating mb-3">
                     <!-- Il faut mettre en place le contrôle de saisie (pattern control :'00h00' /^\d{1,2}h\d{2}$/ -->
-                    <input [(ngModel)]="heureDebut" class="form-control" [ngClass]="{ 'border border-danger': msgErreurTemps !== null }" id="heureDebut" name="heureDebut" type="text" placeholder="00h00" (blur)="accepteLaSasie()">
+                    <input [(ngModel)]="heureDebut" class="form-control"
+                        [ngClass]="{ 'border border-danger': msgErreurTemps !== null }" id="heureDebut"
+                        name="heureDebut" type="text" placeholder="00h00" (blur)="accepteLaSasie()">
                     <label for="heureDebut">Entre (00h00):</label>
                 </div>
                 <div class="form-floating">
-                    <input [(ngModel)]="heureFin" class="form-control" [ngClass]="{ 'border border-danger': msgErreurTemps !== null }" id="heureFin" name="heureFin" type="text" placeholder="00h00" (blur)="controleSaisie()">
+                    <input [(ngModel)]="heureFin" class="form-control"
+                        [ngClass]="{ 'border border-danger': msgErreurTemps !== null }" id="heureFin" name="heureFin"
+                        type="text" placeholder="00h00" (blur)="controleSaisie()">
                     <label for="heureFin">et (00h00):</label>
                 </div>
             </div>
@@ -41,15 +50,26 @@
     <div class="row p-2">
         <div class="p-1 col-12 mb-3">
             <div class="form-floating mb-3">
-                <input [(ngModel)]="commentaire" class="form-control" id="commentaire" name="commentaire" type="text" placeholder="Commentaire" (blur)="accepteLaSasie()">
+                <input [(ngModel)]="commentaire" class="form-control" id="commentaire" name="commentaire" type="text"
+                    placeholder="Commentaire" (blur)="accepteLaSasie()">
                 <label for="commentaire">Commentaire / justification</label>
             </div>
             <div>
-                <button class="btn btn-success" (click)="sendNewHour()" [disabled]="!validationPossible">Valider</button>
+                <button class="btn btn-success" (click)="sendNewHour()"
+                    [disabled]="!validationPossible">Valider</button>
             </div>
         </div>
 
     </div>
-<p class="fs-6 fst-italic fw-light">Indiquer les heures sans espace avec un 'h' pour séparer les heures des minutes.<br>ex : 9h30 ; 15h45; 10h08 ou même 10h8 ...</p>
+    <p class="fs-6 fst-italic fw-light">Indiquer les heures sans espace avec un 'h' pour séparer les heures des
+        minutes.<br>ex : 9h30 ; 15h45; 10h08 ou même 10h8;<br>Vous pouvez omettre les minutes : 9h; 10h...(mais
+        toujours avec le 'h')</p>
+    <div *ngIf="openMessageBoxValidation"
+        class="container-fluid d-flex justify-content-center flex-column position-absolute bg-success-subtle top-0 start-0 h-100 z-3">
+        <div class="card bg-transparent p-3">
+            <p class="text-center h3 mb-3">Votre heure est bien enregistrée.</p>
+            <button class="btn btn-primary" (click)="toggelMsgBox()">OK</button>
+        </div>
 
+    </div>
 </div>

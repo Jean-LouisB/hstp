@@ -4,10 +4,23 @@
             <h5 class="card-title">Sous-Menu</h5>
             <hr>
             <ul class="list-group">
-                <li class="list-group-item" routerLinkActive="active"><a class="nav-link" routerLink="/heures/declarer">Déclarer</a></li>
-                <li class="list-group-item" routerLinkActive="active"><a class="nav-link" routerLink="/heures/valider">Valider</a></li>
-                <li class="list-group-item" routerLinkActive="active"><a class="nav-link" routerLink="/heures/consulter">Consulter</a></li>
-                <li class="list-group-item" routerLinkActive="active"><a class="nav-link" routerLink="/heures/archives">Archives</a></li>
+                <li class="list-group-item" routerLinkActive="active"><a class="nav-link"
+                        routerLink="/heures/declarer">Déclarer</a></li>
+                <li class="list-group-item" routerLinkActive="active"><a class="nav-link"
+                        routerLink="/heures/consulter">En cours.
+                        <span *ngIf="alerte>0" class="pastille"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                height="16" fill="currentColor" class="bi bi-exclamation-circle-fill"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                            </svg>
+                        </span>
+                        <br>
+                        <span class="textPetit fst-italic">(Consulter, valider, supprimer)</span></a></li>
+                <li class="list-group-item" routerLinkActive="active"><a class="nav-link"
+                        routerLink="/heures/cloturer">Clôturer la semaine.</a></li>
+                <li class="list-group-item" routerLinkActive="active"><a class="nav-link"
+                        routerLink="/heures/archives">Archives</a></li>
             </ul>
         </div>
         <div class="cardPerso card p-3 shadow cardPerso">

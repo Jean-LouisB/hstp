@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HeuresValideComponent } from './heures-valide.component';
+import { ClotureComponent } from './cloture.component';
 
-describe('HeuresValideComponent', () => {
-  let component: HeuresValideComponent;
-  let fixture: ComponentFixture<HeuresValideComponent>;
+describe('ClotureComponent', () => {
+  let component: ClotureComponent;
+  let fixture: ComponentFixture<ClotureComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HeuresValideComponent ]
+      declarations: [ ClotureComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HeuresValideComponent);
+    fixture = TestBed.createComponent(ClotureComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

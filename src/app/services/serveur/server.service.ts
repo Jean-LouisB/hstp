@@ -149,8 +149,35 @@ export class ServerService {
    * Ajoute une heure dans la semaine du salarié.
    */
   putHeureHebdo(hour: Heure){
-    console.log("api à bien reçu l'heure");
     this.axiosInstance.put("/heures/ajouter", hour)
+  }
+
+  getHeureHebdoUser(){
+    return this.axiosInstance.get("/heures/consulter");
+  }
+
+  /**
+   * Supprime une heure de la semaine
+   * @param idHour: string => id de l'heure à supprimer
+   * 
+   */
+  deleteHourFromWeek(idHour: string){
+    this.axiosInstance.delete("/heures/supprimer",{params: {idHour: idHour}})
+    .then((reponse: any)=>{
+      console.log(reponse);
+    }).catch((erreur: any)=>{
+      console.error('Erreur lors de la suppression : ', erreur);
+    }
+    )
+  }
+  validateHour(idHour: string){
+    this.axiosInstance.put(`/heures/valider`, {idHour: idHour})
+    .then((reponse: any)=>{
+      console.log(reponse);
+    }).catch((erreur: any)=>{
+      console.error('Erreur lors de la validation : ', erreur);
+    }
+    )
   }
 }
 

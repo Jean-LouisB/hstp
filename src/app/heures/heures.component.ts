@@ -13,10 +13,11 @@ import { SessionState } from '../state/session/session.reducers';
   styleUrls: ['./heures.component.css']
 })
 export class HeuresComponent implements OnInit {
-  //private userSubscription: Subscription | undefined;
   user: User | null = null;
   date_debut: Date = null;
   date_fin: Date = null;
+  totalDesHeuresNonValidees: number = 0;
+
   constructor(
     private apiBDD: ServerService,
     private store: Store<{ session: SessionState }>,
@@ -31,6 +32,7 @@ export class HeuresComponent implements OnInit {
         this.store.dispatch(setUser({ user: this.user }));
       })
     }
+    this.countHourNotValidated() 
 
   }
   getNameUserState() {
@@ -38,5 +40,16 @@ export class HeuresComponent implements OnInit {
       .subscribe((userData: { user: User | null }) => {
         this.user = userData.user;
       });
+  }
+
+  countHourNotValidated() {
+    this.apiBDD.getHeureHebdoUser()
+      .then((data: any) => {
+        const fetchTabHeure = JSON.parse(data.data);
+        let monTableauDHeure = fetchTabHeure.filter((hour: any) => hour.valide === 0)
+        monTableauDHeure.forEach((item: any) => {
+          this.totalDesHeuresNonValidees += item.duree;
+        })
+      })
   }
 }
