@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ServerService } from '../services/serveur/server.service';
 import { Store, select } from '@ngrx/store';
 import { setUser } from '../state/session/session.actions';
@@ -14,7 +14,7 @@ import { heureDecToStr } from '@fabricekopf/date-france';
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.css']
 })
-export class AccueilComponent implements OnInit {
+export class AccueilComponent implements OnInit, OnDestroy {
   isConnected = false;
   user: User | null = null;
   heures_supplementaires: string = '';
@@ -45,8 +45,7 @@ export class AccueilComponent implements OnInit {
         this.solidarite = heureDecToStr(data.data.solidarite);
       });
     const mesBornes = this.cookieService.get('bornes');
-    const mesBornesJson = JSON.parse(mesBornes);
-    //const date_minimum = formatDate(mesBornesJson['date_debut'])
+    const mesBornesJson = JSON.parse(mesBornes) || null;
     this.date_debut = new Date(mesBornesJson['date_debut']);
     this.date_fin = new Date(mesBornesJson['date_fin']);
 
@@ -61,5 +60,10 @@ export class AccueilComponent implements OnInit {
 
   }
 
+  ngOnDestroy(){
+    if(!this.userSubscription){
+      this.userSubscription.unsubscribe();
+    }
+  }
 
 }

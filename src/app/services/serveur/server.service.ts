@@ -34,14 +34,13 @@ export class ServerService {
         .then((response) => {
           const msg = response.data.message
           const token = response.data.token;
-
           //récupèration de la date des bornes
           const bornes = response.data.bornes;
           const date_debut = formatDate(bornes['0']['date_debut']);
           const date_fin = formatDate(bornes['0']['date_fin']);
           const bornesPourCookies = {
-           'date_debut':date_debut.normalDate,
-           'date_fin':date_fin.normalDate
+            'date_debut': date_debut.normalDate,
+            'date_fin': date_fin.normalDate
           }
           const bornesJSON = JSON.stringify(bornesPourCookies);
           this.cookieService.set('session', token, null, '/', null, true, 'Strict');
@@ -79,17 +78,17 @@ export class ServerService {
       this.axiosInstance.get('/users/profil')
         .then((response) => {
           user.nom = response.data.Nom;
-          user.prenom=  response.data.Prenom ;
-          user.matricule=response.data.Matricule;
+          user.prenom = response.data.Prenom;
+          user.matricule = response.data.Matricule;
           user.type = response.data.Type;
           user.responsable = response.data.Mat_Resp;
           user.present = response.data.Present;
           user.id = response.data._id
-          observable.next(user); 
+          observable.next(user);
           observable.complete();
         })
         .catch((error) => {
-          console.log("Erreur dans la réucpération du profil");
+          console.log("Erreur dans la récupération du profil");
           observable.error(error);
         });
     });
@@ -99,7 +98,7 @@ export class ServerService {
    * 
    * @returns la liste de tous les utilisateurs
    */
-   getAllUsers() {
+  getAllUsers() {
     return this.axiosInstance.get(`/users/allusers`);
   }
   getUserById(id: string) {
@@ -110,30 +109,30 @@ export class ServerService {
   putPresenceToggle(matricule: string, presence: number) {
     //change le status de la présence (true si false et vis et versa)
     return this.axiosInstance.put(`/users/update/presence/${matricule}/${presence}`)
-  } 
+  }
 
   /**
    * 
    * Modification d'une fiche d'utilisateur
    * 
    */
-  putModifyUser(user: User){
-    this.axiosInstance.put('/users/update',user);
+  putModifyUser(user: User) {
+    this.axiosInstance.put('/users/update', user);
   }
   /**
    * 
    * Ajout d'une fiche
    * 
    */
-  putAddUser(user: User){
-    this.axiosInstance.post('/users/addUser',user);
+  putAddUser(user: User) {
+    this.axiosInstance.post('/users/addUser', user);
   }
 
   /**
    * 
    * @returns Récupère les soldes de tous les salariés;
    */
-  getSoldes(){
+  getSoldes() {
     return this.axiosInstance.get('/compteurs/soldes');
   }
 
@@ -141,18 +140,18 @@ export class ServerService {
    * 
    * @returns Récupère les soldes du salarié connecté.
    */
-  getSoldesDuProfil(){
+  getSoldesDuProfil() {
     return this.axiosInstance.get('/compteurs/soldes/user');
   }
 
   /**
    * Ajoute une heure dans la semaine du salarié.
    */
-  putHeureHebdo(hour: Heure){
+  putHeureHebdo(hour: Heure) {
     this.axiosInstance.put("/heures/ajouter", hour)
   }
 
-  getHeureHebdoUser(){
+  getHeureHebdoUser() {
     return this.axiosInstance.get("/heures/consulter");
   }
 
@@ -161,23 +160,30 @@ export class ServerService {
    * @param idHour: string => id de l'heure à supprimer
    * 
    */
-  deleteHourFromWeek(idHour: string){
-    this.axiosInstance.delete("/heures/supprimer",{params: {idHour: idHour}})
-    .then((reponse: any)=>{
-      console.log(reponse);
-    }).catch((erreur: any)=>{
-      console.error('Erreur lors de la suppression : ', erreur);
-    }
-    )
+  deleteHourFromWeek(idHour: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.axiosInstance.delete("/heures/supprimer", { params: { idHour: idHour } })
+        .then((reponse: any) => {
+          resolve();
+        }).catch((erreur: any) => {
+          console.error('Erreur lors de la suppression : ', erreur);
+          reject(erreur);
+        }
+        )
+    })
+
   }
-  validateHour(idHour: string){
-    this.axiosInstance.put(`/heures/valider`, {idHour: idHour})
-    .then((reponse: any)=>{
-      console.log(reponse);
-    }).catch((erreur: any)=>{
-      console.error('Erreur lors de la validation : ', erreur);
-    }
-    )
+  validateHour(idHour: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.axiosInstance.put(`/heures/valider`, { idHour: idHour })
+        .then((reponse: any) => {
+          resolve();
+        }).catch((erreur: any) => {
+          console.error('Erreur lors de la validation : ', erreur);
+          reject(erreur);
+        }
+        )
+    })
   }
 }
 
