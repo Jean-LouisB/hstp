@@ -1,6 +1,6 @@
 <div class="container-fluid p-3">
     <p class="h3 mb-3">Consulter, valider, supprimer.<br><span class="fs-6 mb-3 fst-italic">Ici n'apparaissent que les heures non validées.</span></p>
-    <p>Vous avez un total de <span class="text-danger fw-semibold">{{ heureDecimaleEnStr(totalDesHeuresNonValidees) }}</span> non validées</p>
+    <p>Vous avez un total de <span class="text-danger fw-semibold">{{ heureDecimaleEnStr(totalCompteurNotValidated) }}</span> non validées</p>
     <div class="card p-3 shadow">
         <table class="table table-striped">
             <thead>
@@ -12,7 +12,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let hour of monTableauDHeure">
+                <tr *ngFor="let hour of tabOfHoursNotValidated">
                     <td >
                         <button class="btn btn-success me-2" (click)="validateHour(hour['_id'])">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { StoreModule } from '@ngrx/store';
+import * as formSession from '../../state/index'
 import { HeuresDeclareComponent } from './heures-declare.component';
 
 describe('HeuresDeclareComponent', () => {
@@ -8,7 +9,10 @@ describe('HeuresDeclareComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HeuresDeclareComponent ]
+      declarations: [ HeuresDeclareComponent ],
+      imports:[
+        StoreModule.forRoot(formSession.reducers)
+      ]
     })
     .compileComponents();
 

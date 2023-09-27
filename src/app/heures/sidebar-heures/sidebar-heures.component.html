@@ -8,7 +8,8 @@
                         routerLink="/heures/declarer">Déclarer</a></li>
                 <li class="list-group-item" routerLinkActive="active"><a class="nav-link"
                         routerLink="/heures/consulter">En cours.
-                        <span *ngIf="alerte>0" class="pastille"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                        <span>{{ totalCompteurNotValidated }} </span>
+                        <span *ngIf="totalCompteurNotValidated>0" class="pastille"><svg xmlns="http://www.w3.org/2000/svg" width="16"
                                 height="16" fill="currentColor" class="bi bi-exclamation-circle-fill"
                                 viewBox="0 0 16 16">
                                 <path
