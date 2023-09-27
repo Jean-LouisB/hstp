@@ -25,6 +25,7 @@ import { HeuresArchivesComponent } from './heures/heures-archives/heures-archive
 import { ClotureComponent } from './heures/cloture/cloture.component';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,

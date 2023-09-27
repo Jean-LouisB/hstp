@@ -14,22 +14,27 @@ import { HeuresConsulteComponent } from './heures/heures-consulte/heures-consult
 import { HeuresArchivesComponent } from './heures/heures-archives/heures-archives.component';
 import { ClotureComponent } from './heures/cloture/cloture.component';
 
+
 const routes: Routes = [
-  {path: 'accueil', component: AccueilComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'heures', component: HeuresComponent, children:[
-    {path: 'declarer', component: HeuresDeclareComponent},
-    {path: 'cloturer', component: ClotureComponent},
-    {path: 'consulter', component: HeuresConsulteComponent},
-    {path: 'archives', component: HeuresArchivesComponent},
-  ]},
-  {path: 'service', component: ServiceComponent},
-  {path: 'entreprise', component: EntrepriseComponent},
-  {path: 'users', component: UserPageComponent, children:[
-    {path:'liste', component:UserListComponent},
-    {path:'ajout', component:UserAddComponent},
-  ]},
-  {path: '**', component: NotFoundPageComponent},
+  { path: 'accueil', component: AccueilComponent },
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'heures', component: HeuresComponent, children: [
+      { path: 'declarer', component: HeuresDeclareComponent },
+      { path: 'cloturer', component: ClotureComponent },
+      { path: 'consulter', component: HeuresConsulteComponent },
+      { path: 'archives', component: HeuresArchivesComponent },
+    ]
+  },
+  { path: 'service', component: ServiceComponent },
+  { path: 'entreprise', component: EntrepriseComponent },
+  {
+    path: 'users', component: UserPageComponent, children: [
+      { path: 'liste', component: UserListComponent },
+      { path: 'ajout', component: UserAddComponent },
+    ]
+  },
+  { path: '**', component: NotFoundPageComponent },
 ];
 
 @NgModule({
