@@ -62,11 +62,13 @@ export class HeuresConsulteComponent implements OnInit {
  * met à jour le détail et le total des heures non validées
  */
   upDateData() {
-    this.mesCompteurs.getHoursValidated()
+    this.mesCompteurs.getWeekHours()
       .then((fetchData) => {
         console.log(fetchData);
-        this.tabOfHoursNotValidated = fetchData['detail'];
-        this.totalCompteurNotValidated = fetchData['total'];
+        this.tabOfHoursNotValidated = fetchData['detail'].filter((hour: any)=> hour.valide === 0 );
+        this.tabOfHoursNotValidated.forEach((hour)=>{
+          this.totalCompteurNotValidated += hour.duree
+        })
       })
   }
 

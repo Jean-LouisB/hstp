@@ -22,17 +22,17 @@ export class HoursService {
     private cookieService: CookieService,
   ) { }
 /**
- * getHoursValidated récupère les heures non validées par l'utilisateur et contenus dans les bornes.
+ * getWeekHours récupère les heures non validées par l'utilisateur et contenus dans les bornes.
  * Elle met à jour l'observable en plus de retourner les données.
  * Elle est utilisée dans heures-consulte.component.ts
  * @returns détail des heures non validées par l'utilisateur et le total
  */
-  async getHoursValidated(): Promise<any> {
+  async getWeekHours(): Promise<any> {
     return this.apiBDD.getHeureHebdoUser()
       .then((data: any) => {
         const fetchTabHeure = JSON.parse(data.data);
         const bornesEnCours = this.getBornes()
-        let monTableauDHeure = fetchTabHeure.filter((hour: any) => hour.valide === 0 && hour.bornes === bornesEnCours)
+        let monTableauDHeure = fetchTabHeure.filter((hour: any) => hour.bornes === bornesEnCours)
         monTableauDHeure.sort((a: any, b: any) => {
           const dateA = new Date(a.date_evenement.split('/').reverse().join('/')).getTime();
           const dateB = new Date(b.date_evenement.split('/').reverse().join('/')).getTime();
@@ -40,13 +40,16 @@ export class HoursService {
         })
         let totalDesHeuresNonValidees = 0;
         monTableauDHeure.forEach((item: any) => {
-          totalDesHeuresNonValidees += item.duree;
+          if(item.valide === 0){
+            totalDesHeuresNonValidees += item.duree;
+          }
         })
         this.totalSubject.next(totalDesHeuresNonValidees);
         return { detail: monTableauDHeure, total: totalDesHeuresNonValidees }
       })
 
   }
+
 
   /**
    * permet de récupérer les bornes de validations de saisie de la semaine en cours.

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HoursService } from 'src/app/services/hours/hours.service';
+import { heureDecToStr } from '@fabricekopf/date-france'
 
 
 
@@ -9,7 +10,8 @@ import { HoursService } from 'src/app/services/hours/hours.service';
   styleUrls: ['./sidebar-heures.component.css']
 })
 export class SidebarHeuresComponent implements OnInit {
-  totalCompteurNotValidated: number = 0; // nombre d'heure non validées pour affichage de la pastille d'alerte
+  totalCompteurNotValidated: string = '00h00'; // nombre d'heure non validées pour affichage de la pastille d'alerte
+  interupteurPastille: boolean = false
   constructor(
     private mesCompteurs: HoursService,
   ) {
@@ -17,9 +19,14 @@ export class SidebarHeuresComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mesCompteurs.getHoursValidated();//lance la mise à jour du nombre d'heures non validées
+    this.mesCompteurs.getWeekHours();//lance la mise à jour du nombre d'heures non validées
     this.mesCompteurs.total$.subscribe((total) => {//s'abonne à l'obeservable du service
-      this.totalCompteurNotValidated = total;
+      if(total != 0){
+        this.interupteurPastille = true;
+      }else{
+        this.interupteurPastille = false;
+      }
+      this.totalCompteurNotValidated = heureDecToStr(total);
     })
   }
 
