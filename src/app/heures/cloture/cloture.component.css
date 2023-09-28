@@ -1,0 +1,9 @@
+.tdCenter td, .cellCenter{
+    text-align: center;
+
+}
+.cellFlex{
+        display: flex;
+    justify-content: center;
+    align-items: center;
+}

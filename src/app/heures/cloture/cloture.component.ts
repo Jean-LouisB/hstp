@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ServerService } from 'src/app/services/serveur/server.service';
+import { Component, OnInit  } from '@angular/core';
 import { heureDecToStr } from '@fabricekopf/date-france';
-import { formatDate } from '@fabricekopf/date-france';
-import { CookieService } from 'ngx-cookie-service';
+import { HoursService } from 'src/app/services/hours/hours.service';
+import { ServerService } from 'src/app/services/serveur/server.service';
 
 @Component({
   selector: 'app-cloture',
@@ -13,44 +12,57 @@ export class ClotureComponent implements OnInit {
   monTableauDHeure = [];
   totalDesHeuresValidees: number = 0;
   bornes: string = null;
+  //soldes en str et dec: 
+  heures_supplementaires: string = '';
+  heures_supplementairesDec: number = 0;
+  recuperation: string = '';
+  recuperationDec: number = 0;
+  solidarite: string = '';
+  solidariteDec: number = 0;
+  aPayer: string = '00h00';
+  aPayerDec: number = 0;
+  //pour calcul de la ventillation :
+  resteAVentiller: number = 0;
+  affectationJS: number = 0;
+  affectationRecup: number = 0;
+  affectationHS: number = 0;
+  affectationAP: number = 0;
+  //commutateur
+  modifiVentillation : boolean = false;
+
   constructor(
+    private mesCompteurs: HoursService,
     private apiBDD: ServerService,
-    private cookieService: CookieService,
   ) { }
 
-  ngOnInit(): void {
-    this.getHoursValidated();
-    this.getBornes();
-  }
 
-  getHoursValidated() {
-    this.apiBDD.getHeureHebdoUser()
-      .then((data: any) => {
-        const fetchTabHeure = JSON.parse(data.data);
-        this.monTableauDHeure = fetchTabHeure.filter((hour: any) => hour.valide === 1 && hour.bornes === this.bornes)
-        console.log(this.monTableauDHeure);
-        this.monTableauDHeure.sort((a: any,b: any)=>{
-          const dateA = new Date(a.date_evenement.split('/').reverse().join('/')).getTime();
-          const dateB = new Date(b.date_evenement.split('/').reverse().join('/')).getTime();
-          return dateA - dateB;
-        })
-        this.monTableauDHeure.forEach((item) => {
-          this.totalDesHeuresValidees += item.duree;
+  ngOnInit(): void {
+    this.mesCompteurs.getWeekHours()
+      .then((fetchData) => {
+        this.monTableauDHeure = fetchData['detail'].filter((hour: any) => hour.valide === 1);
+        this.monTableauDHeure.forEach((hour) => {
+          this.totalDesHeuresValidees += hour.duree
         })
       })
-  }
-  getBornes() {
-    const bornesDeSaisie = this.cookieService.get('bornes');
-    const bornesDeSaisieJson = JSON.parse(bornesDeSaisie);
-    const date_debut = new Date(bornesDeSaisieJson['date_debut']);
-    const date_fin = new Date(bornesDeSaisieJson['date_fin']);
-    const debutPourBornes = formatDate(date_debut).dateCourte;
-    const finPourBornes = formatDate(date_fin).dateCourte;
-    const bornes = debutPourBornes + " au " + finPourBornes;
-    this.bornes = bornes;
-    return bornes;
+    this.getSoldes();
+    
   }
 
+  getSoldes() {
+    this.apiBDD.getSoldesDuProfil()
+      .then((data) => {
+        this.heures_supplementaires = heureDecToStr(data.data.heures_supplementaires);
+        this.heures_supplementairesDec = data.data.heures_supplementaires;
+        this.recuperation = heureDecToStr(data.data.recuperation);
+        this.recuperationDec = data.data.recuperation;
+        this.solidarite = heureDecToStr(data.data.solidarite);
+        this.solidariteDec = data.data.solidarite;
+        this.calculSoldeAVentiller()
+      });
+  }
+  calculSoldeAVentiller(){
+    this.resteAVentiller = this.totalDesHeuresValidees - this.affectationAP - this.affectationHS - this.affectationJS - this.affectationRecup
+  }
 
   /**
    * Pour pouvoir l'utiliser dans le template
@@ -61,7 +73,9 @@ export class ClotureComponent implements OnInit {
     return heureDecToStr(decimale);
   }
 
-
+  commute(){
+    this.modifiVentillation = !this.modifiVentillation
+  }
 
 }
 
