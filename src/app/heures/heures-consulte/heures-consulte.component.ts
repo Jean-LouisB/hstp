@@ -23,19 +23,7 @@ export class HeuresConsulteComponent implements OnInit {
   ngOnInit(): void {
     this.upDateData();
   }
-/**
- * Valide l'heure selectionnée par son id
- * @param id string: c'est l'id de l'heure à valider
- */
-  async validateHour(id: string) {
-    try {
-      await this.apiBDD.validateHour(id);
-      this.upDateData();
-    } catch (error) {
-      console.log(error);
 
-    }
-  }
 /**
  * Supprime l'heure selectionnée par son id
  * @param id string: c'est l'id de l'heure à supprimer
@@ -66,6 +54,7 @@ export class HeuresConsulteComponent implements OnInit {
       .then((fetchData) => {
         console.log(fetchData);
         this.tabOfHoursNotValidated = fetchData['detail'].filter((hour: any)=> hour.valide === 0 );
+        this.totalCompteurNotValidated = 0;
         this.tabOfHoursNotValidated.forEach((hour)=>{
           this.totalCompteurNotValidated += hour.duree
         })

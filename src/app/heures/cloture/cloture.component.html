@@ -72,9 +72,9 @@
         </tbody>
     </table>
     <button class="btn btn-outline-danger me-3" *ngIf="resteAVentiller===0" (click)="commute()">MODIFIER</button>
-    <button class="btn btn-outline-success" *ngIf="resteAVentiller===0">VALIDER</button>
+    <button class="btn btn-outline-success" *ngIf="resteAVentiller===0" (click)="validateHour()">VALIDER</button>
     <hr>
-    <p class="h5">Détail :</p>
+    <p class="h5">Pour mémoire :</p>
     <div class="card p-3 shadow">
         <table class="table table-striped table-hover">
             <thead>

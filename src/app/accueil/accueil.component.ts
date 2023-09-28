@@ -20,6 +20,7 @@ export class AccueilComponent implements OnInit, OnDestroy {
   heures_supplementaires: string = '';
   recuperation: string = '';
   solidarite: string = '';
+  aPayer: string = "";
   date_debut: Date = null;
   date_fin: Date = null;
 
@@ -39,10 +40,11 @@ export class AccueilComponent implements OnInit, OnDestroy {
       })
     }
     this.apiBDD.getSoldesDuProfil()
-      .then((data) => {
+      .then((data: any) => {
         this.heures_supplementaires = heureDecToStr(data.data.heures_supplementaires);
         this.recuperation = heureDecToStr(data.data.recuperation);
         this.solidarite = heureDecToStr(data.data.solidarite);
+        this.aPayer = heureDecToStr(data.data.apayer)
       });
     const mesBornes = this.cookieService.get('bornes');
     const mesBornesJson = JSON.parse(mesBornes) || null;

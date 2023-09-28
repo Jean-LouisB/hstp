@@ -173,9 +173,20 @@ export class ServerService {
     })
 
   }
-  validateHour(idHour: string): Promise<void> {
+
+  validateHour(){
+    try{
+      this.axiosInstance.put("/heures/valider")
+    }catch(error){
+      console.log("Erreur");
+      
+    }
+    
+  }
+
+  /* validateHour(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.axiosInstance.put(`/heures/valider`, { idHour: idHour })
+      this.axiosInstance.put(`/heures/valider`)
         .then((reponse: any) => {
           resolve();
         }).catch((erreur: any) => {
@@ -184,6 +195,6 @@ export class ServerService {
         }
         )
     })
-  }
+  } */
 }
 
