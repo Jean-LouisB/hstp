@@ -53,14 +53,14 @@ export class ClotureComponent implements OnInit {
   getSoldes() {
     this.apiBDD.getSoldesDuProfil()
       .then((data: any) => {
-        this.heures_supplementaires = heureDecToStr(data.data.heures_supplementaires);
-        this.heures_supplementairesDec = data.data.heures_supplementaires;
+        this.heures_supplementaires = heureDecToStr(data.data.heuresSupMajoree);
+        this.heures_supplementairesDec = data.data.heuresSupMajoree;
         this.recuperation = heureDecToStr(data.data.recuperation);
         this.recuperationDec = data.data.recuperation;
         this.solidarite = heureDecToStr(data.data.solidarite);
         this.solidariteDec = data.data.solidarite;
-        this.aPayerDec = data.data.apayer;
-        this.aPayer = heureDecToStr(data.data.apayer);
+        this.aPayerDec = data.data.heureAPayer;
+        this.aPayer = heureDecToStr(data.data.heureAPayer);
         this.calculSoldeAVentiller()
       });
   }
