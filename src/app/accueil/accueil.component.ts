@@ -7,6 +7,7 @@ import { User } from '../models/userModel';
 import { Subscription } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { heureDecToStr } from '@fabricekopf/date-france';
+import { Arbitrage } from '../models/arbitrage.model';
 
 
 @Component({
@@ -41,10 +42,10 @@ export class AccueilComponent implements OnInit, OnDestroy {
     }
     this.apiBDD.getSoldesDuProfil()
       .then((data: any) => {
-        this.heures_supplementaires = heureDecToStr(data.data.heures_supplementaires);
+        this.heures_supplementaires = heureDecToStr(data.data.heuresSupMajoree);
         this.recuperation = heureDecToStr(data.data.recuperation);
         this.solidarite = heureDecToStr(data.data.solidarite);
-        this.aPayer = heureDecToStr(data.data.apayer)
+        this.aPayer = heureDecToStr(data.data.heureAPayer);
       });
     const mesBornes = this.cookieService.get('bornes');
     const mesBornesJson = JSON.parse(mesBornes) || null;

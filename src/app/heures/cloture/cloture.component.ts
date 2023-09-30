@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { heureDecToStr } from '@fabricekopf/date-france';
 import { HoursService } from 'src/app/services/hours/hours.service';
 import { ServerService } from 'src/app/services/serveur/server.service';
+import { Arbitrage } from 'src/app/models/arbitrage.model';
 
 @Component({
   selector: 'app-cloture',
@@ -26,6 +27,7 @@ export class ClotureComponent implements OnInit {
   affectationJS: number = 0;
   affectationRecup: number = 0;
   affectationHS: number = 0;
+  heuresSuppAffecteeMajoree: number = 0
   affectationAP: number = 0;
   //commutateur
   modifiVentillation: boolean = false;
@@ -73,9 +75,24 @@ export class ClotureComponent implements OnInit {
    * @param id string: c'est l'id de l'heure à valider
    */
   validateHour() {
+    this.majoreHeuresSupp()
+    let arbitrage = new Arbitrage();
+    let ventillation = {
+      matricule: "S058",
+      date: new Date(),
+      commentaire: "Arbitrage de la semaine du BORNE1 à BORNE2",
+      solidarite: this.affectationJS,
+      recuperation: this.affectationRecup,
+      heuresSupMajoree: this.heuresSuppAffecteeMajoree,
+      heureAPayer: this.affectationAP,
+      respValidationStatus: 0,
+    }
+    arbitrage.deserialize(ventillation);
+
+
     try {
-      this.apiBDD.validateHour();
-      
+      this.apiBDD.validateHour(arbitrage);
+
     } catch (error) {
       console.log(error);
     }
@@ -96,5 +113,16 @@ export class ClotureComponent implements OnInit {
     this.modifiVentillation = !this.modifiVentillation
   }
 
+  majoreHeuresSupp(){
+    if(this.affectationHS>0){
+      if(this.affectationHS<=8){
+        this.heuresSuppAffecteeMajoree = this.affectationJS * 1.25;
+      }else{
+        this.heuresSuppAffecteeMajoree = (8*1.25)+((this.affectationJS-8)*1.5);
+      }
+    }else{
+      this.heuresSuppAffecteeMajoree = this.affectationJS;
+    }
+  }
 }
 

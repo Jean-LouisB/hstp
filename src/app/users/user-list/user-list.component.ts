@@ -55,8 +55,10 @@ export class UserListComponent implements OnInit {
       })
 
     this.apiBDD.getSoldes()
-      .then((response) => {
+      .then((response: any) => {
         const tableauDesSoldes = response.data
+        console.log(this.filteredList);
+        
         this.filteredList.forEach((salarie) => {
           salarie.soldes = tableauDesSoldes[salarie.matricule]
         })
@@ -83,7 +85,7 @@ export class UserListComponent implements OnInit {
    */
   fetchUsers() {
     this.apiBDD.getAllUsers().then(
-      (data) => {
+      (data: any) => {
         const list = data.data;
         list.sort((a, b) => a.nom.localeCompare(b.nom))
         this.userList = list;

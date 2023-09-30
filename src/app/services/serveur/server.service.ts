@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { configureAxios } from './config.axios';
 import { formatDate } from '@fabricekopf/date-france';
 import { Heure } from 'src/app/models/heureModel';
+import { Arbitrage } from 'src/app/models/arbitrage.model';
 
 
 
@@ -174,9 +175,9 @@ export class ServerService {
 
   }
 
-  validateHour(){
+  validateHour(arbitrage: Arbitrage){
     try{
-      this.axiosInstance.put("/heures/valider")
+      this.axiosInstance.put("/heures/valider",arbitrage)
     }catch(error){
       console.log("Erreur");
       
