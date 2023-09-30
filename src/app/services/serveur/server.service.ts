@@ -184,18 +184,5 @@ export class ServerService {
     }
     
   }
-
-  /* validateHour(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.axiosInstance.put(`/heures/valider`)
-        .then((reponse: any) => {
-          resolve();
-        }).catch((erreur: any) => {
-          console.error('Erreur lors de la validation : ', erreur);
-          reject(erreur);
-        }
-        )
-    })
-  } */
 }
 

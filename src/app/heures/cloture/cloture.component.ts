@@ -77,6 +77,10 @@ export class ClotureComponent implements OnInit {
   validateHour() {
     this.majoreHeuresSupp()
     let arbitrage = new Arbitrage();
+    let statusPaiement = 0;
+    if(this.affectationAP>0){
+      statusPaiement = 1
+    }
     let ventillation = {
       matricule: "S058",
       date: new Date(),
@@ -86,6 +90,9 @@ export class ClotureComponent implements OnInit {
       heuresSupMajoree: this.heuresSuppAffecteeMajoree,
       heureAPayer: this.affectationAP,
       respValidationStatus: 0,
+      respDateValidation:null,
+      paiementStatus:statusPaiement,
+      datePaiement:null,
     }
     arbitrage.deserialize(ventillation);
 
@@ -121,7 +128,7 @@ export class ClotureComponent implements OnInit {
         this.heuresSuppAffecteeMajoree = (8*1.25)+((this.affectationJS-8)*1.5);
       }
     }else{
-      this.heuresSuppAffecteeMajoree = this.affectationJS;
+      this.heuresSuppAffecteeMajoree = this.affectationHS;
     }
   }
 }
