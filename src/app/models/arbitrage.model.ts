@@ -11,7 +11,7 @@ export class Arbitrage implements Deserializable {
     heuresSupMajoree: number;
     heureAPayer: number;
     //Le responsable    
-    respValidationStatus: number;// 0 = en attente; 1 = validée; 2 = annulée 
+    respValidationStatus: number;// 0 = en attente; 1 = validée; 2 = annulée  (3 = annulée avec l'import initial)
     respDateValidation: Date | null;
     //Action sur l'heure à payer
     paiementStatus: number | null; //0 = pas de demande; 1 = demande; 2 = validée ; 3 = payée(par RH)
