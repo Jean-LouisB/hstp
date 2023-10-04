@@ -113,9 +113,9 @@ export class ClotureComponent implements OnInit {
     }
     arbitrage.deserialize(ventillation);
 
-
     try {
       this.apiBDD.validateHour(arbitrage);
+      this.mesCompteurs.setAutorisationSaisie(false); //une fois l'arbitrage enregistré, l'autorisation passe sur false
     } catch (error) {
       console.log(error);
     }
@@ -184,8 +184,8 @@ export class ClotureComponent implements OnInit {
      */
     getAutorisation(){
       this.mesCompteurs.autorisationSaisie$
-      .subscribe((auto)=>{
-        if(auto === false){
+      .subscribe((autorisation)=>{
+        if(autorisation === false){
           this.router.navigate(['/heures/consulter'])
         }
       })

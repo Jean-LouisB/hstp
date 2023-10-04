@@ -39,6 +39,9 @@ export class HeuresComponent implements OnInit {
       });
   }
 
+  /**
+   * Demande à la BDD si l'utilisateur a l'autorisation de saisie puis l'indique au service pour la mettre à dispo des composants enfants.
+   */
   getAutorisation(){
     this.apiBDD.getAutorisationSaisie().then((autorisation: any)=>{
       this.hoursService.setAutorisationSaisie(autorisation);

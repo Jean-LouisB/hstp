@@ -96,13 +96,15 @@ export class ServerService {
         });
     });
   }
-
+/**
+ * Demande à la BDD si l'utilisateur a le status de saisie sur false ou true
+ * @returns l'autorisation de saisie (boolean)
+ */
   getAutorisationSaisie(){
     return this.axiosInstance.get('/users/autorisationDeSaisie')
     .then((autorisation: any)=>{
       return autorisation.data
     })
-
   }
 
   

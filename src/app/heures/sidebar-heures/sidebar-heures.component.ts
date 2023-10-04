@@ -23,7 +23,9 @@ export class SidebarHeuresComponent implements OnInit {
 
   ngOnInit(): void {
     this.mesCompteurs.getWeekHours();//lance la mise à jour du nombre d'heures non validées
-    this.mesCompteurs.total$.subscribe((total) => {//s'abonne à l'obeservable du service
+    this.mesCompteurs.total$.subscribe((total) => {//s'abonne à l'obeservable du service dont il vient de lancer la mise à jour
+      
+      // si le nombre d'heure en cours est > 0 la pastille apparait dans le menu avec le nombre d'heures :
       if(total != 0){
         this.interupteurPastille = true;
       }else{
@@ -31,14 +33,15 @@ export class SidebarHeuresComponent implements OnInit {
       }
       this.totalCompteurNotValidated = heureDecToStr(total);
     })
+    //Demande l'autorisation d'apparaitre
     this.getAutorisation();
   }
 
 
   getAutorisation(){
     this.mesCompteurs.autorisationSaisie$
-    .subscribe((auto)=>{
-      this.autoriseLaSaisie = auto
+    .subscribe((autorisation)=>{
+      this.autoriseLaSaisie = autorisation
     })
   }
 
