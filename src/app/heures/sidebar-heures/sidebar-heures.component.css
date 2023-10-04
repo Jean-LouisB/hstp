@@ -16,3 +16,15 @@
     font-size: 0.6em;
     border-radius: 50%;
 }
+
+#sideBar {
+    position: fixed;
+    left: 0;
+    width: 25%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.cardPerso {
+    max-width: 100%;
+}

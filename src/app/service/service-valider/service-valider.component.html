@@ -1,1 +1,55 @@
-<p>service-valider works!</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12-sm col-md-12 col-lg-6 mb-3" *ngFor="let arbitrage of mesArbitrages">
+            <div class="card p-0 shadow mb-4">
+                <h5 class="card-title p-3 bg-success text-white rounded-top d-flex justify-content-between">
+                    {{ arbitrage["prenom"] }} {{ arbitrage["nom"] }}
+                </h5>
+                <div class="card-body p-3">
+                    <div class="card-text">
+                        {{ arbitrage["commentaire"] }}
+                    </div>
+                    <hr>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Solde avant</th>
+                                <th>A valider</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Heures supp. :</th>
+                                <td>{{heureDecimaleEnStr(arbitrage['heuresSupMajoree'])}}</td>
+                                <td>{{heureDecimaleEnStr(arbitrage['heuresSupMajoree'])}}</td>
+                            </tr>
+                            <tr>
+                                <th>Récupération :</th>
+                                <td>{{heureDecimaleEnStr(arbitrage['recuperation'])}}</td>
+                                <td>{{heureDecimaleEnStr(arbitrage['recuperation'])}}</td>
+                            </tr>
+                            <tr>
+                                <th>Solidarité</th>
+                                <td>{{heureDecimaleEnStr(arbitrage['solidarite'])}}</td>
+                                <td>{{heureDecimaleEnStr(arbitrage['solidarite'])}}</td>
+                            </tr>
+                            <tr>
+                                <th>A payer</th>
+                                <td>{{heureDecimaleEnStr(arbitrage['heureAPayer'])}}</td>
+                                <td>{{heureDecimaleEnStr(arbitrage['heureAPayer'])}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <hr>
+                    <div class="container-fluid d-flex justify-content-around mb-3">
+                        <button class="btn btn-outline-success" (click)="valideArbitrage(arbitrage['_id'])">VALIDER</button>
+                        <button class="btn btn-outline-danger">ANNULER</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

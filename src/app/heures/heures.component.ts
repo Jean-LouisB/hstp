@@ -5,6 +5,7 @@ import { ServerService } from '../services/serveur/server.service';
 import { setUser } from '../state/session/session.actions';
 import { SessionState } from '../state/session/session.reducers';
 import { HoursService } from '../services/hours/hours.service';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class HeuresComponent implements OnInit {
     private apiBDD: ServerService,
     private store: Store<{ session: SessionState }>,
     private hoursService: HoursService,
+    private cookieService: CookieService,
   ) { }
 
   ngOnInit(): void {

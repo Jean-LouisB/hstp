@@ -16,6 +16,7 @@ export class Arbitrage implements Deserializable {
     //Action sur l'heure à payer
     paiementStatus: number | null; //0 = pas de demande; 1 = demande; 2 = validée ; 3 = payée(par RH)
     datePaiement:Date | null;
+    responsable: string;
 
     constructor() {
     }

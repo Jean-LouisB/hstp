@@ -35,7 +35,7 @@ export class ServerService {
         .then((response) => {
           const msg = response.data.message
           const token = response.data.token; //token de sécurité
-           this.cookieService.set('session', token, null, '/', null, true, 'Strict');
+          this.cookieService.set('session', token, null, '/', null, true, 'Strict');
 
           //récupération de la date des bornes et création du cookie
           const bornes = response.data.bornes; // bornes de saisie retournée par le serveur
@@ -96,18 +96,18 @@ export class ServerService {
         });
     });
   }
-/**
- * Demande à la BDD si l'utilisateur a le status de saisie sur false ou true
- * @returns l'autorisation de saisie (boolean)
- */
-  getAutorisationSaisie(){
+  /**
+   * Demande à la BDD si l'utilisateur a le status de saisie sur false ou true
+   * @returns l'autorisation de saisie (boolean)
+   */
+  getAutorisationSaisie() {
     return this.axiosInstance.get('/users/autorisationDeSaisie')
-    .then((autorisation: any)=>{
-      return autorisation.data
-    })
+      .then((autorisation: any) => {
+        return autorisation.data
+      })
   }
 
-  
+
   /**
    * 
    * @returns la liste de tous les utilisateurs
@@ -158,7 +158,7 @@ export class ServerService {
     return this.axiosInstance.get('/compteurs/soldes/user');
   }
 
-  getArbitrageDuProfil(){
+  getArbitrageDuProfil() {
     return this.axiosInstance.get('/compteurs/arbitrage/user');
   }
 
@@ -191,18 +191,34 @@ export class ServerService {
     })
 
   }
-/**
- * Est appelée par la clôture pour créer l"arbitrage à valider par le responsable.
- * @param arbitrage 
- */
-  validateHour(arbitrage: Arbitrage){
-    try{
-      this.axiosInstance.put("/heures/valider",arbitrage)
-    }catch(error){
+  /**
+   * Est appelée par la clôture pour créer l"arbitrage à valider par le responsable.
+   * @param arbitrage 
+   */
+  validateHour(arbitrage: Arbitrage) {
+    try {
+      this.axiosInstance.put("/heures/valider", arbitrage)
+    } catch (error) {
       console.log("Erreur");
-      
+
     }
-    
+
   }
+
+  mesArbitrageAValider(): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      this.axiosInstance.get("/responsable/consulter/arbitrages")
+        .then((response: any) => {
+          resolve(response);
+        }).catch((error: any) => {
+          console.log(error);
+          reject(error);
+        })
+    }
+    )
+  }
+
+
+
 }
 

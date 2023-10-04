@@ -17,9 +17,9 @@ import { Router } from '@angular/router';
 })
 export class ClotureComponent implements OnInit {
   date_debut: Date = null;
-  date_debut_str: string ='';
+  date_debut_str: string = '';
   date_fin: Date = null;
-  date_fin_str: string ='';
+  date_fin_str: string = '';
   matricule: string = '';
   monTableauDHeure = [];
   totalDesHeuresValidees: number = 0;
@@ -42,7 +42,8 @@ export class ClotureComponent implements OnInit {
   affectationAP: number = 0;
   //commutateur
   modifiVentillation: boolean = false;
-
+  //Nom du responsable
+  responsable: string = ''
   constructor(
     private mesCompteurs: HoursService,
     private apiBDD: ServerService,
@@ -94,10 +95,10 @@ export class ClotureComponent implements OnInit {
     this.majoreHeuresSupp()
     let arbitrage = new Arbitrage();
     let statusPaiement = 0;
-    if(this.affectationAP>0){
+    if (this.affectationAP > 0) {
       statusPaiement = 1
     }
-    const commentaire_avec_dates = "Arbitrage de la semaine du "+this.date_debut_str+" au "+this.date_fin_str
+    const commentaire_avec_dates = "Arbitrage de la semaine du " + this.date_debut_str + " au " + this.date_fin_str
     let ventillation = {
       matricule: this.matricule,
       date: new Date(),
@@ -107,9 +108,10 @@ export class ClotureComponent implements OnInit {
       heuresSupMajoree: this.heuresSuppAffecteeMajoree,
       heureAPayer: this.affectationAP,
       respValidationStatus: 0,
-      respDateValidation:null,
-      paiementStatus:statusPaiement,
-      datePaiement:null,
+      respDateValidation: null,
+      paiementStatus: statusPaiement,
+      datePaiement: null,
+      responsable: this.responsable, 
     }
     arbitrage.deserialize(ventillation);
 
@@ -143,14 +145,14 @@ export class ClotureComponent implements OnInit {
   /**
    * Calcul le temps majoré pour l'arbitrage
    */
-  majoreHeuresSupp(){
-    if(this.affectationHS>0){
-      if(this.affectationHS<=8){
+  majoreHeuresSupp() {
+    if (this.affectationHS > 0) {
+      if (this.affectationHS <= 8) {
         this.heuresSuppAffecteeMajoree = this.affectationHS * 1.25;
-      }else{
-        this.heuresSuppAffecteeMajoree = (8*1.25)+((this.affectationHS-8)*1.5);
+      } else {
+        this.heuresSuppAffecteeMajoree = (8 * 1.25) + ((this.affectationHS - 8) * 1.5);
       }
-    }else{
+    } else {
       this.heuresSuppAffecteeMajoree = this.affectationHS;
     }
   }
@@ -158,38 +160,39 @@ export class ClotureComponent implements OnInit {
   /**
    * récupère les bornes dans le cookie pour l'arbitrage
    */
-    getBornes(){
-      const mesBornes = this.cookieService.get('bornes');
-      const mesBornesJson = JSON.parse(mesBornes) || null;
-      this.date_debut = new Date(mesBornesJson['date_debut']);
-      this.date_debut_str = formatDate(mesBornesJson['date_debut']).dateCourte
-      this.date_fin = new Date(mesBornesJson['date_fin']);
-      this.date_fin_str = formatDate(mesBornesJson['date_fin']).dateCourte
-    }
+  getBornes() {
+    const mesBornes = this.cookieService.get('bornes');
+    const mesBornesJson = JSON.parse(mesBornes) || null;
+    this.date_debut = new Date(mesBornesJson['date_debut']);
+    this.date_debut_str = formatDate(mesBornesJson['date_debut']).dateCourte
+    this.date_fin = new Date(mesBornesJson['date_fin']);
+    this.date_fin_str = formatDate(mesBornesJson['date_fin']).dateCourte
+  }
 
-    /**
-     * Récupère le matricule du salarié connecté pour l'arbitrage
-     */
-    getNameUserState() {
-      this.store.pipe(select(state => state.session.userState))
-        .subscribe((userData: { user: User | null }) => {
-          this.matricule = userData.user.matricule;
-        });
-  
-    }
+  /**
+   * Récupère le matricule du salarié connecté pour l'arbitrage
+   */
+  getNameUserState() {
+    this.store.pipe(select(state => state.session.userState))
+      .subscribe((userData: { user: User | null }) => {
+        this.matricule = userData.user.matricule;
+        this.responsable = userData.user.responsable;
+      });
 
-    /**
-     * Si le salarié a déjà cloturé sa semaine, il n'a plus le droit de saisir en attendant la semaine suivante.
-     * Cette requête permet de contrôler cet etat et de le rediriger si besoin.
-     */
-    getAutorisation(){
-      this.mesCompteurs.autorisationSaisie$
-      .subscribe((autorisation)=>{
-        if(autorisation === false){
+  }
+
+  /**
+   * Si le salarié a déjà cloturé sa semaine, il n'a plus le droit de saisir en attendant la semaine suivante.
+   * Cette requête permet de contrôler cet etat et de le rediriger si besoin.
+   */
+  getAutorisation() {
+    this.mesCompteurs.autorisationSaisie$
+      .subscribe((autorisation) => {
+        if (autorisation === false) {
           this.router.navigate(['/heures/consulter'])
         }
       })
-    }
+  }
 
 
 }

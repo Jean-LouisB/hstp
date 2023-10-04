@@ -1,4 +1,5 @@
 <div class="container-fluid p-3">
+    <div *ngIf="totalCompteurNotValidated == 0">Rien à consulter pour le moment pour cette semaine.</div>
     <div class="card p-3 shadow" *ngIf="totalCompteurNotValidated != 0">
         <p class="h3 mb-3">Consulter, supprimer.<br></p>
         <p>Vous avez un total de <span class="text-danger fw-semibold">{{ heureDecimaleEnStr(totalCompteurNotValidated)

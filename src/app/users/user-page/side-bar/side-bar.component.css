@@ -1,8 +1,11 @@
-#sideBar{
-    position:fixed;
-    left:0;
+#sideBar {
+    position: fixed;
+    left: 0;
     width: 25%;
+    max-height: 80vh;
+    overflow-y: auto;
 }
-.cardPerso{
+
+.cardPerso {
     max-width: 100%;
 }
