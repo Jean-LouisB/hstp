@@ -20,9 +20,9 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
     path: 'heures', component: HeuresComponent, children: [
+      { path: 'consulter', component: HeuresConsulteComponent },
       { path: 'declarer', component: HeuresDeclareComponent },
       { path: 'cloturer', component: ClotureComponent },
-      { path: 'consulter', component: HeuresConsulteComponent },
       { path: 'archives', component: HeuresArchivesComponent },
     ]
   },

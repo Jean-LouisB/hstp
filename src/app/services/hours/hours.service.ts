@@ -4,6 +4,7 @@ import { formatDate } from '@fabricekopf/date-france';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable, Subject } from 'rxjs';
 
+
 /**
  * Ce service fourni les observables contenant les compteurs
  * 
@@ -15,8 +16,9 @@ export class HoursService {
   //totalSubject et total$=> c'est le total d'heures enregistrées mais non validées par l'utilisateur
   private totalSubject: Subject<any> = new Subject<any>();
   total$: Observable<any> = this.totalSubject.asObservable();
+  private autorisationSaisieSubject: Subject<any> = new Subject<any>();
+  autorisationSaisie$: Observable<any> = this.autorisationSaisieSubject.asObservable();
   //----------------------
-
   constructor(
     private apiBDD: ServerService,
     private cookieService: CookieService,
@@ -49,6 +51,15 @@ export class HoursService {
       })
 
   }
+/**
+ * 
+ * @param data : boolean. 
+ * autorisationSaisieSubject fourni l'autorisation de saisie ou non. 
+ * Si le salarié a déjà clôturé sa semaine, il n'a plus le droit. C'est cette requête qui modifie cette autorisation.
+ */
+  setAutorisationSaisie(data: boolean){
+    this.autorisationSaisieSubject.next(data);
+  }
 
 
   /**
@@ -66,4 +77,7 @@ export class HoursService {
     const bornes = debutPourBornes + " au " + finPourBornes;
     return bornes;
   }
+
+
+
 }

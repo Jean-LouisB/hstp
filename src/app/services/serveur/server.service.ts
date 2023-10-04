@@ -34,9 +34,11 @@ export class ServerService {
       this.axiosInstance.post(`/connexion/login`, { credential })
         .then((response) => {
           const msg = response.data.message
-          const token = response.data.token;
-          //récupèration de la date des bornes
-          const bornes = response.data.bornes;
+          const token = response.data.token; //token de sécurité
+           this.cookieService.set('session', token, null, '/', null, true, 'Strict');
+
+          //récupération de la date des bornes et création du cookie
+          const bornes = response.data.bornes; // bornes de saisie retournée par le serveur
           const date_debut = formatDate(bornes['0']['date_debut']);
           const date_fin = formatDate(bornes['0']['date_fin']);
           const bornesPourCookies = {
@@ -44,14 +46,13 @@ export class ServerService {
             'date_fin': date_fin.normalDate
           }
           const bornesJSON = JSON.stringify(bornesPourCookies);
-          this.cookieService.set('session', token, null, '/', null, true, 'Strict');
           this.cookieService.set('bornes', bornesJSON, null, '/', null, true, 'Strict');
 
-          observable.next(msg);
+          observable.next(msg);//permet à la requête appelante de surveiller le message de retour et réagir en fonction.
           observable.complete();
         }).catch(err => {
           const msg = "Le serveur ne répond pas";
-          observable.next(msg);
+          observable.next(msg);//permet à la requête appelante de surveiller le message de retour et réagir en fonction.
           console.log("Le serveur ne répond pas");
         })
     }))
@@ -78,6 +79,7 @@ export class ServerService {
     return new Observable<any>((observable) => {
       this.axiosInstance.get('/users/profil')
         .then((response) => {
+          user.saisieAutorisee = response.data.saisieAutorisee;
           user.nom = response.data.Nom;
           user.prenom = response.data.Prenom;
           user.matricule = response.data.Matricule;
@@ -95,6 +97,15 @@ export class ServerService {
     });
   }
 
+  getAutorisationSaisie(){
+    return this.axiosInstance.get('/users/autorisationDeSaisie')
+    .then((autorisation: any)=>{
+      return autorisation.data
+    })
+
+  }
+
+  
   /**
    * 
    * @returns la liste de tous les utilisateurs
@@ -145,6 +156,10 @@ export class ServerService {
     return this.axiosInstance.get('/compteurs/soldes/user');
   }
 
+  getArbitrageDuProfil(){
+    return this.axiosInstance.get('/compteurs/arbitrage/user');
+  }
+
   /**
    * Ajoute une heure dans la semaine du salarié.
    */
@@ -174,7 +189,10 @@ export class ServerService {
     })
 
   }
-
+/**
+ * Est appelée par la clôture pour créer l"arbitrage à valider par le responsable.
+ * @param arbitrage 
+ */
   validateHour(arbitrage: Arbitrage){
     try{
       this.axiosInstance.put("/heures/valider",arbitrage)
