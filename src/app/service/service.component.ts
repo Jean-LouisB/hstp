@@ -32,7 +32,10 @@ export class ServiceComponent implements OnInit{
       })
     }
   }
-
+/**
+ * récupère le salarié connecté et vérifie les droits d'accés.
+ * Sinon redirige à l'accueil
+ */
   getNameUserState() {
     this.userSubscription = this.store.pipe(select(state => state.session.userState))
       .subscribe((userData: { user: User | null }) => {

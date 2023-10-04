@@ -13,6 +13,8 @@ import { HeuresDeclareComponent } from './heures/heures-declare/heures-declare.c
 import { HeuresConsulteComponent } from './heures/heures-consulte/heures-consulte.component';
 import { HeuresArchivesComponent } from './heures/heures-archives/heures-archives.component';
 import { ClotureComponent } from './heures/cloture/cloture.component';
+import { ServiceConsulterComponent } from './service/service-consulter/service-consulter.component';
+import { ServiceValiderComponent } from './service/service-valider/service-valider.component';
 
 
 const routes: Routes = [
@@ -26,7 +28,12 @@ const routes: Routes = [
       { path: 'archives', component: HeuresArchivesComponent },
     ]
   },
-  { path: 'service', component: ServiceComponent },
+  {
+    path: 'service', component: ServiceComponent, children: [
+      { path: 'consulter', component: ServiceConsulterComponent },
+      { path: 'valider', component: ServiceValiderComponent }
+    ]
+  },
   { path: 'entreprise', component: EntrepriseComponent },
   {
     path: 'users', component: UserPageComponent, children: [

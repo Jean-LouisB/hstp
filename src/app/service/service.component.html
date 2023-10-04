@@ -1,4 +1,8 @@
-<div *ngIf="(user)">
-    <p>service works!</p>
+<div class="container-fluid mt-5 pt-3">
+    <div class="row">
+        <app-sidebar-service class="col-3"></app-sidebar-service>
+        <div class="col-9">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
 </div>
-

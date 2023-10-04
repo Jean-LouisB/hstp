@@ -23,6 +23,9 @@ import { HeuresDeclareComponent } from './heures/heures-declare/heures-declare.c
 import { HeuresConsulteComponent } from './heures/heures-consulte/heures-consulte.component';
 import { HeuresArchivesComponent } from './heures/heures-archives/heures-archives.component';
 import { ClotureComponent } from './heures/cloture/cloture.component';
+import { SidebarServiceComponent } from './service/sidebar-service/sidebar-service.component';
+import { ServiceConsulterComponent } from './service/service-consulter/service-consulter.component';
+import { ServiceValiderComponent } from './service/service-valider/service-valider.component';
 
 
 
@@ -46,6 +49,9 @@ import { ClotureComponent } from './heures/cloture/cloture.component';
     HeuresConsulteComponent,
     HeuresArchivesComponent,
     ClotureComponent,
+    SidebarServiceComponent,
+    ServiceConsulterComponent,
+    ServiceValiderComponent,
   ],
   imports: [
     BrowserModule,
