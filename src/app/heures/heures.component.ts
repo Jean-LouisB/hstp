@@ -4,6 +4,7 @@ import { User } from '../models/userModel';
 import { ServerService } from '../services/serveur/server.service';
 import { setUser } from '../state/session/session.actions';
 import { SessionState } from '../state/session/session.reducers';
+import { HoursService } from '../services/hours/hours.service';
 
 
 @Component({
@@ -17,9 +18,11 @@ export class HeuresComponent implements OnInit {
   constructor(
     private apiBDD: ServerService,
     private store: Store<{ session: SessionState }>,
+    private hoursService: HoursService,
   ) { }
 
   ngOnInit(): void {
+    this.getAutorisation()
     this.getNameUserState(); //récupération du profil de l'utilisateur
     if (this.user == null) {
       this.apiBDD.getUserProfil().subscribe((data) => {
@@ -34,6 +37,12 @@ export class HeuresComponent implements OnInit {
       .subscribe((userData: { user: User | null }) => {
         this.user = userData.user;
       });
+  }
+
+  getAutorisation(){
+    this.apiBDD.getAutorisationSaisie().then((autorisation: any)=>{
+      this.hoursService.setAutorisationSaisie(autorisation);
+    })
   }
 
 

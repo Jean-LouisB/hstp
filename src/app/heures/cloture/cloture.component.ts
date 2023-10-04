@@ -3,6 +3,12 @@ import { heureDecToStr } from '@fabricekopf/date-france';
 import { HoursService } from 'src/app/services/hours/hours.service';
 import { ServerService } from 'src/app/services/serveur/server.service';
 import { Arbitrage } from 'src/app/models/arbitrage.model';
+import { CookieService } from 'ngx-cookie-service';
+import { formatDate } from '@fabricekopf/date-france';
+import { Store, select } from '@ngrx/store';
+import { SessionState } from 'src/app/state/session/session.reducers';
+import { User } from 'src/app/models/userModel';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cloture',
@@ -10,6 +16,11 @@ import { Arbitrage } from 'src/app/models/arbitrage.model';
   styleUrls: ['./cloture.component.css']
 })
 export class ClotureComponent implements OnInit {
+  date_debut: Date = null;
+  date_debut_str: string ='';
+  date_fin: Date = null;
+  date_fin_str: string ='';
+  matricule: string = '';
   monTableauDHeure = [];
   totalDesHeuresValidees: number = 0;
   bornes: string = null;
@@ -35,10 +46,14 @@ export class ClotureComponent implements OnInit {
   constructor(
     private mesCompteurs: HoursService,
     private apiBDD: ServerService,
+    private cookieService: CookieService,
+    private store: Store<{ session: SessionState }>,
+    private router: Router,
   ) { }
 
 
   ngOnInit(): void {
+    this.getAutorisation()
     this.mesCompteurs.getWeekHours()
       .then((fetchData) => {
         this.monTableauDHeure = fetchData['detail'].filter((hour: any) => hour.valide === 0);
@@ -47,7 +62,8 @@ export class ClotureComponent implements OnInit {
         })
       })
     this.getSoldes();
-
+    this.getBornes();
+    this.getNameUserState();
   }
 
   getSoldes() {
@@ -71,7 +87,7 @@ export class ClotureComponent implements OnInit {
 
 
   /**
-   * Valide l'heure selectionnée par son id
+   * Valide la ventilation. Crée un arbitrage et l'envoi en paramètre au serveur
    * @param id string: c'est l'id de l'heure à valider
    */
   validateHour() {
@@ -81,10 +97,11 @@ export class ClotureComponent implements OnInit {
     if(this.affectationAP>0){
       statusPaiement = 1
     }
+    const commentaire_avec_dates = "Arbitrage de la semaine du "+this.date_debut_str+" au "+this.date_fin_str
     let ventillation = {
-      matricule: "S058",
+      matricule: this.matricule,
       date: new Date(),
-      commentaire: "Arbitrage de la semaine du BORNE1 à BORNE2",
+      commentaire: commentaire_avec_dates,
       solidarite: this.affectationJS,
       recuperation: this.affectationRecup,
       heuresSupMajoree: this.heuresSuppAffecteeMajoree,
@@ -99,7 +116,6 @@ export class ClotureComponent implements OnInit {
 
     try {
       this.apiBDD.validateHour(arbitrage);
-
     } catch (error) {
       console.log(error);
     }
@@ -116,20 +132,65 @@ export class ClotureComponent implements OnInit {
     return heureDecToStr(decimale);
   }
 
+  /**
+   * Commutateur d'affichage.
+   * Fait apparaitre ou non les boutons lorsque la répartition est complète.
+   */
   commute() {
     this.modifiVentillation = !this.modifiVentillation
   }
 
+  /**
+   * Calcul le temps majoré pour l'arbitrage
+   */
   majoreHeuresSupp(){
     if(this.affectationHS>0){
       if(this.affectationHS<=8){
-        this.heuresSuppAffecteeMajoree = this.affectationJS * 1.25;
+        this.heuresSuppAffecteeMajoree = this.affectationHS * 1.25;
       }else{
-        this.heuresSuppAffecteeMajoree = (8*1.25)+((this.affectationJS-8)*1.5);
+        this.heuresSuppAffecteeMajoree = (8*1.25)+((this.affectationHS-8)*1.5);
       }
     }else{
       this.heuresSuppAffecteeMajoree = this.affectationHS;
     }
   }
+
+  /**
+   * récupère les bornes dans le cookie pour l'arbitrage
+   */
+    getBornes(){
+      const mesBornes = this.cookieService.get('bornes');
+      const mesBornesJson = JSON.parse(mesBornes) || null;
+      this.date_debut = new Date(mesBornesJson['date_debut']);
+      this.date_debut_str = formatDate(mesBornesJson['date_debut']).dateCourte
+      this.date_fin = new Date(mesBornesJson['date_fin']);
+      this.date_fin_str = formatDate(mesBornesJson['date_fin']).dateCourte
+    }
+
+    /**
+     * Récupère le matricule du salarié connecté pour l'arbitrage
+     */
+    getNameUserState() {
+      this.store.pipe(select(state => state.session.userState))
+        .subscribe((userData: { user: User | null }) => {
+          this.matricule = userData.user.matricule;
+        });
+  
+    }
+
+    /**
+     * Si le salarié a déjà cloturé sa semaine, il n'a plus le droit de saisir en attendant la semaine suivante.
+     * Cette requête permet de contrôler cet etat et de le rediriger si besoin.
+     */
+    getAutorisation(){
+      this.mesCompteurs.autorisationSaisie$
+      .subscribe((auto)=>{
+        if(auto === false){
+          this.router.navigate(['/heures/consulter'])
+        }
+      })
+    }
+
+
 }
 

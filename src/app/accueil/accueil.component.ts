@@ -7,7 +7,7 @@ import { User } from '../models/userModel';
 import { Subscription } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { heureDecToStr } from '@fabricekopf/date-france';
-import { Arbitrage } from '../models/arbitrage.model';
+
 
 
 @Component({

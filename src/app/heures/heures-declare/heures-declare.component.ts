@@ -6,6 +6,8 @@ import { ServerService } from 'src/app/services/serveur/server.service';
 import { Store, select } from '@ngrx/store';
 import { SessionState } from 'src/app/state/session/session.reducers';
 import { User } from 'src/app/models/userModel';
+import { HoursService } from 'src/app/services/hours/hours.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -30,10 +32,13 @@ export class HeuresDeclareComponent implements OnInit {
     private cookieService: CookieService,
     private apiDBB: ServerService,
     private store: Store<{ session: SessionState }>,
+    private mesCompteurs: HoursService,
+    private router: Router,
   ) { }
 
 
   ngOnInit(): void {
+    this.getAutorisation()
     this.getNameUserState();
     this.getDatesDeSaisie();
   }
@@ -138,5 +143,14 @@ export class HeuresDeclareComponent implements OnInit {
       });
 
   }
+  getAutorisation(){
+    this.mesCompteurs.autorisationSaisie$
+    .subscribe((auto)=>{
+      if(auto === false){
+        this.router.navigate(['/heures/consulter'])
+      }
+    })
+  }
+  
 
 }

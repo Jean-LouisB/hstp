@@ -54,7 +54,8 @@
 
             </tr>
             <tr>
-                <th colspan="3" class="cellCenter"><span *ngIf="resteAVentiller >= 0">Reste</span> <span *ngIf="resteAVentiller < 0" class="text-danger">
+                <th colspan="3" class="cellCenter"><span *ngIf="resteAVentiller >= 0">Reste</span> <span
+                        *ngIf="resteAVentiller < 0" class="text-danger">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
                             <path
@@ -71,11 +72,13 @@
             </tr>
         </tbody>
     </table>
-    <button class="btn btn-outline-danger me-3" *ngIf="resteAVentiller===0" (click)="commute()">MODIFIER</button>
-    <button class="btn btn-outline-success" *ngIf="resteAVentiller===0" (click)="validateHour()">VALIDER</button>
+    <button class="btn btn-outline-danger me-3" *ngIf="resteAVentiller===0 && totalDesHeuresValidees !=0"
+        (click)="commute()">MODIFIER</button>
+    <button class="btn btn-outline-success" *ngIf="resteAVentiller===0 && totalDesHeuresValidees !=0"
+        (click)="validateHour()">VALIDER</button>
     <hr>
-    <p class="h5">Pour mémoire :</p>
-    <div class="card p-3 shadow">
+    <div *ngIf="totalDesHeuresValidees !=0" class="card p-3 shadow">
+        <p class="h5">Pour mémoire :</p>
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
