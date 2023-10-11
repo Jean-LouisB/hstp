@@ -115,6 +115,12 @@ export class ServerService {
   getAllUsers() {
     return this.axiosInstance.get(`/users/allusers`);
   }
+
+  /**
+   *  EST-ELLE UTILISEE ?? => A SUPPRIMER
+   * @param id 
+   * @returns 
+   */
   getUserById(id: string) {
     //Fournit les données de l'utilisateur selon son id
     return this.axiosInstance.get(`/find_user_by_id/${id}`)
@@ -217,6 +223,15 @@ export class ServerService {
     }
     )
   }
+
+  valideArbitrage(id:string, heure:number){
+    console.log("id : "+id);
+    
+    this.axiosInstance.put('/responsable/valider/arbitrages',{'id':id,'heure':heure})
+    .then((reponse:any)=>{
+      console.log(reponse.data);
+    })
+  } 
 
 
 
