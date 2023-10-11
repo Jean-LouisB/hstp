@@ -6,9 +6,9 @@
     <nav class="collapse navbar-collapse" id="navContent">
         <ul class="navbar-nav ms-auto">
             <li class="nav-item" routerLinkActive="activeBtn"><a class="nav-link text-white" routerLink="/accueil">Accueil</a></li>
-            <li class="nav-item" routerLinkActive="activeBtn"><a class="nav-link text-white" routerLink="/heures/consulter">Mes heures</a></li>
-            <li *ngIf="(user.type >= 2)" class="nav-item" routerLinkActive="activeBtn"><a class="nav-link text-white" routerLink="/service/consulter">Mon service</a></li>
-            <li *ngIf="(user.type == 3)" class="nav-item" routerLinkActive="activeBtn"><a class="nav-link text-white" routerLink="/users/liste">Supervision</a></li>
+            <li class="nav-item" routerLinkActive="activeBtn"><a class="nav-link text-white" routerLink="/heures">Mes heures</a></li>
+            <li *ngIf="(user.type >= 2)" class="nav-item" routerLinkActive="activeBtn"><a class="nav-link text-white" routerLink="/service">Mon service</a></li>
+            <li *ngIf="(user.type == 3)" class="nav-item" routerLinkActive="activeBtn"><a class="nav-link text-white" routerLink="/users">Supervision</a></li>
             <li class="nav-item" routerLinkActive="active"><a class="nav-link text-white" routerLink="/"
                     (click)="handleOnLoout()">Déconnexion</a>
             </li>

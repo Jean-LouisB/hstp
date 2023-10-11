@@ -22,6 +22,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
     path: 'heures', component: HeuresComponent, children: [
+      { path: '', redirectTo: 'consulter', pathMatch: 'full'},
       { path: 'consulter', component: HeuresConsulteComponent },
       { path: 'declarer', component: HeuresDeclareComponent },
       { path: 'cloturer', component: ClotureComponent },
@@ -30,6 +31,7 @@ const routes: Routes = [
   },
   {
     path: 'service', component: ServiceComponent, children: [
+      { path: '', redirectTo: 'valider', pathMatch: 'full'},
       { path: 'consulter', component: ServiceConsulterComponent },
       { path: 'valider', component: ServiceValiderComponent }
     ]
@@ -37,6 +39,7 @@ const routes: Routes = [
   { path: 'entreprise', component: EntrepriseComponent },
   {
     path: 'users', component: UserPageComponent, children: [
+      { path: '', redirectTo: 'liste', pathMatch: 'full'},
       { path: 'liste', component: UserListComponent },
       { path: 'ajout', component: UserAddComponent },
     ]
