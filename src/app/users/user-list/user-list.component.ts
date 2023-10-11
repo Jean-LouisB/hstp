@@ -57,18 +57,26 @@ export class UserListComponent implements OnInit {
     this.apiBDD.getSoldes()
       .then((response: any) => {
         const tableauDesSoldes = response.data
-        console.log(this.filteredList);
-        
         this.filteredList.forEach((salarie) => {
-          salarie.soldes = tableauDesSoldes[salarie.matricule]
+          if (!tableauDesSoldes[salarie.matricule]) {
+            salarie.soldes = {
+              'heuresSupMajoree': 0,
+              'recuperation': 0,
+              'solidarite': 0,
+              'heureAPayer': 0,
+            }
+          } else {
+            salarie.soldes = tableauDesSoldes[salarie.matricule]
+          }
         })
       })
       .catch((erreur) => {
         console.log("Erreur dans la récupèreation des soldes");
 
       })
-    
+
     this.countEmployees()
+
   }
   /**
    * Cette fonction bascule le booléen qui gère l'affichage des absents

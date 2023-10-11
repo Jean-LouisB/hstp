@@ -26,13 +26,12 @@ export class UserCardComponent implements OnInit {
 
   constructor(
     private apiBDD: ServerService,
-  ){
-    
+  ) {
+
   }
 
-  ngOnInit(){
+  ngOnInit() {
 
- 
   }
   /**
    * Au clic sur le bouton, 
@@ -40,7 +39,7 @@ export class UserCardComponent implements OnInit {
    * @param presence état de la présence en cours 0 ou 1 
    * Demande au serveur de modifier la présence du salarié 1 à 0 ou 0 à 1 selon l'état courant.
    */
-  handleOnChangePresent(matricule, presence) {
+  handleOnChangePresent(matricule: string, presence: any) {
     this.apiBDD.putPresenceToggle(matricule, presence).then(
       () => {
         // Émettre l'événement pour informer le composant parent de la mise à jour
@@ -52,10 +51,13 @@ export class UserCardComponent implements OnInit {
     );
   }
 
+  testLogListe() {
+    this.users.forEach(user => console.log(user.nom))
+  }
   /**
    * commute l'attribut okToModify qui gère l'affichage des champs
    */
-  commuteModify(user: User){
+  commuteModify(user: User) {
     this.idToModify = user.id;
     this.nameToModify = user.nom;
     this.firstNameToModify = user.prenom;
@@ -63,23 +65,22 @@ export class UserCardComponent implements OnInit {
     this.droitsToModify = user.type;
   }
 
-  cancelModification(){
+  cancelModification() {
     this.idToModify = null;
-
   }
 
-  
+
   /**
    * 
    * Modifier la fiche:
    */
-  handleOnModify(user: User){
+  handleOnModify(user: User) {
     const updatedUser = {
       ...user,
-      nom:this.nameToModify,
-      prenom:this.firstNameToModify,
-      responsable:this.respToModify,
-      type:this.droitsToModify,
+      nom: this.nameToModify,
+      prenom: this.firstNameToModify,
+      responsable: this.respToModify,
+      type: this.droitsToModify,
     }
     const userUpdatedToSend = new User().deserialize(updatedUser)
     this.apiBDD.putModifyUser(userUpdatedToSend);
@@ -92,10 +93,8 @@ export class UserCardComponent implements OnInit {
    * @param matricule du salarié recherché
    * @returns le prénom et nom du salarié
    */
-  findUserByMatricule(mat: string){
-    const userToFind = this.users.find(user=>
-      user.matricule === mat
-    )
-    return userToFind.prenom+" "+userToFind.nom
+  findUserByMatricule(mat: string) {
+    const userToFind = this.users.find(user => user.matricule === mat)
+    return userToFind.prenom + " " + userToFind.nom
   }
 }
