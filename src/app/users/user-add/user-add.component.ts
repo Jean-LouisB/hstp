@@ -4,6 +4,8 @@ import { User } from 'src/app/models/userModel';
 import { environment } from 'src/app/environnement';
 import { ServerService } from 'src/app/services/serveur/server.service';
 import { Router } from '@angular/router';
+import { Arbitrage } from 'src/app/models/arbitrage.model';
+import { HoursService } from 'src/app/services/hours/hours.service';
 const salt = environment.salt;
 
 @Component({
@@ -20,6 +22,8 @@ export class UserAddComponent implements OnInit {
   passwordRaw = null;
   passwordHash = null;
   newUser: User = new User();
+  solidariteDeDepart: number = 0;
+  msgErreurSolidarite:String = null;
 
   constructor(
     private apiBDD: ServerService,
@@ -27,7 +31,6 @@ export class UserAddComponent implements OnInit {
   ){}
   /**
    * TODO :
-  
    * 
    * envoyer le user à appBDD
    * 
@@ -44,6 +47,7 @@ export class UserAddComponent implements OnInit {
     this.newUser.type = this.niveauDeDroit;
     this.newUser.id = 'new';
     this.newUser.present = 1;
+    this.addFirstSolidarite();
     this.saveNewUser();
   }
 
@@ -60,4 +64,36 @@ export class UserAddComponent implements OnInit {
     )
   }
 
+  addFirstSolidarite(){
+    let arbitrage = new Arbitrage();
+    const commentaire = "Initialisation de la journée de solidarité"
+    let ventillation = {
+      matricule: this.matricule,
+      date: new Date(),
+      commentaire: commentaire,
+      solidarite: this.solidariteDeDepart,
+      recuperation: 0,
+      heuresSupMajoree: 0,
+      heureAPayer: 0,
+      respValidationStatus: 0,
+      respDateValidation: new Date(),
+      paiementStatus: 0,
+      datePaiement: null,
+      responsable: "Init", 
+    }
+    arbitrage.deserialize(ventillation);
+
+    try {
+      this.apiBDD.validateHour(arbitrage);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  ctrlSolidarite(){
+    if(this.solidariteDeDepart <-7 || this.solidariteDeDepart >0){
+      this.msgErreurSolidarite = "La solidarité de départ doit être comprise entre -7 et 0. Vérifiez votre saisie." 
+    }else{
+      this.msgErreurSolidarite = null;
+    }
+  }
 }

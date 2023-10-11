@@ -17,24 +17,29 @@
                 <label for="nom">Nom</label>
             </div>
             <div class="row">
-                <div class="col-6 form-floating mb-3">
+                <div class="col-4 form-floating mb-3">
                     <input class="form-control p-2" type="number" name="niveauDeDroit" id="niveauDeDroit"
                         placeholder="Niveau de droit (1, 2 ou 3)" max="3" min="1" step="1" [(ngModel)]="niveauDeDroit">
                     <label class="p-3" for="niveauDeDroit">Niveau de droit (1,2 ou 3)</label>
                 </div>
-                <div class="col-6 form-floating mb-3">
+                <div class="col-4 form-floating mb-3">
                     <input class="form-control" type="string" name="matResp" id="matResp"
                         placeholder="Matricule du responsable" [(ngModel)]="matResponsable">
                     <label class="p-3" for="matResp">Matricule du responsable</label>
                 </div>
+                <div class="col-4 form-floating mb-3">
+                    <input class="form-control" type="number" name="solidarite" id="solidarite"
+                        placeholder="Solidarité de départ" [(ngModel)]="solidariteDeDepart" (input)="ctrlSolidarite()">
+                    <label class="p-3" for="solidarite">Solidarité de départ</label>
+                </div>
             </div>
-
+            <div class="bg-warning text-danger h4 p-2 rounded" *ngIf="msgErreurSolidarite">{{ msgErreurSolidarite }}</div>
             <div class="form-floating mb-3">
                 <input class="form-control" type="password" name="password" id="password" placeholder="Password" [(ngModel)]="passwordRaw">
                 <label for="password">Password</label>
             </div>
             <div>
-                <button class="btn btn-primary" (click)="onSubmit()">Valider</button>
+                 <button *ngIf="!msgErreurSolidarite" class="btn btn-primary" (click)="onSubmit()">Valider</button>
             </div>
 
     </div>
