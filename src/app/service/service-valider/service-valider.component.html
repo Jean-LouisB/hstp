@@ -45,7 +45,7 @@
                     <hr>
                     <div class="container-fluid d-flex justify-content-around mb-3">
                         <button class="btn btn-outline-success" (click)="valideArbitrage(arbitrage['_id'], arbitrage['heureAPayer'])">VALIDER</button>
-                        <button class="btn btn-outline-danger">ANNULER</button>
+                        <button class="btn btn-outline-danger" (click)="annulerArbitrage(arbitrage['_id'])">ANNULER</button>
                     </div>
                 </div>
             </div>

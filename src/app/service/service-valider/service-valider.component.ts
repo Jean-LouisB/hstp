@@ -65,4 +65,8 @@ export class ServiceValiderComponent implements OnInit {
    // this.getNames()
   }
 
+  annulerArbitrage(id:string){
+    alert("Annulation de l'arbitrage "+id+" pas encore possible")
+  }
+
 }
