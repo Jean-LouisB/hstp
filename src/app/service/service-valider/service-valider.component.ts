@@ -16,7 +16,7 @@ export class ServiceValiderComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMesArbitrages();
-    this.getNames();
+//    this.getNames();
   }
 
   /**
@@ -26,9 +26,9 @@ export class ServiceValiderComponent implements OnInit {
    */
   getMesArbitrages() {
     this.apiBDD.mesArbitrageAValider().then((data) => {
-      console.log(data.data);
       this.mesArbitrages = data.data;
     })
+    this.getNames()
   }
 
   /**
@@ -52,15 +52,17 @@ export class ServiceValiderComponent implements OnInit {
   
   /**
    * Pour pouvoir l'utiliser dans le template
-   * @param decimale 
-   * @returns 
+   * @param l'heure en decimale 
+   * @returns l'heure au format str hhhmm
    */
   heureDecimaleEnStr(decimale: number) {
     return heureDecToStr(decimale);
   }
 
-  valideArbitrage(id:string){
-    alert("valider cet enregistrement : "+id)
+  valideArbitrage(id:string, aPayer: number){
+    this.apiBDD.valideArbitrage(id,aPayer);
+    this.getMesArbitrages();
+   // this.getNames()
   }
 
 }
