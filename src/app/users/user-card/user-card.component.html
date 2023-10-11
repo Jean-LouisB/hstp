@@ -65,15 +65,15 @@
                             <tbody>
                                 <tr>
                                     <th>Heures supp. :</th>
-                                    <td>{{(user.soldes['heuresSupMajoree']).toFixed(2)}}</td>
+                                    <td>{{afficheHeureToStr(user.soldes['heuresSupMajoree'])}}</td>
                                 </tr>
                                 <tr>
                                     <th>Récupération :</th>
-                                    <td>{{(user.soldes['recuperation']).toFixed(2)}}</td>
+                                    <td>{{afficheHeureToStr(user.soldes['recuperation'])}}</td>
                                 </tr>
                                 <tr>
                                     <th>Solidarité</th>
-                                    <td>{{(user.soldes['solidarite']).toFixed(2)}}</td>
+                                    <td>{{afficheHeureToStr(user.soldes['solidarite'])}}</td>
                                 </tr>
                             </tbody>
                         </table>

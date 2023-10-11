@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { User } from 'src/app/models/userModel';
 import { ServerService } from 'src/app/services/serveur/server.service';
+import { heureDecToStr } from '@fabricekopf/date-france';
 
 
 @Component({
@@ -96,5 +97,9 @@ export class UserCardComponent implements OnInit {
   findUserByMatricule(mat: string) {
     const userToFind = this.users.find(user => user.matricule === mat)
     return userToFind.prenom + " " + userToFind.nom
+  }
+
+  afficheHeureToStr(heureDec: number){
+    return heureDecToStr(heureDec);
   }
 }
