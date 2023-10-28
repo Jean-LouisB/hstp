@@ -7,7 +7,7 @@ import { configureAxios } from './config.axios';
 import { formatDate } from '@fabricekopf/date-france';
 import { Heure } from 'src/app/models/heureModel';
 import { Arbitrage } from 'src/app/models/arbitrage.model';
-
+import { environment } from 'src/app/environnement';
 
 
 @Injectable({
@@ -27,6 +27,10 @@ export class ServerService {
    * @param userMatricule saisi par l'utilisateur
    * @param userPassword saisi par l'utilisateur
    * @returns le message du serveur
+   * le serveur retourne 3 messages possibles:
+   * "Mot de passe incorrect", "Utilisateur introuvable" et "Authentification réussie"
+   * Les deux messages d'erreur sont transmis à l'utilisateur
+   * C'est le front qui gère le l'identifiant au mauvais format (length !== 4).
    */
   getLogin(userMatricule: string, userPassword: string): Observable<string> {
     const credential = { userMatricule, userPassword }
@@ -34,26 +38,28 @@ export class ServerService {
       this.axiosInstance.post(`/connexion/login`, { credential })
         .then((response) => {
           const msg = response.data.message
-          const token = response.data.token; //token de sécurité
-          this.cookieService.set('session', token, null, '/', null, true, 'Strict');
-
-          //récupération de la date des bornes et création du cookie
-          const bornes = response.data.bornes; // bornes de saisie retournée par le serveur
-          const date_debut = formatDate(bornes['0']['date_debut']);
-          const date_fin = formatDate(bornes['0']['date_fin']);
-          const bornesPourCookies = {
-            'date_debut': date_debut.normalDate,
-            'date_fin': date_fin.normalDate
+          if (msg === "Mot de passe incorrect" || msg === "Utilisateur introuvable") {
+            observable.next(msg);//permet à la requête appelante de surveiller le message de retour et réagir en fonction.
+            observable.complete();
+          } else {
+            const token = response.data.token; //token de sécurité
+            this.cookieService.set('session', token, null, '/', null, true, 'Strict');
+            //récupération de la date des bornes et création du cookie
+            const bornes = response.data.bornes; // bornes de saisie retournée par le serveur
+            const date_debut = formatDate(bornes['0']['date_debut']);
+            const date_fin = formatDate(bornes['0']['date_fin']);
+            const bornesPourCookies = {
+              'date_debut': date_debut.normalDate,
+              'date_fin': date_fin.normalDate
+            }
+            const bornesJSON = JSON.stringify(bornesPourCookies);
+            this.cookieService.set('bornes', bornesJSON, null, '/', null, true, 'Strict');
+            observable.next(msg);//permet à la requête appelante de surveiller le message de retour et réagir en fonction.
+            observable.complete();
           }
-          const bornesJSON = JSON.stringify(bornesPourCookies);
-          this.cookieService.set('bornes', bornesJSON, null, '/', null, true, 'Strict');
-
-          observable.next(msg);//permet à la requête appelante de surveiller le message de retour et réagir en fonction.
-          observable.complete();
         }).catch(err => {
-          const msg = "Le serveur ne répond pas";
+          const msg = "Le serveur ne répond pas, il y a eu une erreur";
           observable.next(msg);//permet à la requête appelante de surveiller le message de retour et réagir en fonction.
-          console.log("Le serveur ne répond pas");
         })
     }))
 
@@ -224,14 +230,14 @@ export class ServerService {
     )
   }
 
-  valideArbitrage(id:string, heure:number){
-    console.log("id : "+id);
-    
-    this.axiosInstance.put('/responsable/valider/arbitrages',{'id':id,'heure':heure})
-    .then((reponse:any)=>{
-      console.log(reponse.data);
-    })
-  } 
+  valideArbitrage(id: string, heure: number) {
+    console.log("id : " + id);
+
+    this.axiosInstance.put('/responsable/valider/arbitrages', { 'id': id, 'heure': heure })
+      .then((reponse: any) => {
+        console.log(reponse.data);
+      })
+  }
 
 
 

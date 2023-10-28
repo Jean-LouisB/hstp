@@ -77,6 +77,7 @@ export class LoginComponent implements OnInit {
         // Sinon le message d'erreur du serveur est transmis à l'attribut local 'errorMsg' qui apparait dès qu'il est initié.
         this.toggleWaiting();
         this.errorMsg = response
+        console.log("l'authentification n'a pas fonctionnée");//--------------------------------------------------------
       }
     })
     }

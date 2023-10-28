@@ -7,6 +7,7 @@ const apiUrl = environment.apiUrl;
 export function configureAxios(cookieService: CookieService) {
   const axiosInstance = axios.create({
     baseURL: apiUrl,
+    withCredentials: true
   });
 
   axiosInstance.interceptors.request.use((config) => {

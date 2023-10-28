@@ -1,0 +1,6 @@
+docker build -t hstp_front .
+docker run --name hstp_front hstp_front
+
+docker network connect hstp_2_tempo_hstp hstp_front
+
+( apiUrl: 'http://hstp_api:3000',)
