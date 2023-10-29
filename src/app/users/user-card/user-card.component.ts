@@ -2,6 +2,9 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { User } from 'src/app/models/userModel';
 import { ServerService } from 'src/app/services/serveur/server.service';
 import { heureDecToStr } from '@fabricekopf/date-france';
+import { SessionState } from 'src/app/state/session/session.reducers';
+import { Store } from '@ngrx/store';
+import { changeOneUser } from 'src/app/state/session/session.actions';
 
 
 @Component({
@@ -12,6 +15,7 @@ import { heureDecToStr } from '@fabricekopf/date-france';
 export class UserCardComponent implements OnInit {
   @Input() users: any[] | undefined;
   @Input() filter: boolean | undefined;
+  @Input() allUsers: any[] | undefined;
   @Output() presenceUpdated = new EventEmitter();
   @Output() userUpdated = new EventEmitter();
 
@@ -25,14 +29,17 @@ export class UserCardComponent implements OnInit {
   droitsToModify: number = null;
   respToModify: string = null
 
+
   constructor(
     private apiBDD: ServerService,
+     private store: Store<{ session: SessionState }>,
   ) {
 
   }
 
   ngOnInit() {
-
+    //console.log(this.users);
+    
   }
   /**
    * Au clic sur le bouton, 
@@ -84,6 +91,7 @@ export class UserCardComponent implements OnInit {
       type: this.droitsToModify,
     }
     const userUpdatedToSend = new User().deserialize(updatedUser)
+    this.store.dispatch(changeOneUser({user: userUpdatedToSend}));
     this.apiBDD.putModifyUser(userUpdatedToSend);
     this.idToModify = null;
     this.userUpdated.emit();
@@ -95,7 +103,7 @@ export class UserCardComponent implements OnInit {
    * @returns le prénom et nom du salarié
    */
   findUserByMatricule(mat: string) {
-    const userToFind = this.users.find(user => user.matricule === mat)
+    const userToFind = this.allUsers.find(user => user.matricule === mat)
     return userToFind.prenom + " " + userToFind.nom
   }
 

@@ -8,6 +8,9 @@ import { formatDate } from '@fabricekopf/date-france';
 import { Heure } from 'src/app/models/heureModel';
 import { Arbitrage } from 'src/app/models/arbitrage.model';
 import { environment } from 'src/app/environnement';
+import { SessionState } from 'src/app/state/session/session.reducers';
+import { Store } from '@ngrx/store';
+import { changeOneUser, setListOfAllUsers } from 'src/app/state/session/session.actions';
 
 
 @Injectable({
@@ -18,6 +21,7 @@ export class ServerService {
   constructor(
     private cookieService: CookieService,
     private router: Router,
+    private store: Store<{ session: SessionState }>,
   ) {
     this.axiosInstance = configureAxios(cookieService)
   }
@@ -45,15 +49,7 @@ export class ServerService {
             const token = response.data.token; //token de sécurité
             this.cookieService.set('session', token, null, '/', null, true, 'Strict');
             //récupération de la date des bornes et création du cookie
-            const bornes = response.data.bornes; // bornes de saisie retournée par le serveur
-            const date_debut = formatDate(bornes['0']['date_debut']);
-            const date_fin = formatDate(bornes['0']['date_fin']);
-            const bornesPourCookies = {
-              'date_debut': date_debut.normalDate,
-              'date_fin': date_fin.normalDate
-            }
-            const bornesJSON = JSON.stringify(bornesPourCookies);
-            this.cookieService.set('bornes', bornesJSON, null, '/', null, true, 'Strict');
+            this.getBornes(response);
             observable.next(msg);//permet à la requête appelante de surveiller le message de retour et réagir en fonction.
             observable.complete();
           }
@@ -64,6 +60,19 @@ export class ServerService {
     }))
 
   }
+
+  getBornes(response: any) {
+    const bornes = response.data.bornes; // bornes de saisie retournée par le serveur
+    const date_debut = formatDate(bornes['0']['date_debut']);
+    const date_fin = formatDate(bornes['0']['date_fin']);
+    const bornesPourCookies = {
+      'date_debut': date_debut.normalDate,
+      'date_fin': date_fin.normalDate
+    };
+    const bornesJSON = JSON.stringify(bornesPourCookies);
+    this.cookieService.set('bornes', bornesJSON, null, '/', null, true, 'Strict');
+  }
+
   /**
    * Gère la déconnexion.
    * Supprime le cookie local et informe le serveur
@@ -119,6 +128,18 @@ export class ServerService {
    * @returns la liste de tous les utilisateurs
    */
   getAllUsers() {
+   this.axiosInstance.get(`/users/allusers`)
+   .then((fetchData: any)=>{
+    const tabOfDataRaw = fetchData.data;
+    let listOfUsers: Array<User> = [];
+    tabOfDataRaw.forEach((item: any)=>{
+      const userItem = new User().deserialize(item)
+      listOfUsers.push(userItem);
+    })
+    listOfUsers.sort((a, b) => a.nom.localeCompare(b.nom));
+    this.store.dispatch(setListOfAllUsers({ listOfAllUsers: listOfUsers }));
+   }
+   );
     return this.axiosInstance.get(`/users/allusers`);
   }
 
@@ -158,7 +179,7 @@ export class ServerService {
    * 
    * @returns Récupère les soldes de tous les salariés;
    */
-  getSoldes() {
+  getSoldes() {   
     return this.axiosInstance.get('/compteurs/soldes');
   }
 

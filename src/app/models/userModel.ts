@@ -9,7 +9,7 @@ export class User implements Deserializable{
     responsable:string;
     present:number;
     type:number
-    saisieAutorisee:boolean; //L'utilisateur a il le droit de saisir ? si sa semaine est déjà clôturée : false.
+    saisieAutorisee:boolean; //L'utilisateur a il le droit de saisir ? si sa semaine est déjà clôturée : false.,
 
     constructor(){}
 

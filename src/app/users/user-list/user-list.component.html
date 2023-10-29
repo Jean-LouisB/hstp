@@ -12,7 +12,7 @@
         </div>
         
         <div class="col-12">
-            <app-user-card [users]="filteredList" [filter]="filtreAbsent" (presenceUpdated)="fetchUsers()" (userUpdated)="fetchUsers()"></app-user-card>
+            <app-user-card [users]="filteredList" [allUsers]="userListRaw" [filter]="filtreAbsent" (presenceUpdated)="fetchUsers()" (userUpdated)="fetchUsers()"></app-user-card>
         </div>
     </div>
 </div>

@@ -55,7 +55,7 @@ export class UserPageComponent implements OnInit{
   getNameUserState() {
     this.store.pipe(select(state => state.session.userState))
       .subscribe((userData: { user: User | null }) => {
-        if (userData.user.type<3) {
+        if (userData && userData.user.type<3) {
           this.router.navigate(['/accueil'])
         }else{
           this.user = userData.user;

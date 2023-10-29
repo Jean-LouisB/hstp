@@ -71,7 +71,8 @@ export class LoginComponent implements OnInit {
         L'utilisateur ainsi connecté est redirigé vers sa page d'accueil
         un token crypté est déposé dans les cookies par AXIOS
         */
-        this.store.dispatch(toggleConnected())
+        this.store.dispatch(toggleConnected());
+        this.apiBDD.getAllUsers();
         this.router.navigate(['accueil']);
       }else{
         // Sinon le message d'erreur du serveur est transmis à l'attribut local 'errorMsg' qui apparait dès qu'il est initié.
