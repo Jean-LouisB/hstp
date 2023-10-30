@@ -47,7 +47,7 @@ export class ServerService {
             observable.complete();
           } else {
             const token = response.data.token; //token de sécurité
-            this.cookieService.set('session', token, null, '/', null, true, 'Strict');
+            this.cookieService.set('session', token, null, '/', null, false, 'Lax');
             //récupération de la date des bornes et création du cookie
             this.getBornes(response);
             observable.next(msg);//permet à la requête appelante de surveiller le message de retour et réagir en fonction.
@@ -153,9 +153,9 @@ export class ServerService {
     return this.axiosInstance.get(`/find_user_by_id/${id}`)
   }
 
-  putPresenceToggle(matricule: string, presence: number) {
-    //change le status de la présence (true si false et vis et versa)
-    return this.axiosInstance.put(`/users/update/presence/${matricule}/${presence}`)
+  putPresenceToggle(id: string, presence: number) {
+    //change le status de la présence (true si false et vice et versa)
+    return this.axiosInstance.put(`/users/update/presence/${id}/${presence}`)
   }
 
   /**

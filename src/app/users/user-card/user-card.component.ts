@@ -4,7 +4,7 @@ import { ServerService } from 'src/app/services/serveur/server.service';
 import { heureDecToStr } from '@fabricekopf/date-france';
 import { SessionState } from 'src/app/state/session/session.reducers';
 import { Store } from '@ngrx/store';
-import { changeOneUser } from 'src/app/state/session/session.actions';
+import { changeOneUser, togglePresence } from 'src/app/state/session/session.actions';
 
 
 @Component({
@@ -31,7 +31,7 @@ export class UserCardComponent implements OnInit {
 
 
   constructor(
-    private apiBDD: ServerService,
+     private apiBDD: ServerService,
      private store: Store<{ session: SessionState }>,
   ) {
 
@@ -47,8 +47,9 @@ export class UserCardComponent implements OnInit {
    * @param presence état de la présence en cours 0 ou 1 
    * Demande au serveur de modifier la présence du salarié 1 à 0 ou 0 à 1 selon l'état courant.
    */
-  handleOnChangePresent(matricule: string, presence: any) {
-    this.apiBDD.putPresenceToggle(matricule, presence).then(
+  handleOnChangePresent(id: string, presence: number) {
+    this.store.dispatch(togglePresence({ id, presence }))
+    this.apiBDD.putPresenceToggle(id, presence).then(
       () => {
         // Émettre l'événement pour informer le composant parent de la mise à jour
         this.presenceUpdated.emit();
@@ -58,7 +59,6 @@ export class UserCardComponent implements OnInit {
       }
     );
   }
-
   testLogListe() {
     this.users.forEach(user => console.log(user.nom))
   }

@@ -5,6 +5,7 @@ import { listOfAllUsers } from '../../state/session/session.selectors';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/models/userModel';
 import { SessionState } from 'src/app/state/session/session.reducers';
+import { togglePresence } from 'src/app/state/session/session.actions';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class UserListComponent implements OnInit {
   /**
    * userList : contient une copie brute et complète  de la liste des utilisateurs et leur profil
    */
-  userListRaw= [];
+  userListRaw = [];
   userList$: Observable<Array<User> | null>;
   /**
    * filtreAbsent est un booléen activé sur true par défaut pour masquer les absents. 
@@ -64,13 +65,13 @@ export class UserListComponent implements OnInit {
       await this.apiBDD.getAllUsers();
     }
     try {
-      await this.gettingSoldes().then(()=>this.filteredList = this.userListRaw);
+      await this.gettingSoldes().then(() => this.filteredList = this.userListRaw);
     } catch (erreur) {
       console.log("Erreur dans la récupération des soldes", erreur);
     }
-    try{
+    try {
       await this.filtreLaListe()
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
   }
@@ -122,24 +123,26 @@ export class UserListComponent implements OnInit {
    * puis lance la fonction de filtre.
    */
   fetchUsers() {
-    this.getList()
+   this.getList()
   }
   /**
    * Cette fonction récupère l'attribut local contenant la chaine saisie par l'utilisateur.
    * Puis dans la liste vérifie si cette chaine fait partie de l'ensemble nom+prenom
    * Tout est mis en majuscule pour homogénéiser les casses.
    */
- filtreLaListe() {
+  filtreLaListe() {
     if (this.filterByName !== "*" && this.filterByName !== "") {
-        this.filteredList = this.userListRaw.filter((user) => {
-          const userNameUpperCase = user.nom.toUpperCase()
-          const userFirstNameUpperCase = user.prenom.toUpperCase()
-          const nameSearched = this.filterByName.toUpperCase()
-          const nomPrenom = userNameUpperCase + userFirstNameUpperCase
-          return nomPrenom.includes(nameSearched)
-        });
-        //console.log(this.filteredList);
-      }
+      this.filteredList = this.userListRaw.filter((user) => {
+        const userNameUpperCase = user.nom.toUpperCase()
+        const userFirstNameUpperCase = user.prenom.toUpperCase()
+        const nameSearched = this.filterByName.toUpperCase()
+        const nomPrenom = userNameUpperCase + userFirstNameUpperCase
+        return nomPrenom.includes(nameSearched)
+      });
+      console.log(this.filteredList);
+    } else {
+      this.filteredList = this.userListRaw
+    }
   }
   /**
    * 

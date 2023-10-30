@@ -23,7 +23,7 @@
                             </svg>
                         </button>
                         <button *ngIf="(idToModify != user.id)" class="btn"
-                            (click)="handleOnChangePresent(user.matricule, (user.present == 0 ? 0 : 1))">
+                            (click)="handleOnChangePresent(user.id, (user.present == 1 ? 0 : 1))">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                                 class="bi bi-arrow-repeat" viewBox="0 0 16 16" style="vertical-align: top;">
                                 <path
