@@ -46,7 +46,7 @@ export class UserAddComponent implements OnInit {
     this.newUser.responsable = this.matResponsable.toLocaleUpperCase();
     this.newUser.type = this.niveauDeDroit;
     this.newUser.id = 'new';
-    this.newUser.present = 1;
+    this.newUser.present = true;
     this.addFirstSolidarite();
     this.saveNewUser();
   }

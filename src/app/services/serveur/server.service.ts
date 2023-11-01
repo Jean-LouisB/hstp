@@ -153,7 +153,7 @@ export class ServerService {
     return this.axiosInstance.get(`/find_user_by_id/${id}`)
   }
 
-  putPresenceToggle(id: string, presence: number) {
+  putPresenceToggle(id: string, presence: boolean) {
     //change le status de la présence (true si false et vice et versa)
     return this.axiosInstance.put(`/users/update/presence/${id}/${presence}`)
   }

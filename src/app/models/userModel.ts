@@ -7,9 +7,10 @@ export class User implements Deserializable{
     prenom:string;
     password:string; // ----------------  /!\ le mot de passe est exposé !! => prévoir une alternative plus sécure.
     responsable:string;
-    present:number;
+    present:boolean;
     type:number
     saisieAutorisee:boolean; //L'utilisateur a il le droit de saisir ? si sa semaine est déjà clôturée : false.,
+    soldes: any | undefined
 
     constructor(){}
 

@@ -11,8 +11,11 @@
             <button class="btn btn-primary mb-3 col-6" (click)="handelOnFilter()">{{ titreBtnFiltre }}</button>
         </div>
         
-        <div class="col-12">
-            <app-user-card [users]="filteredList" [allUsers]="userListRaw" [filter]="filtreAbsent" (presenceUpdated)="fetchUsers()" (userUpdated)="fetchUsers()"></app-user-card>
+        <div class="col-12 row" *ngIf="filteredList.length > 0">
+            <div class="col-12 col-md-6 col-lg-4" *ngFor="let user of filteredList">
+                <app-user-card2 [allUsers]="userListRaw" [user]="user" (presenceUpdated)="fetchUsers()" (userUpdated)="fetchUsers()"></app-user-card2>
+            </div>
+           <!--  <app-user-card [users]="filteredList" [allUsers]="userListRaw" [filter]="filtreAbsent" (presenceUpdated)="fetchUsers()" (userUpdated)="fetchUsers()"></app-user-card> -->
         </div>
     </div>
 </div>

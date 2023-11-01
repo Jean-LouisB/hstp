@@ -14,7 +14,6 @@ import { HeuresComponent } from './heures/heures.component';
 import { ServiceComponent } from './service/service.component';
 import { EntrepriseComponent } from './entreprise/entreprise.component';
 import { UserPageComponent } from './users/user-page/user-page.component';
-import { UserCardComponent } from './users/user-card/user-card.component';
 import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 import { SideBarComponent } from './users/user-page/side-bar/side-bar.component';
 import { UserAddComponent } from './users/user-add/user-add.component';
@@ -26,6 +25,7 @@ import { ClotureComponent } from './heures/cloture/cloture.component';
 import { SidebarServiceComponent } from './service/sidebar-service/sidebar-service.component';
 import { ServiceConsulterComponent } from './service/service-consulter/service-consulter.component';
 import { ServiceValiderComponent } from './service/service-valider/service-valider.component';
+import { UserCard2Component } from './users/user-card2/user-card2.component';
 
 
 
@@ -40,7 +40,6 @@ import { ServiceValiderComponent } from './service/service-valider/service-valid
     ServiceComponent,
     EntrepriseComponent,
     UserPageComponent,
-    UserCardComponent,
     NotFoundPageComponent,
     SideBarComponent,
     UserAddComponent,
@@ -52,6 +51,7 @@ import { ServiceValiderComponent } from './service/service-valider/service-valid
     SidebarServiceComponent,
     ServiceConsulterComponent,
     ServiceValiderComponent,
+    UserCard2Component,
   ],
   imports: [
     BrowserModule,
