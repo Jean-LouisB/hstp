@@ -39,7 +39,8 @@ export class UserListComponent implements OnInit, OnDestroy {
    * comme son nom l'indique, c'est l'attribut local qui est mis à jour avec le nombre de salariés présents
    */
   nbSalaries = 0;
-
+  errorMsg: string | null = null;
+  isSearchingByResp: boolean = false
 
   constructor(
     private apiBDD: ServerService,
@@ -64,17 +65,23 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.userListRaw = data;
       });
     if (!this.userListRaw || this.userListRaw.length === 0) {
-      await this.apiBDD.getAllUsers();//Ici je récupère la liste depuis la bdd et la place dans le store
+      try {
+        await this.apiBDD.getAllUsers()
+      } catch (error) {
+        this.errorMsg = "La liste des utilisateurs n'a pas pu être récupérée.";
+      };//Ici je récupère la liste depuis la bdd et la place dans le store
     }
     try {
       await this.gettingSoldes()
     } catch (erreur) {
       console.log("Erreur dans la récupération des soldes", erreur);
+      this.errorMsg = "Erreur dans la récupération des soldes.";
     }
     try {
       this.filtreLaListe();
     } catch (error) {
       console.log(error);
+      this.errorMsg = "Le liste n'a pu être filtrée.";
     }
   }
 
@@ -88,7 +95,10 @@ export class UserListComponent implements OnInit, OnDestroy {
         .then((response: any) => {
           const tableauDesSoldes = response.data;
           this.userListRaw = this.userListRaw.map((salarie) => {
-            const newSalarie = new User().deserialize(salarie);
+            let newSalarie = new User().deserialize(salarie);
+            let responsable = this.getUserByMatricule(salarie.responsable);
+            newSalarie.nomResponsable = responsable.nom;
+            newSalarie.prenomResponsable = responsable.prenom
             if (!tableauDesSoldes[salarie.matricule]) {
               newSalarie.soldes = {
                 'heuresSupMajoree': 0,
@@ -105,6 +115,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         })
         .catch((erreur: Error) => {
           console.log("Erreur dans la récupèreation des soldes");
+          this.errorMsg = "Erreur dans la récupération des soldes.";
           console.log(erreur);
           reject(erreur);
         });
@@ -144,6 +155,25 @@ export class UserListComponent implements OnInit, OnDestroy {
     })
   }
 
+  getUserByMatricule(matricule: string): User {
+    let userFind: User | null = null;
+    this.userListRaw.forEach((user) => {
+      if (user.matricule === matricule) {
+        userFind = user
+      }
+    }
+    )
+    return userFind;
+  }
+
+  filterUserByNameOfResp(userList: User[], nameSearched: string): User[]{
+    const upperNameSearched = nameSearched.toUpperCase();
+    return userList.filter((user) => {
+      const upperNameFirstname = this.formatSearch(user.nomResponsable, user.prenomResponsable);
+      return upperNameFirstname.includes(upperNameSearched);
+    });
+  }
+
   /**
    * Cette fonction récupère l'attribut local contenant la chaine saisie par l'utilisateur.
    * Puis dans la liste vérifie si cette chaine fait partie de l'ensemble nom+prenom
@@ -153,11 +183,15 @@ export class UserListComponent implements OnInit, OnDestroy {
     let filtered = this.userListRaw;
     if (this.isFilterAbsent === true) {
       filtered = this.filterUserByPresence(filtered);
-    console.log(filtered);
-
     }
     if (this.filterByName !== "*" && this.filterByName !== "") {
-      filtered = this.filterUserByName(filtered, this.filterByName);
+      if(this.isSearchingByResp === true){
+        filtered = this.filterUserByNameOfResp(filtered, this.filterByName);
+        console.log(filtered);
+        
+      }else{
+        filtered = this.filterUserByName(filtered, this.filterByName);
+      }
     }
     this.filteredList = filtered;
   }
@@ -172,6 +206,7 @@ export class UserListComponent implements OnInit, OnDestroy {
    * @returns NOMPRENOM (nom+prenom en majuscule): string
    */
   formatSearch(userName: string, userFirstName: string) {
+    console.log(userName+" "+userFirstName);
     const userNameAndFirstNameUpper = (userName + userFirstName).toUpperCase();
     return userNameAndFirstNameUpper;
   }
@@ -189,6 +224,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.filterByName = inputElement.value
     this.filtreLaListe();
   }
+
 
   /**
    * 

@@ -5,7 +5,7 @@ import { environment } from 'src/app/environnement';
 import { ServerService } from 'src/app/services/serveur/server.service';
 import { Router } from '@angular/router';
 import { Arbitrage } from 'src/app/models/arbitrage.model';
-import { HoursService } from 'src/app/services/hours/hours.service';
+
 const salt = environment.salt;
 
 @Component({
@@ -39,7 +39,7 @@ export class UserAddComponent implements OnInit {
 
   }
 
-  onSubmit() {
+   onSubmit() {
     this.newUser.matricule = this.matricule.toLocaleUpperCase();
     this.newUser.prenom = this.prenom;
     this.newUser.nom = this.nom.toLocaleUpperCase();
@@ -49,6 +49,7 @@ export class UserAddComponent implements OnInit {
     this.newUser.present = true;
     this.addFirstSolidarite();
     this.saveNewUser();
+    
   }
 
   /**
@@ -59,6 +60,7 @@ export class UserAddComponent implements OnInit {
       (pass) => {
         this.newUser.password = pass;
         this.apiBDD.putAddUser(this.newUser);
+        this.apiBDD.getAllUsers();
         this.router.navigate(['/users/liste']);
     }
     )

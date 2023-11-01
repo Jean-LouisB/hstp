@@ -1,12 +1,13 @@
 <div class="container-fluid">
      <div class="row">
-        
+        <p class="h4 text-danger" *ngIf="errorMsg">{{errorMsg}}</p>
         <div class="form-floating mb-3">
             <input class="form-control" type="text" name="nameSearching" id="nameSearching"
                 placeholder="Rechercher ..." (input)="handleOnSearch($event)">
             <label for="nameSearching" class="p-3">Rechercher (sur le prénom et le nom) ...</label>
         </div>
-        <div class="row">
+       <label for="searchByResp"><input name="searchByResp" id="searchByResp" type="checkbox" [(ngModel)]="isSearchingByResp"> Chercher parmis les responsables</label> 
+       <div class="row">
             <div class="mb-2 col-6">Il y a {{ countEmployees() }} salarié(e)s présents.</div>
             <button class="btn btn-primary mb-3 col-6" (click)="handelOnFilter()">{{ titreBtnFiltre }}</button>
         </div>
