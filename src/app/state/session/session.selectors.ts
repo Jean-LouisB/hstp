@@ -6,3 +6,4 @@ export const listOfAllUsers = createSelector(
   (state: SessionState) => state.listOfAllUsers,
   (listOfAllUsers: Array<User> | null) => listOfAllUsers
 );
+

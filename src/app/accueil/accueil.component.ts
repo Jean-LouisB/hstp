@@ -6,7 +6,7 @@ import { SessionState } from '../state/session/session.reducers';
 import { User } from '../models/userModel';
 import { Subscription } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
-import { heureDecToStr } from '@fabricekopf/date-france';
+import { heureDecToStr, formatDate } from '@fabricekopf/date-france';
 
 
 
@@ -24,8 +24,8 @@ export class AccueilComponent implements OnInit, OnDestroy {
   aPayer: string = "";
   date_debut: Date = null;
   date_fin: Date = null;
-
   private userSubscription: Subscription | undefined;
+
   constructor(
     private apiBDD: ServerService,
     private store: Store<{ session: SessionState }>,
@@ -33,38 +33,52 @@ export class AccueilComponent implements OnInit, OnDestroy {
   ) {
   }
   ngOnInit(): void {
-    this.getNameUserState();
-    if (this.user == null) {
-      this.apiBDD.getUserProfil().subscribe((data) => {
-        this.user = new User().deserialize(data)
-        this.store.dispatch(setUser({ user: this.user }));
-      })
-    }
-    this.apiBDD.getSoldesDuProfil()
+    this.getNameUserState(); //je vais chercher les données de l'utilisateur dans le store ou dans l'api
+    this.getUserSoldes(); //je récupère ses soldes (uniquement pour affichage, ne sont pas ajouté au store)
+    this.getBornes();
+
+  }
+
+
+  private getBornes() {
+    const mesBornes = this.cookieService.get('bornes');
+    const mesBornesJson = JSON.parse(mesBornes) || null;
+    this.date_debut = new Date(mesBornesJson['date_debut']);
+    this.date_fin = new Date(mesBornesJson['date_fin']);
+  }
+
+  private getUserSoldes() {
+    this.apiBDD.getSoldesDuProfil() //Je récupère les soldes pour les afficher.
       .then((data: any) => {
         this.heures_supplementaires = heureDecToStr(data.data.heuresSupMajoree);
         this.recuperation = heureDecToStr(data.data.recuperation);
         this.solidarite = heureDecToStr(data.data.solidarite);
         this.aPayer = heureDecToStr(data.data.heureAPayer);
       });
-    const mesBornes = this.cookieService.get('bornes');
-    const mesBornesJson = JSON.parse(mesBornes) || null;
-    this.date_debut = new Date(mesBornesJson['date_debut']);
-    this.date_fin = new Date(mesBornesJson['date_fin']);
-
   }
 
-
   getNameUserState() {
+
     this.userSubscription = this.store.pipe(select(state => state.session.userState))
       .subscribe((userData: { user: User | null }) => {
-        this.user = userData.user;
+        if (userData) {
+          this.user = userData.user;
+        } else {
+          this.apiBDD.getUserProfil().subscribe((data) => {
+            this.user = new User().deserialize(data)
+            this.store.dispatch(setUser({ user: this.user }));
+          })
+        }
       });
 
   }
 
-  ngOnDestroy(){
-    if(!this.userSubscription){
+  useFormatDate(date): string{
+    return formatDate(date).dateToStringWithoutHour
+  }
+
+  ngOnDestroy() {
+    if (!this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
   }

@@ -1,32 +1,45 @@
-<div class="container-fluid row mt-5">
+<div class="container-fluid row mt-5 pt-3">
     <div class="col-8 offset-2">
-        <h1>Accueil</h1>
         <div *ngIf=(user)>
-            <p>Bonjour {{user.prenom}},</p>
-            <p class="fs-5">Voici vos soldes validés</p>
-            <table class="table table-striped w-50">
+            <h2>Bonjour {{user.prenom}},</h2>
+            <p>Les dates de saisie sont du <span class="fw-semibold text-danger">{{ useFormatDate(date_debut) }}</span>  au <span class="fw-semibold text-danger">{{ useFormatDate(date_fin) }}</span></p>
+            <p class="fs-5">Vos soldes validés :</p>
+            <table class="table table-striped w-75">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Soldes Initiaux</th>
+                        <th>En attente de validation </th>
+                        <th>Soldes prévisionnels</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
                         <th>Heures supplémentaires :</th>
                         <td>{{heures_supplementaires}}</td>
+                        <td>En attente de codage...</td>
+                        <td>En attente de codage...</td>
                     </tr>
                     <tr>
                         <th>Récupération :</th>
                         <td>{{recuperation}}</td>
+                        <td>En attente de codage...</td>
+                        <td>En attente de codage...</td>
                     </tr>
                     <tr>
                         <th>Solidarité</th>
                         <td>{{solidarite}}</td>
+                        <td>En attente de codage...</td>
+                        <td>En attente de codage...</td>
                     </tr>
                     <tr>
                         <th>A payer</th>
                         <td>{{aPayer}}</td>
+                        <td>En attente de codage...</td>
+                        <td>En attente de codage...</td>
                     </tr>
                 </tbody>
             </table>
-            <p>date de début : {{ date_debut }}</p>
-            <p>date de début : {{ date_fin }}</p>
-            <input type="date" [min]="date_debut.toISOString().split('T')[0]" [max]="date_fin.toISOString().split('T')[0]">
         </div>
     </div>
 
