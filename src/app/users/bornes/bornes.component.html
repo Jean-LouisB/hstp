@@ -1,0 +1,9 @@
+<div class="container-fluid">
+    <p>Paramètrage des dates de saisie</p>
+    <div class="d-flex">
+        <div class="d-flex align-item-center bg-success" *ngIf="date_debut">date de début {{ date_debut }}</div>
+        <button class="btn btn-outline-danger">Changer</button>
+    </div>
+
+    <p *ngIf="date_fin">date de dfin {{ date_fin }}</p>
+</div>

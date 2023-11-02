@@ -10,7 +10,7 @@ import { Arbitrage } from 'src/app/models/arbitrage.model';
 import { environment } from 'src/app/environnement';
 import { SessionState } from 'src/app/state/session/session.reducers';
 import { Store } from '@ngrx/store';
-import { changeOneUser, setListOfAllUsers } from 'src/app/state/session/session.actions';
+import { changeOneUser, setBornes, setListOfAllUsers } from 'src/app/state/session/session.actions';
 
 
 @Injectable({
@@ -48,8 +48,6 @@ export class ServerService {
           } else {
             const token = response.data.token; //token de sécurité
             this.cookieService.set('session', token, null, '/', null, false, 'Lax');
-            //récupération de la date des bornes et création du cookie
-            this.getBornes(response);
             observable.next(msg);//permet à la requête appelante de surveiller le message de retour et réagir en fonction.
             observable.complete();
           }
@@ -61,16 +59,18 @@ export class ServerService {
 
   }
 
-  getBornes(response: any) {
-    const bornes = response.data.bornes; // bornes de saisie retournée par le serveur
-    const date_debut = formatDate(bornes['0']['date_debut']);
-    const date_fin = formatDate(bornes['0']['date_fin']);
-    const bornesPourCookies = {
-      'date_debut': date_debut.normalDate,
-      'date_fin': date_fin.normalDate
-    };
-    const bornesJSON = JSON.stringify(bornesPourCookies);
-    this.cookieService.set('bornes', bornesJSON, null, '/', null, true, 'Strict');
+  getBornes() {
+    this.axiosInstance.get('/bornes/bornes', {Credential})
+    .then((response)=>{
+      if(response.data.bornes){
+        this.store.dispatch(setBornes({bornes:[response.data.bornes[0]['date_debut'],response.data.bornes[0]['date_fin']]}))
+      }else{
+        console.log(response.data.message);
+      }
+    }
+    )
+    
+    //this.store.dispatch(setBornes({bornes:[bornes['0']['date_debut'],bornes['0']['date_fin']]}))
   }
 
   /**

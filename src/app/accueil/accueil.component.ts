@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ServerService } from '../services/serveur/server.service';
 import { Store, select } from '@ngrx/store';
-import { setUser } from '../state/session/session.actions';
+import { setBornes, setUser } from '../state/session/session.actions';
 import { SessionState } from '../state/session/session.reducers';
 import { User } from '../models/userModel';
 import { Subscription } from 'rxjs';
@@ -25,11 +25,12 @@ export class AccueilComponent implements OnInit, OnDestroy {
   date_debut: Date = null;
   date_fin: Date = null;
   private userSubscription: Subscription | undefined;
+  private bornesSubscription: Subscription | undefined;
 
   constructor(
     private apiBDD: ServerService,
     private store: Store<{ session: SessionState }>,
-    private cookieService: CookieService,
+
   ) {
   }
   ngOnInit(): void {
@@ -41,10 +42,14 @@ export class AccueilComponent implements OnInit, OnDestroy {
 
 
   private getBornes() {
-    const mesBornes = this.cookieService.get('bornes');
-    const mesBornesJson = JSON.parse(mesBornes) || null;
-    this.date_debut = new Date(mesBornesJson['date_debut']);
-    this.date_fin = new Date(mesBornesJson['date_fin']);
+    this.apiBDD.getBornes();
+    this.bornesSubscription = this.store.pipe(select(state => state.session.bornes))
+      .subscribe((bornes: Date[]) => {
+        if (bornes) {
+          this.date_debut = bornes[0];
+          this.date_fin = bornes[1];
+        }
+      })
   }
 
   private getUserSoldes() {
@@ -73,13 +78,16 @@ export class AccueilComponent implements OnInit, OnDestroy {
 
   }
 
-  useFormatDate(date): string{
+  useFormatDate(date): string {
     return formatDate(date).dateToStringWithoutHour
   }
 
   ngOnDestroy() {
-    if (!this.userSubscription) {
+    if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.bornesSubscription) {
+      this.bornesSubscription.unsubscribe();
     }
   }
 

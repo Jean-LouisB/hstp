@@ -26,6 +26,7 @@ import { SidebarServiceComponent } from './service/sidebar-service/sidebar-servi
 import { ServiceConsulterComponent } from './service/service-consulter/service-consulter.component';
 import { ServiceValiderComponent } from './service/service-valider/service-valider.component';
 import { UserCard2Component } from './users/user-card2/user-card2.component';
+import { BornesComponent } from './users/bornes/bornes.component';
 
 
 
@@ -52,6 +53,7 @@ import { UserCard2Component } from './users/user-card2/user-card2.component';
     ServiceConsulterComponent,
     ServiceValiderComponent,
     UserCard2Component,
+    BornesComponent,
   ],
   imports: [
     BrowserModule,

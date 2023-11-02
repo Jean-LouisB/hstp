@@ -15,6 +15,7 @@ import { HeuresArchivesComponent } from './heures/heures-archives/heures-archive
 import { ClotureComponent } from './heures/cloture/cloture.component';
 import { ServiceConsulterComponent } from './service/service-consulter/service-consulter.component';
 import { ServiceValiderComponent } from './service/service-valider/service-valider.component';
+import { BornesComponent } from './users/bornes/bornes.component';
 
 
 const routes: Routes = [
@@ -42,6 +43,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'liste', pathMatch: 'full'},
       { path: 'liste', component: UserListComponent },
       { path: 'ajout', component: UserAddComponent },
+      { path: 'bornes', component: BornesComponent },
     ]
   },
   { path: '**', component: NotFoundPageComponent },

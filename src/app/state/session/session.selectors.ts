@@ -6,4 +6,8 @@ export const listOfAllUsers = createSelector(
   (state: SessionState) => state.listOfAllUsers,
   (listOfAllUsers: Array<User> | null) => listOfAllUsers
 );
+export const getBornes = createSelector(
+  (state: SessionState) => state.bornes,
+  (bornes: Array<Date> | null) => bornes
+);
 

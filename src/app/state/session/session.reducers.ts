@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { toggleConnected, setUser, setListOfAllUsers, changeOneUser, togglePresence } from "./session.actions";
+import { toggleConnected, setUser, setListOfAllUsers, changeOneUser, togglePresence, setBornes } from "./session.actions";
 import { User } from "src/app/models/userModel";
 
 
@@ -8,12 +8,14 @@ export interface SessionState {
     isConnected: boolean;
     userState: { user: User | null };
     listOfAllUsers: Array<User> | null;
+    bornes: Date[] | null;
 }
 
 export const initialState: SessionState = {
     isConnected: false,
     userState: null,
-    listOfAllUsers: []
+    listOfAllUsers: [],
+    bornes: null
 }
 
 export const sessionReducer = createReducer(
@@ -52,6 +54,10 @@ export const sessionReducer = createReducer(
                 return u
             }
         })
+    })),
+    on(setBornes, (state,{bornes})=>({
+        ...state,
+        bornes:bornes
     }))
 
 );
