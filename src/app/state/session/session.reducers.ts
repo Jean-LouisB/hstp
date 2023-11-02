@@ -9,6 +9,7 @@ export interface SessionState {
     userState: { user: User | null };
     listOfAllUsers: Array<User> | null;
     bornes: Date[] | null;
+    
 }
 
 export const initialState: SessionState = {

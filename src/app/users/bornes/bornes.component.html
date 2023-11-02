@@ -1,9 +1,22 @@
 <div class="container-fluid">
-    <p>Paramètrage des dates de saisie</p>
-    <div class="d-flex">
-        <div class="d-flex align-item-center bg-success" *ngIf="date_debut">date de début {{ date_debut }}</div>
-        <button class="btn btn-outline-danger">Changer</button>
+    <div class="container w-100 w-lg-75">
+        <p class="h3 mb-5">Paramètrage des dates de saisie</p>
+        <p *ngIf="message">{{message}}</p>
+        <div class="border rounded p-3 shadow-sm row mb-3">
+            <div class="d-flex flex-column mb-3 col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3">
+                <div class="container text-center h5" *ngIf="date_debut && !isChanging">date de début : le {{ date_debut }}</div>
+                <input *ngIf="isChanging" type="date" class="form-control text-center" [(ngModel)]="new_date_debut"/>
+            </div>
+            <div class="d-flex flex-column mb-3 col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3">
+                <div class="container text-center h5" *ngIf="date_fin && !isChanging">date de fin : le {{ date_fin }}</div>
+                <input *ngIf="isChanging" type="date" class="form-control text-center" [(ngModel)]="new_date_fin"/>
+            </div>
+            <div>
+                <button *ngIf="!isChanging" class="btn btn-outline-warning w-100" (click)="toggleIsChanging()">CHANGER</button>
+                <button *ngIf="isChanging" class="btn btn-outline-danger w-100" (click)="upDateBornes()">VALIDER</button>
+            </div>
+        </div>
+        <h2 class="bg-warning text-danger p-3 rounded shadow">MISE A JOUR FONCTIONNE MAIS AFFICHAGE PAS DYNAMIQUE</h2>
     </div>
 
-    <p *ngIf="date_fin">date de dfin {{ date_fin }}</p>
 </div>

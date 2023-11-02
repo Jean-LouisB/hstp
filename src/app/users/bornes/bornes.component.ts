@@ -11,8 +11,13 @@ import { formatDate} from '@fabricekopf/date-france';
   styleUrls: ['./bornes.component.css']
 })
 export class BornesComponent implements OnInit, OnDestroy {
-  date_debut: Date | null;
-  date_fin: Date | null;
+  date_debut: string | null;
+  new_date_debut: Date | null;
+  date_fin: string | null;
+  new_date_fin: Date | null;
+  isChanging: boolean = false;
+  message: string | null;
+
   private bornesSubscription: Subscription | undefined;
   constructor(
     private apiBDD: ServerService,
@@ -31,8 +36,23 @@ export class BornesComponent implements OnInit, OnDestroy {
         if (bornes) {
           this.date_debut = formatDate(bornes[0]).dateToStringWithoutHour;
           this.date_fin = formatDate(bornes[1]).dateToStringWithoutHour;
+          this.new_date_debut = bornes[0];
+          this.new_date_fin = bornes[1];
         }
       })
+  }
+
+  toggleIsChanging(){
+    this.isChanging=!this.isChanging;
+  }
+
+  upDateBornes(){
+    const bornes = [this.new_date_debut, this.new_date_fin]
+    this.apiBDD.upDateBornes(bornes);
+    this.message = "dates mises à jour";
+    console.log(this.message);
+
+    this.toggleIsChanging();
   }
 
   ngOnDestroy(): void {

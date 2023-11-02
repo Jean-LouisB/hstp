@@ -17,6 +17,7 @@ import { changeOneUser, setBornes, setListOfAllUsers } from 'src/app/state/sessi
   providedIn: 'root'
 })
 export class ServerService {
+
   private axiosInstance: any;
   constructor(
     private cookieService: CookieService,
@@ -259,7 +260,10 @@ export class ServerService {
         console.log(reponse.data);
       })
   }
+  upDateBornes(bornes: Date[]) {
+    this.axiosInstance.put('/bornes/update', { bornes:bornes })
 
+  }
 
 
 }
