@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { CookieService } from 'ngx-cookie-service'; // Importe le CookieService
-import { environment } from 'src/app/environnement';
-const apiUrl = environment.apiUrl;
+import { environnement } from 'src/app/environnement';
+const apiUrl = environnement.apiUrl;
 
 
 export function configureAxios(cookieService: CookieService) {

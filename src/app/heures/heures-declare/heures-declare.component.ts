@@ -1,13 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
-import { Heure } from 'src/app/models/heureModel';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Heure } from 'src/app/core/models/heureModel';
 import { formatDate } from '@fabricekopf/date-france';
-import { ServerService } from 'src/app/services/serveur/server.service';
+import { UserService } from 'src/app/core/services/users.service';
 import { Store, select } from '@ngrx/store';
-import { SessionState } from 'src/app/state/session/session.reducers';
-import { User } from 'src/app/models/userModel';
-import { HoursService } from 'src/app/services/hours/hours.service';
-import { Router } from '@angular/router';
+import { SessionState } from 'src/app/core/state/session/session.reducers';
+import { User } from 'src/app/core/models/userModel';
+import { Subscription } from 'rxjs';
+import { BornesService } from 'src/app/core/services/bornes.service';
 
 
 @Component({
@@ -15,7 +14,7 @@ import { Router } from '@angular/router';
   templateUrl: './heures-declare.component.html',
   styleUrls: ['./heures-declare.component.css']
 })
-export class HeuresDeclareComponent implements OnInit {
+export class HeuresDeclareComponent implements OnInit, OnDestroy {
   matricule: string = null;
   date_debut: Date = null;
   date_fin: Date = null;
@@ -27,30 +26,35 @@ export class HeuresDeclareComponent implements OnInit {
   msgErreurTemps: string = null;
   validationPossible: boolean = false;
   openMessageBoxValidation: boolean = false;
-
+  bornesSubscription: Subscription | null;
   constructor(
-    private cookieService: CookieService,
-    private apiDBB: ServerService,
+    private userService: UserService,
+    private bornesService: BornesService,
     private store: Store<{ session: SessionState }>,
-    private mesCompteurs: HoursService,
-    private router: Router,
   ) { }
+ 
 
 
   ngOnInit(): void {
-    this.getAutorisation()
+
     this.getNameUserState();
-    this.getDatesDeSaisie();
+    this.getBornes();
   }
   /**
    * récupère les bornes de saisie dans le cookie afin de brider le champs date.
    */
-  getDatesDeSaisie() {
-    const bornesDeSaisie = this.cookieService.get('bornes');
-    const bornesDeSaisieJson = JSON.parse(bornesDeSaisie);
-    this.date_debut = new Date(bornesDeSaisieJson['date_debut']);
-    this.date_fin = new Date(bornesDeSaisieJson['date_fin']);
+    private getBornes() {
+    this.bornesService.getBornes();
+    this.bornesSubscription = this.store.pipe(select(state => state.session.bornes))
+      .subscribe((bornes: Date[]) => {
+        if (bornes) {
+          this.date_debut = bornes[0];
+          this.date_fin = bornes[1];
+        }
+      })
   }
+
+
 
   /**
    * Vérifie si le temps saisi n'est pas négatif (fin<début).
@@ -87,8 +91,8 @@ export class HeuresDeclareComponent implements OnInit {
     const heureMinuscule = heure.toLowerCase();
     const heureSplited = heureMinuscule.split('h');
     const heureValueDec = parseInt(heureSplited[0]);
-    let minutesValueDec= 0;
-    if(heureSplited[1]){
+    let minutesValueDec = 0;
+    if (heureSplited[1]) {
       minutesValueDec = parseInt(heureSplited[1]) / 60;
     }
 
@@ -106,7 +110,7 @@ export class HeuresDeclareComponent implements OnInit {
     const dateEv = formatDate(this.dateEvenement).dateCourte
     const commentaireComplete = "De " + this.heureDebut + " à " + this.heureFin + " => " + this.commentaire
     const newHour = new Heure(this.matricule, bornes, duree, commentaireComplete, dateEv)
-    this.apiDBB.putHeureHebdo(newHour);
+    this.userService.putHeureHebdo(newHour);
     this.dateEvenement = this.sens = this.heureDebut = this.heureFin = this.commentaire = this.msgErreurTemps = null;
     this.validationPossible = false;
     this.openMessageBoxValidation = true;
@@ -138,19 +142,16 @@ export class HeuresDeclareComponent implements OnInit {
 
   getNameUserState() {
     this.store.pipe(select(state => state.session.userState))
-      .subscribe((userData: { user: User | null }) => {
-        this.matricule = userData.user.matricule;
+      .subscribe((userData: User | null ) => {
+        this.matricule = userData.matricule;
       });
 
   }
-  getAutorisation(){
-    this.mesCompteurs.autorisationSaisie$
-    .subscribe((auto)=>{
-      if(auto === false){
-        this.router.navigate(['/heures/consulter'])
-      }
-    })
+
+  ngOnDestroy(): void {
+    if(this.bornesSubscription){
+      this.bornesSubscription.unsubscribe();
+    }
   }
-  
 
 }

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { User } from 'src/app/models/userModel';
-import { SessionState } from 'src/app/state/session/session.reducers';
-import { setUser } from 'src/app/state/session/session.actions';
-import { ServerService } from 'src/app/services/serveur/server.service';
+import { User } from 'src/app/core/models/userModel';
+import { SessionState } from 'src/app/core/state/session/session.reducers';
+import { setUser } from 'src/app/core/state/session/session.actions';
+import { UserService } from 'src/app/core/services/users.service';
 
 /**
  * user-page est la page principale de la gestion des utilisateurs.
@@ -24,7 +24,7 @@ export class UserPageComponent implements OnInit {
   constructor(
     private store: Store<{ session: SessionState }>,
     private router: Router,
-    private apiBDD: ServerService, //Service local qui interroge le serveur et donc la BDD
+    private userService: UserService, //Service local qui interroge le serveur et donc la BDD
   ) { }
   /**
    * this.getNameUserState() affecte un profil à l'attribut local.
@@ -36,7 +36,7 @@ export class UserPageComponent implements OnInit {
   ngOnInit(): void {
     this.getNameUserState();
     if (this.user == null) {
-      this.apiBDD.getUserProfil().subscribe((data) => {
+      this.userService.getUserProfil().subscribe((data) => {
         this.user = new User().deserialize(data)
         this.store.dispatch(setUser({ user: this.user }));
       })
@@ -54,11 +54,11 @@ export class UserPageComponent implements OnInit {
    * */
   getNameUserState() {
     this.store.pipe(select(state => state.session.userState))
-      .subscribe((userData: { user: User | null }) => {
+      .subscribe((userData: User | null ) => {
         if (userData) {
-          this.user = userData.user;
+          this.user = userData;
         }else {
-          this.apiBDD.getUserProfil().subscribe((data) => {
+          this.userService.getUserProfil().subscribe((data) => {
             this.user = new User().deserialize(data)
             this.store.dispatch(setUser({ user: this.user }));
           })

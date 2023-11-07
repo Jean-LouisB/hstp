@@ -7,12 +7,11 @@ import { LoginComponent } from './users/login/login.component';
 import { FormsModule } from '@angular/forms';
 import { AccueilComponent } from './accueil/accueil.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { StateModule } from './state/state.module';
+import { StateModule } from './core/state/state.module';
 import { StoreModule } from '@ngrx/store';
-import { sessionReducer } from './state/session/session.reducers';
+import { sessionReducer } from './core/state/session/session.reducers';
 import { HeuresComponent } from './heures/heures.component';
 import { ServiceComponent } from './service/service.component';
-import { EntrepriseComponent } from './entreprise/entreprise.component';
 import { UserPageComponent } from './users/user-page/user-page.component';
 import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 import { SideBarComponent } from './users/user-page/side-bar/side-bar.component';
@@ -39,7 +38,6 @@ import { BornesComponent } from './users/bornes/bornes.component';
     NavbarComponent,
     HeuresComponent,
     ServiceComponent,
-    EntrepriseComponent,
     UserPageComponent,
     NotFoundPageComponent,
     SideBarComponent,

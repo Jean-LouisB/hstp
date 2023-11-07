@@ -1,12 +1,12 @@
 import { createReducer, on } from "@ngrx/store";
 import { toggleConnected, setUser, setListOfAllUsers, changeOneUser, togglePresence, setBornes } from "./session.actions";
-import { User } from "src/app/models/userModel";
+import { User } from "src/app/core/models/userModel";
 
 
 
 export interface SessionState {
     isConnected: boolean;
-    userState: { user: User | null };
+    userState: User | null; // de type User seul à confirmer
     listOfAllUsers: Array<User> | null;
     bornes: Date[] | null;
     
@@ -27,7 +27,7 @@ export const sessionReducer = createReducer(
     })),
     on(setUser, (state, { user }) => ({
         ...state,
-        userState: { user: user },
+        userState: user,
     })),
     on(setListOfAllUsers, (state, { listOfAllUsers }) => ({
         ...state,

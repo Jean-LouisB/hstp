@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { CookieService } from 'ngx-cookie-service';
 import { Subscription } from 'rxjs';
-import { User } from 'src/app/models/userModel';
-import { SessionState } from 'src/app/state/session/session.reducers';
-import { setUser } from 'src/app/state/session/session.actions';
-import { ServerService } from 'src/app/services/serveur/server.service';
+import { User } from 'src/app/core/models/userModel';
+import { SessionState } from 'src/app/core/state/session/session.reducers';
+import { setUser } from 'src/app/core/state/session/session.actions';
+import { UserService } from 'src/app/core/services/users.service';
 
 @Component({
   selector: 'app-service',
@@ -19,13 +18,13 @@ export class ServiceComponent implements OnInit{
   constructor(
     private store: Store<{ session: SessionState }>,
     private router: Router,
-    private apiBDD: ServerService,
-    private cookieService: CookieService,
+    private userService: UserService,
+
   ){}
   ngOnInit(): void {
     this.getNameUserState();
     if (this.user == null) {
-      this.apiBDD.getUserProfil().subscribe((data) => {
+      this.userService.getUserProfil().subscribe((data) => {
         this.user = new User().deserialize(data)
         //console.log(this.user);
         this.store.dispatch(setUser({ user: this.user }));
@@ -38,11 +37,11 @@ export class ServiceComponent implements OnInit{
  */
   getNameUserState() {
     this.userSubscription = this.store.pipe(select(state => state.session.userState))
-      .subscribe((userData: { user: User | null }) => {
-        if (userData.user.type<3) {
+      .subscribe((userData: User | null ) => {
+        if (userData.type<3) {
           this.router.navigate(['/accueil'])
         }else{
-          this.user = userData.user;
+          this.user = userData;
         }
       });
 

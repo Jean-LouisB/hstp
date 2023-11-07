@@ -7,8 +7,8 @@
             <div class="p-2">
                 <div class="form-floating mb-3">
                     <input [(ngModel)]="dateEvenement" class="form-control" id="dateEvenement" name="dateEvenement"
-                        type="date" [min]="date_debut.toISOString().split('T')[0]"
-                        [max]="date_fin.toISOString().split('T')[0]" (blur)="accepteLaSasie()">
+                        type="date" [min]="date_debut"
+                        [max]="date_fin" (blur)="accepteLaSasie()">
                     <!-- brider sur les dates bornées -->
                     <label for="dateEvenement">Date de l'évènement</label>
                 </div>

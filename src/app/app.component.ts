@@ -2,7 +2,7 @@ import { Component, OnInit, } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { Store } from '@ngrx/store';
-import { toggleConnected } from './state/session/session.actions';
+import { toggleConnected } from './core/state/session/session.actions';
 import { Observable } from 'rxjs';
 
 

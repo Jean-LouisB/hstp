@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { ServerService } from 'src/app/services/serveur/server.service';
-import { SessionState } from 'src/app/state/session/session.reducers';
+import { UserService } from 'src/app/core/services/users.service';
+import { SessionState } from 'src/app/core/state/session/session.reducers';
 import { formatDate} from '@fabricekopf/date-france';
+import { BornesService } from 'src/app/core/services/bornes.service';
 
 @Component({
   selector: 'app-bornes',
@@ -20,7 +21,8 @@ export class BornesComponent implements OnInit, OnDestroy {
 
   private bornesSubscription: Subscription | undefined;
   constructor(
-    private apiBDD: ServerService,
+    private userService: UserService,
+    private bornesService: BornesService,
     private store: Store<{ session: SessionState }>
   ) { }
 
@@ -30,7 +32,7 @@ export class BornesComponent implements OnInit, OnDestroy {
   }
 
   private getBornes() {
-    this.apiBDD.getBornes();
+    this.bornesService.getBornes();
     this.bornesSubscription = this.store.pipe(select(state => state.session.bornes))
       .subscribe((bornes: Date[]) => {
         if (bornes) {
@@ -48,7 +50,7 @@ export class BornesComponent implements OnInit, OnDestroy {
 
   upDateBornes(){
     const bornes = [this.new_date_debut, this.new_date_fin]
-    this.apiBDD.upDateBornes(bornes);
+    this.bornesService.upDateBornes(bornes);
     this.message = "dates mises à jour";
     console.log(this.message);
 

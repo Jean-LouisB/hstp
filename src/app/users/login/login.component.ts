@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ServerService } from '../../services/serveur/server.service';
+import { UserService } from 'src/app/core/services/users.service';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { toggleConnected } from 'src/app/state/session/session.actions';
+import { toggleConnected } from 'src/app/core/state/session/session.actions';
 import { Store } from '@ngrx/store';
 
 
@@ -34,12 +34,12 @@ export class LoginComponent implements OnInit {
   
 /**
  * 
- * @param apiBDD C'est la connexion au service local. C'est lui qui interroge le serveur.
+ * @param userService C'est la connexion au service local. C'est lui qui interroge le serveur.
  * @param router Il gère les redirection
  * @param store L'accés au store NGRX pour mettre à jour la valeur booléenne 'isConnected'
  */
   constructor(
-     private apiBDD: ServerService,
+     private userService: UserService,
      private router: Router,
      private store: Store,
     ) {
@@ -62,8 +62,8 @@ export class LoginComponent implements OnInit {
       return
     }
     this.toggleWaiting();// Change la valeur booléen qui fait apparaitre la roue tournante idicant un processus en cours.
-    //On fait appel au service local (apiBDD) qui interroge le seveur avec le matricule saisi et le mot de passe saisi.
-    this.apiBDD.getLogin(this.userMatricule, this.userPassWord)
+    //On fait appel au service local (userService) qui interroge le seveur avec le matricule saisi et le mot de passe saisi.
+    this.userService.getLogin(this.userMatricule, this.userPassWord)
     .subscribe((response)=>{
       if(response == "Authentification réussie" ){
         /*Si le serveur répond "Authentification réussie" 
@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit {
         un token crypté est déposé dans les cookies par AXIOS
         */
         this.store.dispatch(toggleConnected());
-       // this.apiBDD.getAllUsers();
+       // this.userService.getAllUsers();
         this.router.navigate(['accueil']);
       }else{
         // Sinon le message d'erreur du serveur est transmis à l'attribut local 'errorMsg' qui apparait dès qu'il est initié.

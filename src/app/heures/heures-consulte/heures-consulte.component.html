@@ -15,7 +15,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let hour of tobOfCurrentsHours">
+                <tr *ngFor="let hour of tabOfCurrentsHours">
 
                     <td>{{ hour['date_evenement'] }}</td>
                     <td>{{ heureDecimaleEnStr(hour['duree']) }}</td>
@@ -79,7 +79,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let hour of tobOfHoursNotValidated">
+                <tr *ngFor="let hour of tabOfHoursNotValidated">
 
                     <td>{{ hour['date_evenement'] }}</td>
                     <td>{{ heureDecimaleEnStr(hour['duree']) }}</td>

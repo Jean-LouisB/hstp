@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ServerService } from '../services/serveur/server.service';
+import { UserService } from '../core/services/users.service';
 import { Store, select } from '@ngrx/store';
-import { setBornes, setUser } from '../state/session/session.actions';
-import { SessionState } from '../state/session/session.reducers';
-import { User } from '../models/userModel';
+import { setBornes, setUser } from '../core/state/session/session.actions';
+import { SessionState } from '../core/state/session/session.reducers';
+import { User } from '../core/models/userModel';
 import { Subscription } from 'rxjs';
-import { CookieService } from 'ngx-cookie-service';
 import { heureDecToStr, formatDate } from '@fabricekopf/date-france';
+import { BornesService } from '../core/services/bornes.service';
 
 
 
@@ -24,11 +24,13 @@ export class AccueilComponent implements OnInit, OnDestroy {
   aPayer: string = "";
   date_debut: Date = null;
   date_fin: Date = null;
+  errorMessage: string | null = null
   private userSubscription: Subscription | undefined;
   private bornesSubscription: Subscription | undefined;
 
   constructor(
-    private apiBDD: ServerService,
+    private userService: UserService,
+    private borneService: BornesService,
     private store: Store<{ session: SessionState }>,
 
   ) {
@@ -40,20 +42,41 @@ export class AccueilComponent implements OnInit, OnDestroy {
 
   }
 
-
+/**
+ * Cette requête récupère les bornes auprés du store, et le cas échéant redemande au serveur.
+ * Elle donne les valeurs de :
+ * this.date_debut
+ * et
+ * this.date_fin
+ */
   private getBornes() {
-    this.apiBDD.getBornes();
     this.bornesSubscription = this.store.pipe(select(state => state.session.bornes))
       .subscribe((bornes: Date[]) => {
-        if (bornes) {
+        if (bornes && bornes.length === 2) {
           this.date_debut = bornes[0];
           this.date_fin = bornes[1];
+        }else{
+          // Si le store a été rafraichi, je renvoie une requête au serveur
+          this.borneService.getBornes()
+          .then((bornes: Date[])=>{
+            if(bornes){
+              this.date_debut = bornes[0];
+              this.date_fin = bornes[1];
+              this.store.dispatch(setBornes({bornes:[this.date_debut, this.date_fin]}));
+            }
+          })
+          .catch((error)=>{
+            this.errorMessage = error
+            console.error(error)
+          })
         }
       })
+    
   }
 
+
   private getUserSoldes() {
-    this.apiBDD.getSoldesDuProfil() //Je récupère les soldes pour les afficher.
+    this.userService.getSoldesDuProfil() //Je récupère les soldes pour les afficher.
       .then((data: any) => {
         this.heures_supplementaires = heureDecToStr(data.data.heuresSupMajoree);
         this.recuperation = heureDecToStr(data.data.recuperation);
@@ -65,11 +88,11 @@ export class AccueilComponent implements OnInit, OnDestroy {
   getNameUserState() {
 
     this.userSubscription = this.store.pipe(select(state => state.session.userState))
-      .subscribe((userData: { user: User | null }) => {
+      .subscribe((userData:User | null ) => {
         if (userData) {
-          this.user = userData.user;
+          this.user = userData;
         } else {
-          this.apiBDD.getUserProfil().subscribe((data) => {
+          this.userService.getUserProfil().subscribe((data) => {
             this.user = new User().deserialize(data)
             this.store.dispatch(setUser({ user: this.user }));
           })

@@ -6,7 +6,6 @@
             <ul class="list-group">
                 <li class="list-group-item" routerLinkActive="active"><a class="nav-link"
                     routerLink="/heures/consulter">En cours.
-                    <span *ngIf="interupteurPastille" class="pastille">{{ totalCompteurNotValidated }} </span>
                     <br>
                     <span class="textPetit fst-italic">(Consulter, supprimer)</span></a></li>
                 <li *ngIf="autoriseLaSaisie === true" class="list-group-item" routerLinkActive="active"><a class="nav-link"

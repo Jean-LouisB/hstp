@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import * as bcryptjs from 'bcryptjs';
-import { User } from 'src/app/models/userModel';
-import { environment } from 'src/app/environnement';
-import { ServerService } from 'src/app/services/serveur/server.service';
+import { User } from 'src/app/core/models/userModel';
+import { environnement } from 'src/app/environnement';
+import { UserService } from 'src/app/core/services/users.service';
 import { Router } from '@angular/router';
-import { Arbitrage } from 'src/app/models/arbitrage.model';
+import { Arbitrage } from 'src/app/core/models/arbitrage.model';
 
-const salt = environment.salt;
+const salt = environnement.salt;
 
 @Component({
   selector: 'app-user-add',
@@ -26,7 +26,7 @@ export class UserAddComponent implements OnInit {
   msgErreurSolidarite:String = null;
 
   constructor(
-    private apiBDD: ServerService,
+    private userService: UserService,
     private router: Router,
   ){}
   /**
@@ -59,8 +59,8 @@ export class UserAddComponent implements OnInit {
     await bcryptjs.hash(this.passwordRaw, salt).then(
       (pass) => {
         this.newUser.password = pass;
-        this.apiBDD.putAddUser(this.newUser);
-        this.apiBDD.getAllUsers();
+        this.userService.putAddUser(this.newUser);
+        this.userService.getAllUsers();
         this.router.navigate(['/users/liste']);
     }
     )
@@ -86,7 +86,7 @@ export class UserAddComponent implements OnInit {
     arbitrage.deserialize(ventillation);
 
     try {
-      this.apiBDD.validateHour(arbitrage);
+      this.userService.validateHour(arbitrage);
     } catch (error) {
       console.log(error);
     }

@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ServerService } from 'src/app/services/serveur/server.service';
+import { UserService } from 'src/app/core/services/users.service';
 import { heureDecToStr } from '@fabricekopf/date-france';
-import { HoursService } from 'src/app/services/hours/hours.service';
-import { CookieService } from 'ngx-cookie-service';
 import { formatDate } from '@fabricekopf/date-france';
+import { Heure } from 'src/app/core/models/heureModel';
+import { Store } from '@ngrx/store';
+import { getBornes } from 'src/app/core/state/session/session.selectors';
+import { SessionState } from 'src/app/core/state/session/session.reducers';
 
 
 
@@ -14,8 +16,8 @@ import { formatDate } from '@fabricekopf/date-france';
   styleUrls: ['./heures-consulte.component.css']
 })
 export class HeuresConsulteComponent implements OnInit {
-  tobOfCurrentsHours = [];
-  tobOfHoursNotValidated = [];
+  tabOfCurrentsHours = [];
+  tabOfHoursNotValidated = [];
   totalCompteurNotValidated: number = 0;
   date_debut: string = '';
   date_fin: string = '';
@@ -32,19 +34,19 @@ export class HeuresConsulteComponent implements OnInit {
   aPayer_avant: string = '0h00';
 
   constructor(
-    private apiBDD: ServerService,
-    private mesCompteurs: HoursService,
-    private cookieService: CookieService,
+    private userService: UserService,
+    private store: Store<{ session: SessionState }>,
 
   ) { }
 
   ngOnInit(): void {
+    this.getCurrentsHours();
     this.upDateData();
     this.upDateDataValidated();
     this.getBornes();
     this.getArbitrageEnCours();
     this.getSoldes()
-    
+
   }
 
   /**
@@ -53,7 +55,7 @@ export class HeuresConsulteComponent implements OnInit {
    */
   async deleteHour(id: string) {
     try {
-      await this.apiBDD.deleteHourFromWeek(id);
+      await this.userService.deleteHourFromWeek(id);
       this.upDateData();
     } catch (error) {
       console.log(error);
@@ -73,39 +75,30 @@ export class HeuresConsulteComponent implements OnInit {
    * met à jour le détail et le total des heures non validées
    */
   upDateData() {
-    this.mesCompteurs.getWeekHours()
-      .then((fetchData) => {
-        this.tobOfCurrentsHours = fetchData['detail'].filter((hour: any) => hour.valide === 0);
-        this.totalCompteurNotValidated = 0;
-        this.tobOfCurrentsHours.forEach((hour) => {
-          this.totalCompteurNotValidated += hour.duree
-        })
-      })
+
   }
   upDateDataValidated() {
-    this.mesCompteurs.getWeekHours()
-      .then((fetchData) => {
-        this.tobOfHoursNotValidated = fetchData['detail'].filter((hour: any) => hour.valide === 1 && hour.bornes === this.date_debut + " au " + this.date_fin);
-      })
+
   }
 
-  getBornes() { // Il y a un service pour faire ça !! => TODO : remplacer
-    const mesBornes = this.cookieService.get('bornes');
-    const mesBornesJson = JSON.parse(mesBornes) || null;
-    this.date_debut = formatDate(mesBornesJson['date_debut']).dateCourte
-    this.date_fin = formatDate(mesBornesJson['date_fin']).dateCourte
+  getBornes() { 
+    this.store.select(getBornes).subscribe((bornes) => {
+      this.date_debut = formatDate(bornes[0]).dateCourte
+      this.date_fin = formatDate(bornes[0]).dateCourte
+    })
+
   }
 
   getArbitrageEnCours() {
-    this.apiBDD.getArbitrageDuProfil()
+    this.userService.getArbitrageDuProfil()
       .then((data: any) => {
         this.heures_supplementaires = heureDecToStr(data.data.heuresSupMajoree);
         this.recuperation = heureDecToStr(data.data.recuperation);
         this.solidarite = heureDecToStr(data.data.solidarite);
         this.aPayer = heureDecToStr(data.data.heureAPayer);
-        if(data.data.heuresSupMajoree+data.data.recuperation+data.data.solidarite+data.data.heureAPayer === 0){
+        if (data.data.heuresSupMajoree + data.data.recuperation + data.data.solidarite + data.data.heureAPayer === 0) {
           this.commutateurAffichage = false
-        }else{
+        } else {
           this.commutateurAffichage = true
         }
       });
@@ -113,7 +106,7 @@ export class HeuresConsulteComponent implements OnInit {
   }
 
   getSoldes() {
-    this.apiBDD.getSoldesDuProfil()
+    this.userService.getSoldesDuProfil()
       .then((data: any) => {
         this.heures_supplementaires_avant = heureDecToStr(data.data.heuresSupMajoree);
         this.recuperation_avant = heureDecToStr(data.data.recuperation);
@@ -121,6 +114,20 @@ export class HeuresConsulteComponent implements OnInit {
         this.aPayer_avant = heureDecToStr(data.data.heureAPayer);
       });
   }
-
+  /**
+   * Pour obtenir les heures non ventillées du salarié et leur total
+   */
+  getCurrentsHours() {
+    this.userService.getHeureHebdoUser()
+      .then((data: any) => {
+        let sum = 0
+        const fetchData = JSON.parse(data.data);
+        fetchData.forEach((heure: Heure) => {
+          sum += heure.duree
+          this.tabOfCurrentsHours.push(heure)
+        });
+        this.totalCompteurNotValidated = sum;
+      })
+  }
 
 }

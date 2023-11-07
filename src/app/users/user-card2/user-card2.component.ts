@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { User } from 'src/app/models/userModel';
-import { ServerService } from 'src/app/services/serveur/server.service';
-import { changeOneUser, togglePresence } from 'src/app/state/session/session.actions';
-import { SessionState } from 'src/app/state/session/session.reducers';
+import { User } from 'src/app/core/models/userModel';
+import { UserService } from 'src/app/core/services/users.service';
+import { changeOneUser, togglePresence } from 'src/app/core/state/session/session.actions';
+import { SessionState } from 'src/app/core/state/session/session.reducers';
 import { heureDecToStr } from '@fabricekopf/date-france';
 
 @Component({
@@ -23,7 +23,7 @@ export class UserCard2Component implements OnInit {
 
 
   constructor(
-    private apiBDD: ServerService,
+    private userService: UserService,
     private store: Store<{ session: SessionState }>,
   ) { }
 
@@ -57,7 +57,7 @@ export class UserCard2Component implements OnInit {
     }
     const userUpdatedToSend = new User().deserialize(updatedUser)
     this.store.dispatch(changeOneUser({ user: userUpdatedToSend }));
-    this.apiBDD.putModifyUser(userUpdatedToSend);
+    this.userService.putModifyUser(userUpdatedToSend);
     this.idToModify = null;
   }
 
@@ -77,7 +77,7 @@ export class UserCard2Component implements OnInit {
 
   handleOnChangePresent(id: string, presence: boolean) {
     this.store.dispatch(togglePresence({ id, presence }))
-    this.apiBDD.putPresenceToggle(id, presence).then(
+    this.userService.putPresenceToggle(id, presence).then(
       () => {
         // Émettre l'événement pour informer le composant parent de la mise à jour
         this.presenceUpdated.emit();

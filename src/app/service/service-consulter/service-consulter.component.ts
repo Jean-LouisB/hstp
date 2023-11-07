@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ServerService } from 'src/app/services/serveur/server.service';
+import { UserService } from 'src/app/core/services/users.service';
 import { heureDecToStr } from'@fabricekopf/date-france';
-import { isEmpty } from 'rxjs';
 
 @Component({
   selector: 'app-service-consulter',
@@ -13,7 +12,7 @@ export class ServiceConsulterComponent implements OnInit {
   errorMsg: string;
   vide:boolean = false;
   constructor(
-    private apiBDD: ServerService
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -26,7 +25,7 @@ export class ServiceConsulterComponent implements OnInit {
    * 
    */
   getMesArbitrages() {
-    this.apiBDD.mesArbitrageAValider().then((data) => {
+    this.userService.mesArbitrageAValider().then((data) => {
       const monTab = data.data;
       const taille = monTab.length
       if(taille === 0){
@@ -45,7 +44,7 @@ export class ServiceConsulterComponent implements OnInit {
    * elle l'intègre dans le tableau mesArbitrage.
    */
   getNames() {
-    this.apiBDD.getAllUsers()
+    this.userService.getAllUsers()
       .then((allUsers: any) => {
         this.mesArbitrages.forEach((item: any) => {
             allUsers.data.forEach((salarie: any) => {

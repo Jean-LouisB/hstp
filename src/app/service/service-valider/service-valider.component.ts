@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ServerService } from 'src/app/services/serveur/server.service';
+import { UserService } from 'src/app/core/services/users.service';
 import { heureDecToStr } from'@fabricekopf/date-france';
 
 @Component({
@@ -11,7 +11,7 @@ export class ServiceValiderComponent implements OnInit {
   mesArbitrages: any;
   errorMsg: string;
   constructor(
-    private apiBDD: ServerService
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -25,7 +25,7 @@ export class ServiceValiderComponent implements OnInit {
    * 
    */
   getMesArbitrages() {
-    this.apiBDD.mesArbitrageAValider().then((data) => {
+    this.userService.mesArbitrageAValider().then((data) => {
       this.mesArbitrages = data.data;
     })
     this.getNames()
@@ -36,7 +36,7 @@ export class ServiceValiderComponent implements OnInit {
    * elle l'intègre dans le tableau mesArbitrage.
    */
   getNames() {
-    this.apiBDD.getAllUsers()
+    this.userService.getAllUsers()
       .then((allUsers: any) => {
         this.mesArbitrages.forEach((item: any) => {
             allUsers.data.forEach((salarie: any) => {
@@ -60,7 +60,7 @@ export class ServiceValiderComponent implements OnInit {
   }
 
   valideArbitrage(id:string, aPayer: number){
-    this.apiBDD.valideArbitrage(id,aPayer);
+    this.userService.valideArbitrage(id,aPayer);
     this.getMesArbitrages();
    // this.getNames()
   }

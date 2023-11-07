@@ -1,22 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from 'src/app/models/userModel';
+import { User } from 'src/app/core/models/userModel';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 import { configureAxios } from './config.axios';
-import { formatDate } from '@fabricekopf/date-france';
-import { Heure } from 'src/app/models/heureModel';
-import { Arbitrage } from 'src/app/models/arbitrage.model';
-import { environment } from 'src/app/environnement';
-import { SessionState } from 'src/app/state/session/session.reducers';
+import { Heure } from 'src/app/core/models/heureModel';
+import { Arbitrage } from 'src/app/core/models/arbitrage.model';
+import { SessionState } from 'src/app/core/state/session/session.reducers';
 import { Store } from '@ngrx/store';
-import { changeOneUser, setBornes, setListOfAllUsers } from 'src/app/state/session/session.actions';
+import { changeOneUser, setListOfAllUsers } from 'src/app/core/state/session/session.actions';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServerService {
+export class UserService {
 
   private axiosInstance: any;
   constructor(
@@ -60,19 +58,7 @@ export class ServerService {
 
   }
 
-  getBornes() {
-    this.axiosInstance.get('/bornes/bornes', {Credential})
-    .then((response)=>{
-      if(response.data.bornes){
-        this.store.dispatch(setBornes({bornes:[response.data.bornes[0]['date_debut'],response.data.bornes[0]['date_fin']]}))
-      }else{
-        console.log(response.data.message);
-      }
-    }
-    )
-    
-    //this.store.dispatch(setBornes({bornes:[bornes['0']['date_debut'],bornes['0']['date_fin']]}))
-  }
+ 
 
   /**
    * Gère la déconnexion.
@@ -149,10 +135,10 @@ export class ServerService {
    * @param id 
    * @returns 
    */
-  getUserById(id: string) {
+/*   getUserById(id: string) {
     //Fournit les données de l'utilisateur selon son id
     return this.axiosInstance.get(`/find_user_by_id/${id}`)
-  }
+  } */
 
   putPresenceToggle(id: string, presence: boolean) {
     //change le status de la présence (true si false et vice et versa)
@@ -191,7 +177,10 @@ export class ServerService {
   getSoldesDuProfil() {
     return this.axiosInstance.get('/compteurs/soldes/user');
   }
-
+/**
+ * Récupère les arbitrage du profil responsable 
+ * @returns Liste des arbitrages de la semaine à faire
+ */
   getArbitrageDuProfil() {
     return this.axiosInstance.get('/compteurs/arbitrage/user');
   }
@@ -202,7 +191,10 @@ export class ServerService {
   putHeureHebdo(hour: Heure) {
     this.axiosInstance.put("/heures/ajouter", hour)
   }
-
+  /**
+   * 
+   * @returns Consulte les heures en cours de la semaine
+   */
   getHeureHebdoUser() {
     return this.axiosInstance.get("/heures/consulter");
   }
@@ -260,11 +252,7 @@ export class ServerService {
         console.log(reponse.data);
       })
   }
-  upDateBornes(bornes: Date[]) {
-    this.axiosInstance.put('/bornes/update', { bornes:bornes })
-
-  }
-
+  
 
 }
 

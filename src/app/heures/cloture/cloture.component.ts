@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { heureDecToStr } from '@fabricekopf/date-france';
-import { HoursService } from 'src/app/services/hours/hours.service';
-import { ServerService } from 'src/app/services/serveur/server.service';
-import { Arbitrage } from 'src/app/models/arbitrage.model';
-import { CookieService } from 'ngx-cookie-service';
+import { UserService } from 'src/app/core/services/users.service';
+import { Arbitrage } from 'src/app/core/models/arbitrage.model';
 import { formatDate } from '@fabricekopf/date-france';
 import { Store, select } from '@ngrx/store';
-import { SessionState } from 'src/app/state/session/session.reducers';
-import { User } from 'src/app/models/userModel';
-import { Router } from '@angular/router';
+import { SessionState } from 'src/app/core/state/session/session.reducers';
+import { getBornes } from 'src/app/core/state/session/session.selectors';
+import { User } from 'src/app/core/models/userModel';
+import { Heure } from 'src/app/core/models/heureModel';
+
 
 @Component({
   selector: 'app-cloture',
@@ -22,7 +22,7 @@ export class ClotureComponent implements OnInit {
   date_fin_str: string = '';
   matricule: string = '';
   monTableauDHeure = [];
-  totalDesHeuresValidees: number = 0;
+  totalDesHeuresAVentillees: number = 0;
   bornes: string = null;
   //soldes en str et dec: 
   heures_supplementaires: string = '';
@@ -44,31 +44,27 @@ export class ClotureComponent implements OnInit {
   modifiVentillation: boolean = false;
   //Nom du responsable
   responsable: string = ''
+  //message d'erreur:
+  errorMessage: string | null = null
   constructor(
-    private mesCompteurs: HoursService,
-    private apiBDD: ServerService,
-    private cookieService: CookieService,
+    private userService: UserService,
     private store: Store<{ session: SessionState }>,
-    private router: Router,
   ) { }
 
 
   ngOnInit(): void {
-    this.getAutorisation()
-    this.mesCompteurs.getWeekHours()
-      .then((fetchData) => {
-        this.monTableauDHeure = fetchData['detail'].filter((hour: any) => hour.valide === 0);
-        this.monTableauDHeure.forEach((hour) => {
-          this.totalDesHeuresValidees += hour.duree
-        })
-      })
     this.getSoldes();
     this.getBornes();
     this.getNameUserState();
+    this.getCurrentHoursToBeAllocate();
   }
 
+  /**
+   * getSoldes va chercher les soldes dans la collection 'compteure_heures' (donc les arbitrages validés)
+   * 
+   */
   getSoldes() {
-    this.apiBDD.getSoldesDuProfil()
+    this.userService.getSoldesDuProfil()
       .then((data: any) => {
         this.heures_supplementaires = heureDecToStr(data.data.heuresSupMajoree);
         this.heures_supplementairesDec = data.data.heuresSupMajoree;
@@ -81,9 +77,10 @@ export class ClotureComponent implements OnInit {
         this.calculSoldeAVentiller()
       });
   }
+
   calculSoldeAVentiller() {
     this.modifiVentillation = false;
-    this.resteAVentiller = this.totalDesHeuresValidees - this.affectationAP - this.affectationHS - this.affectationJS - this.affectationRecup
+    this.resteAVentiller = this.totalDesHeuresAVentillees - this.affectationAP - this.affectationHS - this.affectationJS - this.affectationRecup
   }
 
 
@@ -111,17 +108,10 @@ export class ClotureComponent implements OnInit {
       respDateValidation: null,
       paiementStatus: statusPaiement,
       datePaiement: null,
-      responsable: this.responsable, 
+      responsable: this.responsable,
     }
     arbitrage.deserialize(ventillation);
 
-    try {
-      this.apiBDD.validateHour(arbitrage);
-      this.mesCompteurs.setAutorisationSaisie(false); //une fois l'arbitrage enregistré, l'autorisation passe sur false
-    } catch (error) {
-      console.log(error);
-    }
-    this.mesCompteurs.getWeekHours()
   }
 
 
@@ -158,15 +148,21 @@ export class ClotureComponent implements OnInit {
   }
 
   /**
-   * récupère les bornes dans le cookie pour l'arbitrage
+   * récupère les bornes pour l'arbitrage
    */
   getBornes() {
-    const mesBornes = this.cookieService.get('bornes');
-    const mesBornesJson = JSON.parse(mesBornes) || null;
-    this.date_debut = new Date(mesBornesJson['date_debut']);
-    this.date_debut_str = formatDate(mesBornesJson['date_debut']).dateCourte
-    this.date_fin = new Date(mesBornesJson['date_fin']);
-    this.date_fin_str = formatDate(mesBornesJson['date_fin']).dateCourte
+    this.store.select(getBornes).subscribe((bornes) => {
+      if (bornes) {
+        this.date_debut = bornes[0]
+        this.date_fin = bornes[0]
+        this.date_debut_str = formatDate(bornes[0]).dateCourte
+        this.date_fin_str = formatDate(bornes[0]).dateCourte
+      }else{
+        this.errorMessage = "Les bornes n'ont pu être récupérées"
+      }
+
+})
+
   }
 
   /**
@@ -174,26 +170,24 @@ export class ClotureComponent implements OnInit {
    */
   getNameUserState() {
     this.store.pipe(select(state => state.session.userState))
-      .subscribe((userData: { user: User | null }) => {
-        this.matricule = userData.user.matricule;
-        this.responsable = userData.user.responsable;
+      .subscribe((userData: User | null) => {
+        this.matricule = userData.matricule;
+        this.responsable = userData.responsable;
       });
 
   }
 
-  /**
-   * Si le salarié a déjà cloturé sa semaine, il n'a plus le droit de saisir en attendant la semaine suivante.
-   * Cette requête permet de contrôler cet etat et de le rediriger si besoin.
-   */
-  getAutorisation() {
-    this.mesCompteurs.autorisationSaisie$
-      .subscribe((autorisation) => {
-        if (autorisation === false) {
-          this.router.navigate(['/heures/consulter'])
+  getCurrentHoursToBeAllocate() {
+    this.userService.getHeureHebdoUser().then((data: any) => {
+      const fetchData = JSON.parse(data.data);
+      fetchData.forEach((heure: Heure) => {
+        if (heure.valide === 0) {
+          this.monTableauDHeure.push(heure)
+          this.totalDesHeuresAVentillees += heure.duree
         }
-      })
+      });
+
+    })
   }
-
-
 }
 

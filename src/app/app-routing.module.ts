@@ -4,7 +4,6 @@ import { AccueilComponent } from './accueil/accueil.component';
 import { LoginComponent } from './users/login/login.component';
 import { HeuresComponent } from './heures/heures.component';
 import { ServiceComponent } from './service/service.component';
-import { EntrepriseComponent } from './entreprise/entreprise.component';
 import { UserPageComponent } from './users/user-page/user-page.component';
 import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 import { UserListComponent } from './users/user-list/user-list.component';
@@ -37,7 +36,6 @@ const routes: Routes = [
       { path: 'valider', component: ServiceValiderComponent }
     ]
   },
-  { path: 'entreprise', component: EntrepriseComponent },
   {
     path: 'users', component: UserPageComponent, children: [
       { path: '', redirectTo: 'liste', pathMatch: 'full'},

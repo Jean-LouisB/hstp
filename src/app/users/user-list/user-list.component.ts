@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ServerService } from '../../services/serveur/server.service';
-import { Store, select } from '@ngrx/store';
-import { listOfAllUsers } from '../../state/session/session.selectors';
+import { UserService } from 'src/app/core/services/users.service';
+import { Store } from '@ngrx/store';
+import { listOfAllUsers } from 'src/app/core/state/session/session.selectors';
 import { Observable, Subscription } from 'rxjs';
-import { User } from 'src/app/models/userModel';
-import { SessionState } from 'src/app/state/session/session.reducers';
+import { User } from 'src/app/core/models/userModel';
+import { SessionState } from 'src/app/core/state/session/session.reducers';
 
 
 
@@ -43,7 +43,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   isSearchingByResp: boolean = false
 
   constructor(
-    private apiBDD: ServerService,
+    private userService: UserService,
     private store: Store<{ session: SessionState }>,
   ) { }
 
@@ -59,14 +59,13 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   private async getList() {
-    this.userListSubscription = this.store.select(state => state.session)
-      .pipe(select(listOfAllUsers))
+    this.userListSubscription = this.store.select(listOfAllUsers)
       .subscribe(data => {
         this.userListRaw = data;
       });
     if (!this.userListRaw || this.userListRaw.length === 0) {
       try {
-        await this.apiBDD.getAllUsers()
+        await this.userService.getAllUsers()
       } catch (error) {
         this.errorMsg = "La liste des utilisateurs n'a pas pu être récupérée.";
       };//Ici je récupère la liste depuis la bdd et la place dans le store
@@ -91,7 +90,7 @@ export class UserListComponent implements OnInit, OnDestroy {
    */
   private gettingSoldes(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.apiBDD.getSoldes()
+      this.userService.getSoldes()
         .then((response: any) => {
           const tableauDesSoldes = response.data;
           this.userListRaw = this.userListRaw.map((salarie) => {
@@ -206,7 +205,6 @@ export class UserListComponent implements OnInit, OnDestroy {
    * @returns NOMPRENOM (nom+prenom en majuscule): string
    */
   formatSearch(userName: string, userFirstName: string) {
-    console.log(userName+" "+userFirstName);
     const userNameAndFirstNameUpper = (userName + userFirstName).toUpperCase();
     return userNameAndFirstNameUpper;
   }

@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { User } from "src/app/models/userModel";
+import { User } from "src/app/core/models/userModel";
 
 
 export const toggleConnected = createAction('[App Component] toggleIsConnected');

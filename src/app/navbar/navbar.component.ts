@@ -1,12 +1,12 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { ServerService } from '../services/serveur/server.service';
-import { User } from '../models/userModel';
-import { toggleConnected } from '../state/session/session.actions';
+import { UserService } from '../core/services/users.service';
+import { User } from '../core/models/userModel';
+import { toggleConnected } from '../core/state/session/session.actions';
 import { Store, select } from '@ngrx/store';
-import { SessionState } from '../state/session/session.reducers';
+import { SessionState } from '../core/state/session/session.reducers';
 //import { Subscription } from 'rxjs';
-import { setUser } from '../state/session/session.actions';
+import { setUser } from '../core/state/session/session.actions';
 
 @Component({
   selector: 'app-navbar',
@@ -34,7 +34,7 @@ export class NavbarComponent implements OnInit{
   //private userSubscription: Subscription | undefined;
   constructor(
     private router: Router, //gère les redirection (si pas connecté ...)
-    private apiBDD: ServerService, // accès au service local pour interroger le serveur (et donc la BDD)
+    private userService: UserService, // accès au service local pour interroger le serveur (et donc la BDD)
     private store: Store<{ session: SessionState }>  //accès au store pour récupèrer les données utilisateurs
 
     ) { }
@@ -54,7 +54,7 @@ export class NavbarComponent implements OnInit{
    handleOnLoout(){
     this.store.dispatch(toggleConnected());
     this.store.dispatch(setUser(null));
-    this.apiBDD.getLogout();
+    this.userService.getLogout();
     this.router.navigate(['/login']);
    }
 
@@ -73,9 +73,9 @@ export class NavbarComponent implements OnInit{
    */
   getNameUserState() {
     this.store.pipe(select(state => state.session.userState))
-      .subscribe((userData: { user: User | null }) => {
-        if(userData && userData.user){
-          this.user = userData.user;
+      .subscribe((userData: User | null ) => {
+        if(userData && userData){
+          this.user = userData;
         }
       });
   }
