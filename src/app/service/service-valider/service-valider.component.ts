@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/core/services/users.service';
-import { heureDecToStr } from'@fabricekopf/date-france';
+import { heureDecToStr } from '@fabricekopf/date-france';
+import { User } from 'src/app/core/models/userModel';
 
 @Component({
   selector: 'app-service-valider',
@@ -10,13 +11,13 @@ import { heureDecToStr } from'@fabricekopf/date-france';
 export class ServiceValiderComponent implements OnInit {
   mesArbitrages: any;
   errorMsg: string;
+  isReady: boolean = false;
   constructor(
     private userService: UserService
   ) { }
 
   ngOnInit(): void {
     this.getMesArbitrages();
-//    this.getNames();
   }
 
   /**
@@ -25,10 +26,13 @@ export class ServiceValiderComponent implements OnInit {
    * 
    */
   getMesArbitrages() {
-    this.userService.mesArbitrageAValider().then((data) => {
-      this.mesArbitrages = data.data;
-    })
-    this.getNames()
+    this.userService.mesArbitrageAValider()
+      .then((data) => {
+        this.mesArbitrages = data.data;
+      })
+      .then(() => {
+        this.getNames()
+      })
   }
 
   /**
@@ -38,35 +42,38 @@ export class ServiceValiderComponent implements OnInit {
   getNames() {
     this.userService.getAllUsers()
       .then((allUsers: any) => {
-        this.mesArbitrages.forEach((item: any) => {
-            allUsers.data.forEach((salarie: any) => {
-              if (item.matricule === salarie.matricule) {
-                item.nom = salarie.nom;
-                item.prenom = salarie.prenom;
-              }
-            })
-        });
+        const userMap = new Map();
+        allUsers.data.forEach((user: User) => {
+          userMap.set(user.matricule, user)
+        })
+        this.mesArbitrages.forEach((arbitrage: any) => {
+          const user = userMap.get(arbitrage.matricule);
+          if (user) {
+            arbitrage.nom = user.nom;
+            arbitrage.prenom = user.prenom;
+          }
+        })
       });
-  }
+}
 
-  
-  /**
-   * Pour pouvoir l'utiliser dans le template
-   * @param l'heure en decimale 
-   * @returns l'heure au format str hhhmm
-   */
-  heureDecimaleEnStr(decimale: number) {
-    return heureDecToStr(decimale);
-  }
 
-  valideArbitrage(id:string, aPayer: number){
-    this.userService.valideArbitrage(id,aPayer);
-    this.getMesArbitrages();
-   // this.getNames()
-  }
+/**
+ * Pour pouvoir l'utiliser dans le template
+ * @param l'heure en decimale 
+ * @returns l'heure au format str hhhmm
+ */
+heureDecimaleEnStr(decimale: number) {
+  return heureDecToStr(decimale);
+}
 
-  annulerArbitrage(id:string){
-    alert("Annulation de l'arbitrage "+id+" pas encore possible")
-  }
+valideArbitrage(id: string, aPayer: number){
+  this.userService.valideArbitrage(id, aPayer);
+  this.getMesArbitrages();
+  // this.getNames()
+}
+
+annulerArbitrage(id: string){
+  alert("Annulation de l'arbitrage " + id + " pas encore possible")
+}
 
 }

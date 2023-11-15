@@ -7,6 +7,7 @@ import { SessionState } from 'src/app/core/state/session/session.reducers';
 import { User } from 'src/app/core/models/userModel';
 import { Subscription } from 'rxjs';
 import { BornesService } from 'src/app/core/services/bornes.service';
+import { setBornes } from 'src/app/core/state/session/session.actions';
 
 
 @Component({
@@ -16,8 +17,10 @@ import { BornesService } from 'src/app/core/services/bornes.service';
 })
 export class HeuresDeclareComponent implements OnInit, OnDestroy {
   matricule: string = null;
-  date_debut: Date = null;
-  date_fin: Date = null;
+  date_debut: Date | null = null; //Pour l'enregistrement de l'heure dans la collection
+  date_fin: Date = null; //Pour l'enregistrement de l'heure dans la collection
+  dateMin: String | null; //Pour la limite de saisie dans le template
+  dateMax: String | null; //Pour la limite de saisie dans le template
   dateEvenement: Date = null;
   sens: string = null;
   heureDebut: string = null;
@@ -26,35 +29,56 @@ export class HeuresDeclareComponent implements OnInit, OnDestroy {
   msgErreurTemps: string = null;
   validationPossible: boolean = false;
   openMessageBoxValidation: boolean = false;
-  bornesSubscription: Subscription | null;
+  errorMessage: string | null;
+  private bornesSubscription: Subscription | undefined;
+
   constructor(
     private userService: UserService,
-    private bornesService: BornesService,
+    private borneService: BornesService,
     private store: Store<{ session: SessionState }>,
   ) { }
  
 
 
   ngOnInit(): void {
-
     this.getNameUserState();
     this.getBornes();
   }
   /**
    * récupère les bornes de saisie dans le cookie afin de brider le champs date.
    */
-    private getBornes() {
-    this.bornesService.getBornes();
+  private getBornes() {
     this.bornesSubscription = this.store.pipe(select(state => state.session.bornes))
       .subscribe((bornes: Date[]) => {
-        if (bornes) {
+        if (bornes && bornes.length === 2) {
           this.date_debut = bornes[0];
           this.date_fin = bornes[1];
+          this.dateMin = this.convertiDateToIso(bornes[0]);
+          this.dateMax = this.convertiDateToIso(bornes[1]);
+        }else{
+          // Si le store a été rafraichi, je renvoie une requête au serveur
+          this.borneService.getBornes()
+          .then((bornes: Date[])=>{
+            if(bornes){
+              this.date_debut = bornes[0];
+              this.date_fin = bornes[1];
+              this.dateMin = this.convertiDateToIso(bornes[0]);
+              this.dateMax = this.convertiDateToIso(bornes[1]);
+              this.store.dispatch(setBornes({bornes:[this.date_debut, this.date_fin]}));
+            }
+          })
+          .catch((error)=>{
+            this.errorMessage = error
+            console.error(error)
+          })
         }
       })
+    
   }
 
-
+  private convertiDateToIso(dateToConvert: Date){
+    return dateToConvert.toISOString().split('T')[0];
+  }
 
   /**
    * Vérifie si le temps saisi n'est pas négatif (fin<début).

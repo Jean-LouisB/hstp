@@ -2,13 +2,13 @@
 
 <div class="card p-1 shadow mt-3 d-flex flex-column justify-content-center">
     <p *ngIf="msgErreurTemps" class="fs-5 text-danger text-center">{{ msgErreurTemps }}</p>
-    <div class="row ">
+    <div *ngIf="date_debut" class="row ">
         <div class="col-6 mb-3">
             <div class="p-2">
                 <div class="form-floating mb-3">
                     <input [(ngModel)]="dateEvenement" class="form-control" id="dateEvenement" name="dateEvenement"
-                        type="date" [min]="date_debut"
-                        [max]="date_fin" (blur)="accepteLaSasie()">
+                        type="date" [min]="dateMin"
+                        [max]="dateMax" (blur)="accepteLaSasie()">
                     <!-- brider sur les dates bornées -->
                     <label for="dateEvenement">Date de l'évènement</label>
                 </div>

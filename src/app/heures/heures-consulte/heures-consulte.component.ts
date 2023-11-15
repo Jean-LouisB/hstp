@@ -3,9 +3,12 @@ import { UserService } from 'src/app/core/services/users.service';
 import { heureDecToStr } from '@fabricekopf/date-france';
 import { formatDate } from '@fabricekopf/date-france';
 import { Heure } from 'src/app/core/models/heureModel';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { getBornes } from 'src/app/core/state/session/session.selectors';
 import { SessionState } from 'src/app/core/state/session/session.reducers';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { setBornes } from 'src/app/core/state/session/session.actions';
+import { BornesService } from 'src/app/core/services/bornes.service';
 
 
 
@@ -26,15 +29,20 @@ export class HeuresConsulteComponent implements OnInit {
   recuperation: string = '0h00';
   solidarite: string = '0h00';
   aPayer: string = '0h00';
-  commutateurAffichage: boolean;
+  commutateurAffichage: boolean = false;
   // Solde en cours
   heures_supplementaires_avant: string = '0h00';
   recuperation_avant: string = '0h00';
   solidarite_avant: string = '0h00';
   aPayer_avant: string = '0h00';
+  //message d'erreur :
+  errorMessage: string| null = null;
 
+  private bornesSubscription: Subscription | undefined;
+  
   constructor(
     private userService: UserService,
+    private borneService: BornesService,
     private store: Store<{ session: SessionState }>,
 
   ) { }
@@ -60,7 +68,6 @@ export class HeuresConsulteComponent implements OnInit {
     } catch (error) {
       console.log(error);
     }
-
   }
 
   /**
@@ -81,12 +88,29 @@ export class HeuresConsulteComponent implements OnInit {
 
   }
 
-  getBornes() { 
-    this.store.select(getBornes).subscribe((bornes) => {
-      this.date_debut = formatDate(bornes[0]).dateCourte
-      this.date_fin = formatDate(bornes[0]).dateCourte
-    })
-
+  private getBornes() {
+    this.bornesSubscription = this.store.pipe(select(state => state.session.bornes))
+      .subscribe((bornes: Date[]) => {
+        if (bornes && bornes.length === 2) {
+          this.date_debut = formatDate(bornes[0]).dateToStringWithoutHour;
+          this.date_fin = formatDate(bornes[1]).dateToStringWithoutHour;
+        }else{
+          // Si le store a été rafraichi, je renvoie une requête au serveur
+          this.borneService.getBornes()
+          .then((bornes: Date[])=>{
+            if(bornes){
+              this.date_debut = formatDate(bornes[0]).dateToStringWithoutHour;
+              this.date_fin = formatDate(bornes[1]).dateToStringWithoutHour;
+              this.store.dispatch(setBornes({bornes:[bornes[0], bornes[1]]}));
+            }
+          })
+          .catch((error)=>{
+            this.errorMessage = error
+            console.error(error)
+          })
+        }
+      })
+    
   }
 
   getArbitrageEnCours() {

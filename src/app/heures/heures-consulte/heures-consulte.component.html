@@ -1,6 +1,6 @@
 <div class="container-fluid p-3">
     <div *ngIf="totalCompteurNotValidated == 0">Rien à consulter pour le moment pour cette semaine.</div>
-    <div class="card p-3 shadow" *ngIf="totalCompteurNotValidated != 0">
+    <div class="card p-3 shadow" *ngIf="commutateurAffichage == false">
         <p class="h3 mb-3">Consulter, supprimer.<br></p>
         <p>Vous avez un total de <span class="text-danger fw-semibold">{{ heureDecimaleEnStr(totalCompteurNotValidated)
                 }}</span> non ventillées pour la semaine du {{ date_debut }} au {{ date_fin }}</p>
@@ -79,7 +79,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let hour of tabOfHoursNotValidated">
+                <tr *ngFor="let hour of tabOfCurrentsHours">
 
                     <td>{{ hour['date_evenement'] }}</td>
                     <td>{{ heureDecimaleEnStr(hour['duree']) }}</td>

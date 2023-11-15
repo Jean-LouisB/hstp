@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { heureDecToStr } from '@fabricekopf/date-france';
 import { UserService } from 'src/app/core/services/users.service';
 import { Arbitrage } from 'src/app/core/models/arbitrage.model';
@@ -8,6 +8,11 @@ import { SessionState } from 'src/app/core/state/session/session.reducers';
 import { getBornes } from 'src/app/core/state/session/session.selectors';
 import { User } from 'src/app/core/models/userModel';
 import { Heure } from 'src/app/core/models/heureModel';
+import { Subscription } from 'rxjs';
+import { BornesService } from 'src/app/core/services/bornes.service';
+import { setBornes } from 'src/app/core/state/session/session.actions';
+import { ArbitrageService } from 'src/app/core/services/arbitrage.service';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
@@ -15,7 +20,7 @@ import { Heure } from 'src/app/core/models/heureModel';
   templateUrl: './cloture.component.html',
   styleUrls: ['./cloture.component.css']
 })
-export class ClotureComponent implements OnInit {
+export class ClotureComponent implements OnInit, OnDestroy{
   date_debut: Date = null;
   date_debut_str: string = '';
   date_fin: Date = null;
@@ -46,10 +51,16 @@ export class ClotureComponent implements OnInit {
   responsable: string = ''
   //message d'erreur:
   errorMessage: string | null = null
+
+
+  private bornesSubscription: Subscription | undefined;
   constructor(
     private userService: UserService,
     private store: Store<{ session: SessionState }>,
+    private borneService: BornesService,
+    private arbitrageService: ArbitrageService
   ) { }
+
 
 
   ngOnInit(): void {
@@ -60,7 +71,7 @@ export class ClotureComponent implements OnInit {
   }
 
   /**
-   * getSoldes va chercher les soldes dans la collection 'compteure_heures' (donc les arbitrages validés)
+   * getSoldes va chercher les soldes dans la collection 'compteurs_heures' (donc les arbitrages validés)
    * 
    */
   getSoldes() {
@@ -111,7 +122,8 @@ export class ClotureComponent implements OnInit {
       responsable: this.responsable,
     }
     arbitrage.deserialize(ventillation);
-
+    const reponse = this.arbitrageService.putNewArbitrage(arbitrage, this.monTableauDHeure)
+   
   }
 
 
@@ -150,21 +162,32 @@ export class ClotureComponent implements OnInit {
   /**
    * récupère les bornes pour l'arbitrage
    */
-  getBornes() {
-    this.store.select(getBornes).subscribe((bornes) => {
-      if (bornes) {
-        this.date_debut = bornes[0]
-        this.date_fin = bornes[0]
-        this.date_debut_str = formatDate(bornes[0]).dateCourte
-        this.date_fin_str = formatDate(bornes[0]).dateCourte
-      }else{
-        this.errorMessage = "Les bornes n'ont pu être récupérées"
-      }
-
-})
-
+  private getBornes() {
+    this.bornesSubscription = this.store.pipe(select(state => state.session.bornes))
+      .subscribe((bornes: Date[]) => {
+        if (bornes && bornes.length === 2) {
+          this.date_debut = formatDate(bornes[0]).dateToStringWithoutHour;
+          this.date_debut_str = formatDate(bornes[0]).dateCourte;
+          this.date_fin = formatDate(bornes[1]).dateToStringWithoutHour;
+          this.date_fin_str = formatDate(bornes[1]).dateCourte;
+        }else{
+          // Si le store a été rafraichi, je renvoie une requête au serveur
+          this.borneService.getBornes()
+          .then((bornes: Date[])=>{
+            if(bornes){
+              this.date_debut = formatDate(bornes[0]).dateToStringWithoutHour;
+              this.date_fin = formatDate(bornes[1]).dateToStringWithoutHour;
+              this.store.dispatch(setBornes({bornes:[bornes[0], bornes[1]]}));
+            }
+          })
+          .catch((error)=>{
+            this.errorMessage = error
+            console.error(error)
+          })
+        }
+      })
+    
   }
-
   /**
    * Récupère le matricule du salarié connecté pour l'arbitrage
    */
@@ -188,6 +211,11 @@ export class ClotureComponent implements OnInit {
       });
 
     })
+  }
+  ngOnDestroy(): void {
+    if(this.bornesSubscription){
+      this.bornesSubscription.unsubscribe();
+    }
   }
 }
 
